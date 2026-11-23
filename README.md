@@ -140,6 +140,11 @@ in [`schemas/`](schemas/README.md)).
   with `kernel` when there is one; `kernel` is `null` only for a compose root;
   scenarios are in normalized order. A document that fails is rejected (exit
   code 3) and no target sees it.
+- `spec` must be a plain identifier (`[A-Za-z_][A-Za-z0-9_]*`). It is the one
+  name targets write outside a string literal (Kotlin and PHPUnit name the
+  generated class after it), so a document with any other spelling is rejected
+  (exit code 3) before a target or plugin runs, and nothing is written. `fslc`
+  never emits such a name; the check is for documents made by other means.
 - `test_plan`, when present, is checked for shape and otherwise not used.
 - `fslc domain testgen` applies post-processing that is not part of
   `testgen-input.v1`; a domain document is generated here as any other.

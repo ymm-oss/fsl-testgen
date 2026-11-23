@@ -570,6 +570,20 @@ fn array_field<'a>(
 }
 
 /// A list of distinct names, in the order the document gives them.
+/// Whether `name` can be written as an identifier in every target language.
+///
+/// The spec name is the one name targets write outside a string literal (a
+/// class declaration in Kotlin and `PHPUnit`), so a document is refused unless
+/// it is a plain ASCII identifier. Every other name reaches generated code
+/// through a literal renderer or `safe_ident`.
+fn is_identifier(name: &str) -> bool {
+    let mut characters = name.chars();
+    characters
+        .next()
+        .is_some_and(|first| first.is_ascii_alphabetic() || first == '_')
+        && characters.all(|character| character.is_ascii_alphanumeric() || character == '_')
+}
+
 fn name_list(values: &[Value], context: &str) -> Result<Vec<String>, String> {
     let mut seen = BTreeSet::new();
     values
@@ -738,6 +752,11 @@ impl TestgenInput {
         let spec_name = string_field(root, "spec", ROOT)?;
         if spec_name.is_empty() {
             return Err(format!("{ROOT}.spec must not be empty"));
+        }
+        if !is_identifier(spec_name) {
+            return Err(format!(
+                "{ROOT}.spec {spec_name:?} is not an identifier ([A-Za-z_][A-Za-z0-9_]*): targets embed it in the names of generated classes and files"
+            ));
         }
         let dialect = string_field(root, "dialect", ROOT)?;
         let state_order = name_list(array_field(root, "state", ROOT)?, &format!("{ROOT}.state"))?;
@@ -1054,6 +1073,38 @@ pub(crate) mod tests {
             rejection(|d| d["kernel"]["schema_version"] = json!("2.0.0"))
                 .contains("unsupported public Kernel schema_version")
         );
+    }
+
+    #[test]
+    fn spec_must_be_an_identifier() {
+        for name in [
+            "Demo Test",
+            "Demo-Test",
+            "1Demo",
+            "Demo.Part",
+            "Demo{",
+            "Demo\nInjected()",
+            "Dem\u{e9}",
+        ] {
+            assert_eq!(
+                rejection(|d| {
+                    d["spec"] = json!(name);
+                    d["walk"]["spec"] = json!(name);
+                    d["kernel"]["spec"]["name"] = json!(name);
+                }),
+                format!(
+                    "testgen-input.spec {name:?} is not an identifier ([A-Za-z_][A-Za-z0-9_]*): targets embed it in the names of generated classes and files"
+                )
+            );
+        }
+        for name in ["_", "_demo", "Demo_2", "D"] {
+            let mut document = document();
+            document["spec"] = json!(name);
+            document["walk"]["spec"] = json!(name);
+            document["kernel"]["spec"]["name"] = json!(name);
+            let input = TestgenInput::from_document(&document).expect("an identifier is accepted");
+            assert_eq!(input.spec_name(), name);
+        }
     }
 
     #[test]

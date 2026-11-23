@@ -93,6 +93,58 @@ fn a_rejected_document_exits_3_and_writes_nothing() {
     }
 }
 
+/// A document whose `spec` is consistent everywhere but is not an identifier.
+/// Kotlin and PHPUnit embed the spec name in a class declaration, so without
+/// the check a hand-made document writes code of its choosing into the suite.
+#[test]
+fn a_spec_name_that_is_not_an_identifier_is_refused_by_every_target() {
+    let compose = cases()
+        .into_iter()
+        .find(|case| case.name == "compose")
+        .expect("compose case")
+        .input;
+    let mut document: Value = serde_json::from_str(&compose).expect("JSON");
+    let original = document["spec"].as_str().expect("spec").to_owned();
+    let hostile = "Bank {}\nfun injected() = Unit\nclass Rest";
+    rename_spec(&mut document, &original, hostile);
+    let input = serde_json::to_string(&document).expect("serialize");
+    let directory = scratch("hostile-spec");
+    for target in TARGETS {
+        let output = directory.join(format!("out.{target}"));
+        let done = run(
+            &[
+                "generate",
+                "--target",
+                target,
+                "-o",
+                output.to_str().expect("UTF-8 path"),
+            ],
+            &input,
+        );
+        let (code, kind, message) = failure(&done);
+        assert_eq!((code, kind.as_str()), (3, "input"), "{target}: {message}");
+        assert!(
+            message.starts_with("testgen-input.spec \"Bank {}\\nfun injected() = Unit\\nclass Rest\" is not an identifier"),
+            "{target}: {message}"
+        );
+        assert!(done.stdout.is_empty(), "{target}: nothing on stdout");
+        assert!(!output.exists(), "{target}: nothing is written");
+    }
+}
+
+fn rename_spec(value: &mut Value, from: &str, to: &str) {
+    match value {
+        Value::String(text) if text == from => *text = to.to_owned(),
+        Value::Array(items) => items
+            .iter_mut()
+            .for_each(|item| rename_spec(item, from, to)),
+        Value::Object(members) => members
+            .values_mut()
+            .for_each(|member| rename_spec(member, from, to)),
+        _ => {}
+    }
+}
+
 #[test]
 fn a_later_minor_is_accepted_and_another_major_is_not() {
     let minor = mutated(|d| d["schema_version"] = json!("1.7.2"));
