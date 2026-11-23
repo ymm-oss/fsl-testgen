@@ -1,0 +1,1 @@
+--allow-unwired is not available for --target kotlin: kotlin.test has no portable runtime skip, so an unwired test would pass without calling the implementation

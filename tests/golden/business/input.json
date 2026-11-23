@@ -1,0 +1,2232 @@
+{
+  "$schema": "https://fsl.dev/schemas/fslc/kernel/testgen-input.v1.schema.json",
+  "schema_version": "1.0.0",
+  "kernel_schema_version": "1.0.0",
+  "result": "testgen_input",
+  "fslc_version": "5.2.0",
+  "spec": "ReturnHandling",
+  "source": {
+    "name": "return_policy.fsl",
+    "digest": "sha256:d1bccf29ecf229ed9e88191a59d4125f6d0d8bb461e85929f8f2d9ef33a18641"
+  },
+  "dialect": "business",
+  "gate": {
+    "depth": 3,
+    "deadlock": "warn",
+    "strict": false
+  },
+  "state": [
+    "return_stage"
+  ],
+  "actions": [
+    {
+      "name": "approve",
+      "params": [
+        "c"
+      ]
+    },
+    {
+      "name": "reject",
+      "params": [
+        "c"
+      ]
+    },
+    {
+      "name": "refund",
+      "params": [
+        "c"
+      ]
+    }
+  ],
+  "scenarios": [
+    {
+      "steps": [
+        {
+          "action": "approve",
+          "params": {
+            "c": 0
+          }
+        }
+      ],
+      "initial_state": {
+        "return_stage": {
+          "0": "Requested",
+          "1": "Requested",
+          "2": "Requested"
+        }
+      },
+      "expected_states": [
+        {
+          "return_stage": {
+            "0": "Approved",
+            "1": "Requested",
+            "2": "Requested"
+          }
+        }
+      ],
+      "name": "cover_approve",
+      "kind": "action_coverage",
+      "action": "approve",
+      "requirement": {
+        "id": "approve",
+        "text": "by Manager"
+      },
+      "requirements": [
+        {
+          "id": "approve",
+          "text": "by Manager"
+        }
+      ]
+    },
+    {
+      "steps": [
+        {
+          "action": "reject",
+          "params": {
+            "c": 0
+          }
+        }
+      ],
+      "initial_state": {
+        "return_stage": {
+          "0": "Requested",
+          "1": "Requested",
+          "2": "Requested"
+        }
+      },
+      "expected_states": [
+        {
+          "return_stage": {
+            "0": "Rejected",
+            "1": "Requested",
+            "2": "Requested"
+          }
+        }
+      ],
+      "name": "cover_reject",
+      "kind": "action_coverage",
+      "action": "reject",
+      "requirement": {
+        "id": "reject",
+        "text": "by Manager"
+      },
+      "requirements": [
+        {
+          "id": "reject",
+          "text": "by Manager"
+        }
+      ]
+    },
+    {
+      "steps": [
+        {
+          "action": "approve",
+          "params": {
+            "c": 0
+          }
+        },
+        {
+          "action": "refund",
+          "params": {
+            "c": 0
+          }
+        }
+      ],
+      "initial_state": {
+        "return_stage": {
+          "0": "Requested",
+          "1": "Requested",
+          "2": "Requested"
+        }
+      },
+      "expected_states": [
+        {
+          "return_stage": {
+            "0": "Approved",
+            "1": "Requested",
+            "2": "Requested"
+          }
+        },
+        {
+          "return_stage": {
+            "0": "Refunded",
+            "1": "Requested",
+            "2": "Requested"
+          }
+        }
+      ],
+      "name": "cover_refund",
+      "kind": "action_coverage",
+      "action": "refund",
+      "requirement": {
+        "id": "refund",
+        "text": "by Manager"
+      },
+      "requirements": [
+        {
+          "id": "refund",
+          "text": "by Manager"
+        }
+      ]
+    },
+    {
+      "steps": [
+        {
+          "action": "reject",
+          "params": {
+            "c": 2
+          }
+        },
+        {
+          "action": "reject",
+          "params": {
+            "c": 1
+          }
+        },
+        {
+          "action": "reject",
+          "params": {
+            "c": 0
+          }
+        }
+      ],
+      "initial_state": {
+        "return_stage": {
+          "0": "Requested",
+          "1": "Requested",
+          "2": "Requested"
+        }
+      },
+      "expected_states": [
+        {
+          "return_stage": {
+            "0": "Requested",
+            "1": "Requested",
+            "2": "Rejected"
+          }
+        },
+        {
+          "return_stage": {
+            "0": "Requested",
+            "1": "Rejected",
+            "2": "Rejected"
+          }
+        },
+        {
+          "return_stage": {
+            "0": "Rejected",
+            "1": "Rejected",
+            "2": "Rejected"
+          }
+        }
+      ],
+      "name": "reach_GOAL-RETURN-001",
+      "kind": "reachable",
+      "property": "GOAL-RETURN-001",
+      "final_check": "GOAL-RETURN-001",
+      "requirement": {
+        "id": "GOAL-RETURN-001",
+        "text": "All cases can be completed"
+      },
+      "requirements": [
+        {
+          "id": "GOAL-RETURN-001",
+          "text": "All cases can be completed"
+        }
+      ]
+    },
+    {
+      "steps": [
+        {
+          "action": "approve",
+          "params": {
+            "c": 0
+          }
+        }
+      ],
+      "initial_state": {
+        "return_stage": {
+          "0": "Requested",
+          "1": "Requested",
+          "2": "Requested"
+        }
+      },
+      "expected_states": [
+        {
+          "return_stage": {
+            "0": "Approved",
+            "1": "Requested",
+            "2": "Requested"
+          }
+        }
+      ],
+      "name": "respond_POL-RETURN-002_c0",
+      "kind": "leadsTo",
+      "property": "POL-RETURN-002",
+      "requirement": {
+        "id": "POL-RETURN-002",
+        "text": "Every request is eventually decided"
+      },
+      "requirements": [
+        {
+          "id": "POL-RETURN-002",
+          "text": "Every request is eventually decided"
+        }
+      ],
+      "bindings": {
+        "c": 0
+      },
+      "pending_at": 0,
+      "satisfied_at": 1
+    },
+    {
+      "steps": [
+        {
+          "action": "approve",
+          "params": {
+            "c": 1
+          }
+        }
+      ],
+      "initial_state": {
+        "return_stage": {
+          "0": "Requested",
+          "1": "Requested",
+          "2": "Requested"
+        }
+      },
+      "expected_states": [
+        {
+          "return_stage": {
+            "0": "Requested",
+            "1": "Approved",
+            "2": "Requested"
+          }
+        }
+      ],
+      "name": "respond_POL-RETURN-002_c1",
+      "kind": "leadsTo",
+      "property": "POL-RETURN-002",
+      "requirement": {
+        "id": "POL-RETURN-002",
+        "text": "Every request is eventually decided"
+      },
+      "requirements": [
+        {
+          "id": "POL-RETURN-002",
+          "text": "Every request is eventually decided"
+        }
+      ],
+      "bindings": {
+        "c": 1
+      },
+      "pending_at": 0,
+      "satisfied_at": 1
+    },
+    {
+      "steps": [
+        {
+          "action": "approve",
+          "params": {
+            "c": 2
+          }
+        }
+      ],
+      "initial_state": {
+        "return_stage": {
+          "0": "Requested",
+          "1": "Requested",
+          "2": "Requested"
+        }
+      },
+      "expected_states": [
+        {
+          "return_stage": {
+            "0": "Requested",
+            "1": "Requested",
+            "2": "Approved"
+          }
+        }
+      ],
+      "name": "respond_POL-RETURN-002_c2",
+      "kind": "leadsTo",
+      "property": "POL-RETURN-002",
+      "requirement": {
+        "id": "POL-RETURN-002",
+        "text": "Every request is eventually decided"
+      },
+      "requirements": [
+        {
+          "id": "POL-RETURN-002",
+          "text": "Every request is eventually decided"
+        }
+      ],
+      "bindings": {
+        "c": 2
+      },
+      "pending_at": 0,
+      "satisfied_at": 1
+    }
+  ],
+  "walk": {
+    "$schema": "https://fsl.dev/schemas/fslc/kernel/testgen-trace.v1.schema.json",
+    "schema_version": "1.0.0",
+    "kernel_schema_version": "1.0.0",
+    "result": "testgen_trace",
+    "spec": "ReturnHandling",
+    "initial": {
+      "return_stage": {
+        "0": "Requested",
+        "1": "Requested",
+        "2": "Requested"
+      }
+    },
+    "steps": [
+      {
+        "action": "reject",
+        "params": {
+          "c": 0
+        },
+        "expected": {
+          "return_stage": {
+            "0": "Rejected",
+            "1": "Requested",
+            "2": "Requested"
+          }
+        }
+      },
+      {
+        "action": "reject",
+        "params": {
+          "c": 2
+        },
+        "expected": {
+          "return_stage": {
+            "0": "Rejected",
+            "1": "Requested",
+            "2": "Rejected"
+          }
+        }
+      },
+      {
+        "action": "approve",
+        "params": {
+          "c": 1
+        },
+        "expected": {
+          "return_stage": {
+            "0": "Rejected",
+            "1": "Approved",
+            "2": "Rejected"
+          }
+        }
+      },
+      {
+        "action": "refund",
+        "params": {
+          "c": 1
+        },
+        "expected": {
+          "return_stage": {
+            "0": "Rejected",
+            "1": "Refunded",
+            "2": "Rejected"
+          }
+        }
+      }
+    ]
+  },
+  "kernel": {
+    "$schema": "https://fsl.dev/schemas/fslc/kernel/kernel.v1.schema.json",
+    "schema_version": "1.0.0",
+    "language_version": "1.0",
+    "spec": {
+      "name": "ReturnHandling",
+      "source": {
+        "file": "examples/layers/return_policy.fsl",
+        "dialect": "business"
+      }
+    },
+    "semantics": {
+      "assignment": "simultaneous",
+      "reads": "pre_state",
+      "requires_false": "not_enabled",
+      "failure_state": "rollback",
+      "old": "pre_state",
+      "integer_division": "euclidean",
+      "terminal_deadlock": "terminal_states_excluded",
+      "fairness": "weak"
+    },
+    "constants": [],
+    "types": [
+      {
+        "name": "Return",
+        "span": null,
+        "symmetric": false,
+        "definition": {
+          "kind": "domain",
+          "lo": 0,
+          "hi": 2
+        },
+        "origin": {
+          "dialect": "business",
+          "declaration": "Return",
+          "lowered": true,
+          "generated": false
+        }
+      },
+      {
+        "name": "ReturnStage",
+        "span": null,
+        "symmetric": false,
+        "definition": {
+          "kind": "enum",
+          "members": [
+            "Requested",
+            "Approved",
+            "Rejected",
+            "Refunded"
+          ]
+        },
+        "origin": {
+          "dialect": "business",
+          "declaration": "ReturnStage",
+          "lowered": true,
+          "generated": false
+        }
+      }
+    ],
+    "state": [
+      {
+        "name": "return_stage",
+        "type": {
+          "kind": "map",
+          "key": {
+            "kind": "named",
+            "name": "Return"
+          },
+          "value": {
+            "kind": "named",
+            "name": "ReturnStage"
+          }
+        },
+        "span": null,
+        "origin": {
+          "dialect": "business",
+          "declaration": "return_stage",
+          "lowered": true,
+          "generated": false
+        }
+      }
+    ],
+    "init": {
+      "statements": [
+        {
+          "kind": "forall",
+          "type": {
+            "kind": "statement"
+          },
+          "span": {
+            "file": "examples/layers/return_policy.fsl",
+            "line": 5,
+            "column": 3,
+            "end_line": 5,
+            "end_column": 10
+          },
+          "binder": {
+            "name": "c",
+            "type": {
+              "kind": "named",
+              "name": "Return"
+            },
+            "kind": "typed"
+          },
+          "statements": [
+            {
+              "kind": "assign",
+              "type": {
+                "kind": "statement"
+              },
+              "span": {
+                "file": "examples/layers/return_policy.fsl",
+                "line": 5,
+                "column": 3,
+                "end_line": 5,
+                "end_column": 10
+              },
+              "target": {
+                "kind": "index",
+                "type": {
+                  "kind": "named",
+                  "name": "ReturnStage"
+                },
+                "span": {
+                  "file": "examples/layers/return_policy.fsl",
+                  "line": 5,
+                  "column": 3,
+                  "end_line": 5,
+                  "end_column": 10
+                },
+                "name": "return_stage",
+                "index": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "named",
+                    "name": "Return"
+                  },
+                  "span": {
+                    "file": "examples/layers/return_policy.fsl",
+                    "line": 5,
+                    "column": 3,
+                    "end_line": 5,
+                    "end_column": 10
+                  },
+                  "name": "c"
+                }
+              },
+              "value": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "ReturnStage"
+                },
+                "span": {
+                  "file": "examples/layers/return_policy.fsl",
+                  "line": 5,
+                  "column": 3,
+                  "end_line": 5,
+                  "end_column": 10
+                },
+                "name": "Requested"
+              }
+            }
+          ]
+        }
+      ],
+      "requirement": null,
+      "origin": {
+        "dialect": "business",
+        "declaration": "init",
+        "lowered": true,
+        "generated": false
+      },
+      "span": {
+        "file": "examples/layers/return_policy.fsl",
+        "line": 5,
+        "column": 3,
+        "end_line": 5,
+        "end_column": 10
+      }
+    },
+    "actions": [
+      {
+        "name": "approve",
+        "parameters": [
+          {
+            "name": "c",
+            "type": {
+              "kind": "named",
+              "name": "Return"
+            },
+            "finite_domain": {
+              "lo": 0,
+              "hi": 2
+            }
+          }
+        ],
+        "fair": true,
+        "guards": [
+          {
+            "kind": "requires",
+            "expression": {
+              "kind": "binary",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/layers/return_policy.fsl",
+                "line": 8,
+                "column": 5,
+                "end_line": 8,
+                "end_column": 15
+              },
+              "operator": "==",
+              "left": {
+                "kind": "index",
+                "type": {
+                  "kind": "named",
+                  "name": "ReturnStage"
+                },
+                "span": {
+                  "file": "examples/layers/return_policy.fsl",
+                  "line": 8,
+                  "column": 5,
+                  "end_line": 8,
+                  "end_column": 15
+                },
+                "collection": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "map",
+                    "key": {
+                      "kind": "named",
+                      "name": "Return"
+                    },
+                    "value": {
+                      "kind": "named",
+                      "name": "ReturnStage"
+                    }
+                  },
+                  "span": {
+                    "file": "examples/layers/return_policy.fsl",
+                    "line": 8,
+                    "column": 5,
+                    "end_line": 8,
+                    "end_column": 15
+                  },
+                  "name": "return_stage"
+                },
+                "index": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "named",
+                    "name": "Return"
+                  },
+                  "span": {
+                    "file": "examples/layers/return_policy.fsl",
+                    "line": 8,
+                    "column": 5,
+                    "end_line": 8,
+                    "end_column": 15
+                  },
+                  "name": "c"
+                }
+              },
+              "right": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "ReturnStage"
+                },
+                "span": {
+                  "file": "examples/layers/return_policy.fsl",
+                  "line": 8,
+                  "column": 5,
+                  "end_line": 8,
+                  "end_column": 15
+                },
+                "name": "Requested"
+              }
+            }
+          }
+        ],
+        "requires": [
+          {
+            "kind": "binary",
+            "type": {
+              "kind": "bool"
+            },
+            "span": {
+              "file": "examples/layers/return_policy.fsl",
+              "line": 8,
+              "column": 5,
+              "end_line": 8,
+              "end_column": 15
+            },
+            "operator": "==",
+            "left": {
+              "kind": "index",
+              "type": {
+                "kind": "named",
+                "name": "ReturnStage"
+              },
+              "span": {
+                "file": "examples/layers/return_policy.fsl",
+                "line": 8,
+                "column": 5,
+                "end_line": 8,
+                "end_column": 15
+              },
+              "collection": {
+                "kind": "var",
+                "type": {
+                  "kind": "map",
+                  "key": {
+                    "kind": "named",
+                    "name": "Return"
+                  },
+                  "value": {
+                    "kind": "named",
+                    "name": "ReturnStage"
+                  }
+                },
+                "span": {
+                  "file": "examples/layers/return_policy.fsl",
+                  "line": 8,
+                  "column": 5,
+                  "end_line": 8,
+                  "end_column": 15
+                },
+                "name": "return_stage"
+              },
+              "index": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "Return"
+                },
+                "span": {
+                  "file": "examples/layers/return_policy.fsl",
+                  "line": 8,
+                  "column": 5,
+                  "end_line": 8,
+                  "end_column": 15
+                },
+                "name": "c"
+              }
+            },
+            "right": {
+              "kind": "var",
+              "type": {
+                "kind": "named",
+                "name": "ReturnStage"
+              },
+              "span": {
+                "file": "examples/layers/return_policy.fsl",
+                "line": 8,
+                "column": 5,
+                "end_line": 8,
+                "end_column": 15
+              },
+              "name": "Requested"
+            }
+          }
+        ],
+        "lets": [],
+        "updates": [
+          {
+            "kind": "assign",
+            "type": {
+              "kind": "statement"
+            },
+            "span": {
+              "file": "examples/layers/return_policy.fsl",
+              "line": 8,
+              "column": 5,
+              "end_line": 8,
+              "end_column": 15
+            },
+            "target": {
+              "kind": "index",
+              "type": {
+                "kind": "named",
+                "name": "ReturnStage"
+              },
+              "span": {
+                "file": "examples/layers/return_policy.fsl",
+                "line": 8,
+                "column": 5,
+                "end_line": 8,
+                "end_column": 15
+              },
+              "name": "return_stage",
+              "index": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "Return"
+                },
+                "span": {
+                  "file": "examples/layers/return_policy.fsl",
+                  "line": 8,
+                  "column": 5,
+                  "end_line": 8,
+                  "end_column": 15
+                },
+                "name": "c"
+              }
+            },
+            "value": {
+              "kind": "var",
+              "type": {
+                "kind": "named",
+                "name": "ReturnStage"
+              },
+              "span": {
+                "file": "examples/layers/return_policy.fsl",
+                "line": 8,
+                "column": 5,
+                "end_line": 8,
+                "end_column": 15
+              },
+              "name": "Approved"
+            }
+          }
+        ],
+        "update_semantics": "simultaneous",
+        "ensures": [],
+        "partial_operations": [],
+        "requirement": {
+          "id": "approve",
+          "text": "by Manager"
+        },
+        "origin": {
+          "dialect": "business",
+          "declaration": "approve",
+          "lowered": true,
+          "generated": false
+        },
+        "span": {
+          "file": "examples/layers/return_policy.fsl",
+          "line": 8,
+          "column": 5,
+          "end_line": 8,
+          "end_column": 15
+        }
+      },
+      {
+        "name": "refund",
+        "parameters": [
+          {
+            "name": "c",
+            "type": {
+              "kind": "named",
+              "name": "Return"
+            },
+            "finite_domain": {
+              "lo": 0,
+              "hi": 2
+            }
+          }
+        ],
+        "fair": true,
+        "guards": [
+          {
+            "kind": "requires",
+            "expression": {
+              "kind": "binary",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/layers/return_policy.fsl",
+                "line": 10,
+                "column": 5,
+                "end_line": 10,
+                "end_column": 15
+              },
+              "operator": "==",
+              "left": {
+                "kind": "index",
+                "type": {
+                  "kind": "named",
+                  "name": "ReturnStage"
+                },
+                "span": {
+                  "file": "examples/layers/return_policy.fsl",
+                  "line": 10,
+                  "column": 5,
+                  "end_line": 10,
+                  "end_column": 15
+                },
+                "collection": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "map",
+                    "key": {
+                      "kind": "named",
+                      "name": "Return"
+                    },
+                    "value": {
+                      "kind": "named",
+                      "name": "ReturnStage"
+                    }
+                  },
+                  "span": {
+                    "file": "examples/layers/return_policy.fsl",
+                    "line": 10,
+                    "column": 5,
+                    "end_line": 10,
+                    "end_column": 15
+                  },
+                  "name": "return_stage"
+                },
+                "index": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "named",
+                    "name": "Return"
+                  },
+                  "span": {
+                    "file": "examples/layers/return_policy.fsl",
+                    "line": 10,
+                    "column": 5,
+                    "end_line": 10,
+                    "end_column": 15
+                  },
+                  "name": "c"
+                }
+              },
+              "right": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "ReturnStage"
+                },
+                "span": {
+                  "file": "examples/layers/return_policy.fsl",
+                  "line": 10,
+                  "column": 5,
+                  "end_line": 10,
+                  "end_column": 15
+                },
+                "name": "Approved"
+              }
+            }
+          }
+        ],
+        "requires": [
+          {
+            "kind": "binary",
+            "type": {
+              "kind": "bool"
+            },
+            "span": {
+              "file": "examples/layers/return_policy.fsl",
+              "line": 10,
+              "column": 5,
+              "end_line": 10,
+              "end_column": 15
+            },
+            "operator": "==",
+            "left": {
+              "kind": "index",
+              "type": {
+                "kind": "named",
+                "name": "ReturnStage"
+              },
+              "span": {
+                "file": "examples/layers/return_policy.fsl",
+                "line": 10,
+                "column": 5,
+                "end_line": 10,
+                "end_column": 15
+              },
+              "collection": {
+                "kind": "var",
+                "type": {
+                  "kind": "map",
+                  "key": {
+                    "kind": "named",
+                    "name": "Return"
+                  },
+                  "value": {
+                    "kind": "named",
+                    "name": "ReturnStage"
+                  }
+                },
+                "span": {
+                  "file": "examples/layers/return_policy.fsl",
+                  "line": 10,
+                  "column": 5,
+                  "end_line": 10,
+                  "end_column": 15
+                },
+                "name": "return_stage"
+              },
+              "index": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "Return"
+                },
+                "span": {
+                  "file": "examples/layers/return_policy.fsl",
+                  "line": 10,
+                  "column": 5,
+                  "end_line": 10,
+                  "end_column": 15
+                },
+                "name": "c"
+              }
+            },
+            "right": {
+              "kind": "var",
+              "type": {
+                "kind": "named",
+                "name": "ReturnStage"
+              },
+              "span": {
+                "file": "examples/layers/return_policy.fsl",
+                "line": 10,
+                "column": 5,
+                "end_line": 10,
+                "end_column": 15
+              },
+              "name": "Approved"
+            }
+          }
+        ],
+        "lets": [],
+        "updates": [
+          {
+            "kind": "assign",
+            "type": {
+              "kind": "statement"
+            },
+            "span": {
+              "file": "examples/layers/return_policy.fsl",
+              "line": 10,
+              "column": 5,
+              "end_line": 10,
+              "end_column": 15
+            },
+            "target": {
+              "kind": "index",
+              "type": {
+                "kind": "named",
+                "name": "ReturnStage"
+              },
+              "span": {
+                "file": "examples/layers/return_policy.fsl",
+                "line": 10,
+                "column": 5,
+                "end_line": 10,
+                "end_column": 15
+              },
+              "name": "return_stage",
+              "index": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "Return"
+                },
+                "span": {
+                  "file": "examples/layers/return_policy.fsl",
+                  "line": 10,
+                  "column": 5,
+                  "end_line": 10,
+                  "end_column": 15
+                },
+                "name": "c"
+              }
+            },
+            "value": {
+              "kind": "var",
+              "type": {
+                "kind": "named",
+                "name": "ReturnStage"
+              },
+              "span": {
+                "file": "examples/layers/return_policy.fsl",
+                "line": 10,
+                "column": 5,
+                "end_line": 10,
+                "end_column": 15
+              },
+              "name": "Refunded"
+            }
+          }
+        ],
+        "update_semantics": "simultaneous",
+        "ensures": [],
+        "partial_operations": [],
+        "requirement": {
+          "id": "refund",
+          "text": "by Manager"
+        },
+        "origin": {
+          "dialect": "business",
+          "declaration": "refund",
+          "lowered": true,
+          "generated": false
+        },
+        "span": {
+          "file": "examples/layers/return_policy.fsl",
+          "line": 10,
+          "column": 5,
+          "end_line": 10,
+          "end_column": 15
+        }
+      },
+      {
+        "name": "reject",
+        "parameters": [
+          {
+            "name": "c",
+            "type": {
+              "kind": "named",
+              "name": "Return"
+            },
+            "finite_domain": {
+              "lo": 0,
+              "hi": 2
+            }
+          }
+        ],
+        "fair": true,
+        "guards": [
+          {
+            "kind": "requires",
+            "expression": {
+              "kind": "binary",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/layers/return_policy.fsl",
+                "line": 9,
+                "column": 5,
+                "end_line": 9,
+                "end_column": 15
+              },
+              "operator": "==",
+              "left": {
+                "kind": "index",
+                "type": {
+                  "kind": "named",
+                  "name": "ReturnStage"
+                },
+                "span": {
+                  "file": "examples/layers/return_policy.fsl",
+                  "line": 9,
+                  "column": 5,
+                  "end_line": 9,
+                  "end_column": 15
+                },
+                "collection": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "map",
+                    "key": {
+                      "kind": "named",
+                      "name": "Return"
+                    },
+                    "value": {
+                      "kind": "named",
+                      "name": "ReturnStage"
+                    }
+                  },
+                  "span": {
+                    "file": "examples/layers/return_policy.fsl",
+                    "line": 9,
+                    "column": 5,
+                    "end_line": 9,
+                    "end_column": 15
+                  },
+                  "name": "return_stage"
+                },
+                "index": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "named",
+                    "name": "Return"
+                  },
+                  "span": {
+                    "file": "examples/layers/return_policy.fsl",
+                    "line": 9,
+                    "column": 5,
+                    "end_line": 9,
+                    "end_column": 15
+                  },
+                  "name": "c"
+                }
+              },
+              "right": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "ReturnStage"
+                },
+                "span": {
+                  "file": "examples/layers/return_policy.fsl",
+                  "line": 9,
+                  "column": 5,
+                  "end_line": 9,
+                  "end_column": 15
+                },
+                "name": "Requested"
+              }
+            }
+          }
+        ],
+        "requires": [
+          {
+            "kind": "binary",
+            "type": {
+              "kind": "bool"
+            },
+            "span": {
+              "file": "examples/layers/return_policy.fsl",
+              "line": 9,
+              "column": 5,
+              "end_line": 9,
+              "end_column": 15
+            },
+            "operator": "==",
+            "left": {
+              "kind": "index",
+              "type": {
+                "kind": "named",
+                "name": "ReturnStage"
+              },
+              "span": {
+                "file": "examples/layers/return_policy.fsl",
+                "line": 9,
+                "column": 5,
+                "end_line": 9,
+                "end_column": 15
+              },
+              "collection": {
+                "kind": "var",
+                "type": {
+                  "kind": "map",
+                  "key": {
+                    "kind": "named",
+                    "name": "Return"
+                  },
+                  "value": {
+                    "kind": "named",
+                    "name": "ReturnStage"
+                  }
+                },
+                "span": {
+                  "file": "examples/layers/return_policy.fsl",
+                  "line": 9,
+                  "column": 5,
+                  "end_line": 9,
+                  "end_column": 15
+                },
+                "name": "return_stage"
+              },
+              "index": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "Return"
+                },
+                "span": {
+                  "file": "examples/layers/return_policy.fsl",
+                  "line": 9,
+                  "column": 5,
+                  "end_line": 9,
+                  "end_column": 15
+                },
+                "name": "c"
+              }
+            },
+            "right": {
+              "kind": "var",
+              "type": {
+                "kind": "named",
+                "name": "ReturnStage"
+              },
+              "span": {
+                "file": "examples/layers/return_policy.fsl",
+                "line": 9,
+                "column": 5,
+                "end_line": 9,
+                "end_column": 15
+              },
+              "name": "Requested"
+            }
+          }
+        ],
+        "lets": [],
+        "updates": [
+          {
+            "kind": "assign",
+            "type": {
+              "kind": "statement"
+            },
+            "span": {
+              "file": "examples/layers/return_policy.fsl",
+              "line": 9,
+              "column": 5,
+              "end_line": 9,
+              "end_column": 15
+            },
+            "target": {
+              "kind": "index",
+              "type": {
+                "kind": "named",
+                "name": "ReturnStage"
+              },
+              "span": {
+                "file": "examples/layers/return_policy.fsl",
+                "line": 9,
+                "column": 5,
+                "end_line": 9,
+                "end_column": 15
+              },
+              "name": "return_stage",
+              "index": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "Return"
+                },
+                "span": {
+                  "file": "examples/layers/return_policy.fsl",
+                  "line": 9,
+                  "column": 5,
+                  "end_line": 9,
+                  "end_column": 15
+                },
+                "name": "c"
+              }
+            },
+            "value": {
+              "kind": "var",
+              "type": {
+                "kind": "named",
+                "name": "ReturnStage"
+              },
+              "span": {
+                "file": "examples/layers/return_policy.fsl",
+                "line": 9,
+                "column": 5,
+                "end_line": 9,
+                "end_column": 15
+              },
+              "name": "Rejected"
+            }
+          }
+        ],
+        "update_semantics": "simultaneous",
+        "ensures": [],
+        "partial_operations": [],
+        "requirement": {
+          "id": "reject",
+          "text": "by Manager"
+        },
+        "origin": {
+          "dialect": "business",
+          "declaration": "reject",
+          "lowered": true,
+          "generated": false
+        },
+        "span": {
+          "file": "examples/layers/return_policy.fsl",
+          "line": 9,
+          "column": 5,
+          "end_line": 9,
+          "end_column": 15
+        }
+      }
+    ],
+    "properties": {
+      "invariants": [],
+      "transitions": [],
+      "reachables": [
+        {
+          "name": "GOAL-RETURN-001",
+          "source_kind": "reachable",
+          "expression": {
+            "kind": "forall",
+            "type": {
+              "kind": "bool"
+            },
+            "span": {
+              "file": "examples/layers/return_policy.fsl",
+              "line": 17,
+              "column": 3,
+              "end_line": 17,
+              "end_column": 7
+            },
+            "quantifier": "forall",
+            "binder": {
+              "name": "c",
+              "type": {
+                "kind": "named",
+                "name": "Return"
+              },
+              "kind": "typed"
+            },
+            "body": {
+              "kind": "binary",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/layers/return_policy.fsl",
+                "line": 17,
+                "column": 3,
+                "end_line": 17,
+                "end_column": 7
+              },
+              "operator": "or",
+              "left": {
+                "kind": "binary",
+                "type": {
+                  "kind": "bool"
+                },
+                "span": {
+                  "file": "examples/layers/return_policy.fsl",
+                  "line": 17,
+                  "column": 3,
+                  "end_line": 17,
+                  "end_column": 7
+                },
+                "operator": "==",
+                "left": {
+                  "kind": "index",
+                  "type": {
+                    "kind": "named",
+                    "name": "ReturnStage"
+                  },
+                  "span": {
+                    "file": "examples/layers/return_policy.fsl",
+                    "line": 17,
+                    "column": 3,
+                    "end_line": 17,
+                    "end_column": 7
+                  },
+                  "collection": {
+                    "kind": "var",
+                    "type": {
+                      "kind": "map",
+                      "key": {
+                        "kind": "named",
+                        "name": "Return"
+                      },
+                      "value": {
+                        "kind": "named",
+                        "name": "ReturnStage"
+                      }
+                    },
+                    "span": {
+                      "file": "examples/layers/return_policy.fsl",
+                      "line": 17,
+                      "column": 3,
+                      "end_line": 17,
+                      "end_column": 7
+                    },
+                    "name": "return_stage"
+                  },
+                  "index": {
+                    "kind": "var",
+                    "type": {
+                      "kind": "named",
+                      "name": "Return"
+                    },
+                    "span": {
+                      "file": "examples/layers/return_policy.fsl",
+                      "line": 17,
+                      "column": 3,
+                      "end_line": 17,
+                      "end_column": 7
+                    },
+                    "name": "c"
+                  }
+                },
+                "right": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "named",
+                    "name": "ReturnStage"
+                  },
+                  "span": {
+                    "file": "examples/layers/return_policy.fsl",
+                    "line": 17,
+                    "column": 3,
+                    "end_line": 17,
+                    "end_column": 7
+                  },
+                  "name": "Refunded"
+                }
+              },
+              "right": {
+                "kind": "binary",
+                "type": {
+                  "kind": "bool"
+                },
+                "span": {
+                  "file": "examples/layers/return_policy.fsl",
+                  "line": 17,
+                  "column": 3,
+                  "end_line": 17,
+                  "end_column": 7
+                },
+                "operator": "==",
+                "left": {
+                  "kind": "index",
+                  "type": {
+                    "kind": "named",
+                    "name": "ReturnStage"
+                  },
+                  "span": {
+                    "file": "examples/layers/return_policy.fsl",
+                    "line": 17,
+                    "column": 3,
+                    "end_line": 17,
+                    "end_column": 7
+                  },
+                  "collection": {
+                    "kind": "var",
+                    "type": {
+                      "kind": "map",
+                      "key": {
+                        "kind": "named",
+                        "name": "Return"
+                      },
+                      "value": {
+                        "kind": "named",
+                        "name": "ReturnStage"
+                      }
+                    },
+                    "span": {
+                      "file": "examples/layers/return_policy.fsl",
+                      "line": 17,
+                      "column": 3,
+                      "end_line": 17,
+                      "end_column": 7
+                    },
+                    "name": "return_stage"
+                  },
+                  "index": {
+                    "kind": "var",
+                    "type": {
+                      "kind": "named",
+                      "name": "Return"
+                    },
+                    "span": {
+                      "file": "examples/layers/return_policy.fsl",
+                      "line": 17,
+                      "column": 3,
+                      "end_line": 17,
+                      "end_column": 7
+                    },
+                    "name": "c"
+                  }
+                },
+                "right": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "named",
+                    "name": "ReturnStage"
+                  },
+                  "span": {
+                    "file": "examples/layers/return_policy.fsl",
+                    "line": 17,
+                    "column": 3,
+                    "end_line": 17,
+                    "end_column": 7
+                  },
+                  "name": "Rejected"
+                }
+              }
+            }
+          },
+          "requirement": {
+            "id": "GOAL-RETURN-001",
+            "text": "All cases can be completed"
+          },
+          "origin": {
+            "dialect": "business",
+            "declaration": "GOAL-RETURN-001",
+            "lowered": true,
+            "generated": false
+          },
+          "span": {
+            "file": "examples/layers/return_policy.fsl",
+            "line": 17,
+            "column": 3,
+            "end_line": 17,
+            "end_column": 7
+          }
+        }
+      ],
+      "leads_to": [
+        {
+          "name": "POL-RETURN-002",
+          "source_kind": "leadsto",
+          "binders": [
+            {
+              "name": "c",
+              "type": {
+                "kind": "named",
+                "name": "Return"
+              },
+              "kind": "typed"
+            }
+          ],
+          "before": {
+            "kind": "binary",
+            "type": {
+              "kind": "bool"
+            },
+            "span": {
+              "file": "examples/layers/return_policy.fsl",
+              "line": 15,
+              "column": 3,
+              "end_line": 15,
+              "end_column": 9
+            },
+            "operator": "==",
+            "left": {
+              "kind": "index",
+              "type": {
+                "kind": "named",
+                "name": "ReturnStage"
+              },
+              "span": {
+                "file": "examples/layers/return_policy.fsl",
+                "line": 15,
+                "column": 3,
+                "end_line": 15,
+                "end_column": 9
+              },
+              "collection": {
+                "kind": "var",
+                "type": {
+                  "kind": "map",
+                  "key": {
+                    "kind": "named",
+                    "name": "Return"
+                  },
+                  "value": {
+                    "kind": "named",
+                    "name": "ReturnStage"
+                  }
+                },
+                "span": {
+                  "file": "examples/layers/return_policy.fsl",
+                  "line": 15,
+                  "column": 3,
+                  "end_line": 15,
+                  "end_column": 9
+                },
+                "name": "return_stage"
+              },
+              "index": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "Return"
+                },
+                "span": {
+                  "file": "examples/layers/return_policy.fsl",
+                  "line": 15,
+                  "column": 3,
+                  "end_line": 15,
+                  "end_column": 9
+                },
+                "name": "c"
+              }
+            },
+            "right": {
+              "kind": "var",
+              "type": {
+                "kind": "named",
+                "name": "ReturnStage"
+              },
+              "span": {
+                "file": "examples/layers/return_policy.fsl",
+                "line": 15,
+                "column": 3,
+                "end_line": 15,
+                "end_column": 9
+              },
+              "name": "Requested"
+            }
+          },
+          "after": {
+            "kind": "binary",
+            "type": {
+              "kind": "bool"
+            },
+            "span": {
+              "file": "examples/layers/return_policy.fsl",
+              "line": 15,
+              "column": 3,
+              "end_line": 15,
+              "end_column": 9
+            },
+            "operator": "or",
+            "left": {
+              "kind": "binary",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/layers/return_policy.fsl",
+                "line": 15,
+                "column": 3,
+                "end_line": 15,
+                "end_column": 9
+              },
+              "operator": "or",
+              "left": {
+                "kind": "binary",
+                "type": {
+                  "kind": "bool"
+                },
+                "span": {
+                  "file": "examples/layers/return_policy.fsl",
+                  "line": 15,
+                  "column": 3,
+                  "end_line": 15,
+                  "end_column": 9
+                },
+                "operator": "==",
+                "left": {
+                  "kind": "index",
+                  "type": {
+                    "kind": "named",
+                    "name": "ReturnStage"
+                  },
+                  "span": {
+                    "file": "examples/layers/return_policy.fsl",
+                    "line": 15,
+                    "column": 3,
+                    "end_line": 15,
+                    "end_column": 9
+                  },
+                  "collection": {
+                    "kind": "var",
+                    "type": {
+                      "kind": "map",
+                      "key": {
+                        "kind": "named",
+                        "name": "Return"
+                      },
+                      "value": {
+                        "kind": "named",
+                        "name": "ReturnStage"
+                      }
+                    },
+                    "span": {
+                      "file": "examples/layers/return_policy.fsl",
+                      "line": 15,
+                      "column": 3,
+                      "end_line": 15,
+                      "end_column": 9
+                    },
+                    "name": "return_stage"
+                  },
+                  "index": {
+                    "kind": "var",
+                    "type": {
+                      "kind": "named",
+                      "name": "Return"
+                    },
+                    "span": {
+                      "file": "examples/layers/return_policy.fsl",
+                      "line": 15,
+                      "column": 3,
+                      "end_line": 15,
+                      "end_column": 9
+                    },
+                    "name": "c"
+                  }
+                },
+                "right": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "named",
+                    "name": "ReturnStage"
+                  },
+                  "span": {
+                    "file": "examples/layers/return_policy.fsl",
+                    "line": 15,
+                    "column": 3,
+                    "end_line": 15,
+                    "end_column": 9
+                  },
+                  "name": "Approved"
+                }
+              },
+              "right": {
+                "kind": "binary",
+                "type": {
+                  "kind": "bool"
+                },
+                "span": {
+                  "file": "examples/layers/return_policy.fsl",
+                  "line": 15,
+                  "column": 3,
+                  "end_line": 15,
+                  "end_column": 9
+                },
+                "operator": "==",
+                "left": {
+                  "kind": "index",
+                  "type": {
+                    "kind": "named",
+                    "name": "ReturnStage"
+                  },
+                  "span": {
+                    "file": "examples/layers/return_policy.fsl",
+                    "line": 15,
+                    "column": 3,
+                    "end_line": 15,
+                    "end_column": 9
+                  },
+                  "collection": {
+                    "kind": "var",
+                    "type": {
+                      "kind": "map",
+                      "key": {
+                        "kind": "named",
+                        "name": "Return"
+                      },
+                      "value": {
+                        "kind": "named",
+                        "name": "ReturnStage"
+                      }
+                    },
+                    "span": {
+                      "file": "examples/layers/return_policy.fsl",
+                      "line": 15,
+                      "column": 3,
+                      "end_line": 15,
+                      "end_column": 9
+                    },
+                    "name": "return_stage"
+                  },
+                  "index": {
+                    "kind": "var",
+                    "type": {
+                      "kind": "named",
+                      "name": "Return"
+                    },
+                    "span": {
+                      "file": "examples/layers/return_policy.fsl",
+                      "line": 15,
+                      "column": 3,
+                      "end_line": 15,
+                      "end_column": 9
+                    },
+                    "name": "c"
+                  }
+                },
+                "right": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "named",
+                    "name": "ReturnStage"
+                  },
+                  "span": {
+                    "file": "examples/layers/return_policy.fsl",
+                    "line": 15,
+                    "column": 3,
+                    "end_line": 15,
+                    "end_column": 9
+                  },
+                  "name": "Rejected"
+                }
+              }
+            },
+            "right": {
+              "kind": "binary",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/layers/return_policy.fsl",
+                "line": 15,
+                "column": 3,
+                "end_line": 15,
+                "end_column": 9
+              },
+              "operator": "==",
+              "left": {
+                "kind": "index",
+                "type": {
+                  "kind": "named",
+                  "name": "ReturnStage"
+                },
+                "span": {
+                  "file": "examples/layers/return_policy.fsl",
+                  "line": 15,
+                  "column": 3,
+                  "end_line": 15,
+                  "end_column": 9
+                },
+                "collection": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "map",
+                    "key": {
+                      "kind": "named",
+                      "name": "Return"
+                    },
+                    "value": {
+                      "kind": "named",
+                      "name": "ReturnStage"
+                    }
+                  },
+                  "span": {
+                    "file": "examples/layers/return_policy.fsl",
+                    "line": 15,
+                    "column": 3,
+                    "end_line": 15,
+                    "end_column": 9
+                  },
+                  "name": "return_stage"
+                },
+                "index": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "named",
+                    "name": "Return"
+                  },
+                  "span": {
+                    "file": "examples/layers/return_policy.fsl",
+                    "line": 15,
+                    "column": 3,
+                    "end_line": 15,
+                    "end_column": 9
+                  },
+                  "name": "c"
+                }
+              },
+              "right": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "ReturnStage"
+                },
+                "span": {
+                  "file": "examples/layers/return_policy.fsl",
+                  "line": 15,
+                  "column": 3,
+                  "end_line": 15,
+                  "end_column": 9
+                },
+                "name": "Refunded"
+              }
+            }
+          },
+          "within": null,
+          "decreases": null,
+          "requirement": {
+            "id": "POL-RETURN-002",
+            "text": "Every request is eventually decided"
+          },
+          "origin": {
+            "dialect": "business",
+            "declaration": "POL-RETURN-002",
+            "lowered": true,
+            "generated": false
+          },
+          "span": {
+            "file": "examples/layers/return_policy.fsl",
+            "line": 15,
+            "column": 3,
+            "end_line": 15,
+            "end_column": 9
+          }
+        }
+      ],
+      "terminal": {
+        "source_kind": "terminal",
+        "expression": {
+          "kind": "forall",
+          "type": {
+            "kind": "bool"
+          },
+          "span": {
+            "file": "examples/layers/return_policy.fsl",
+            "line": 5,
+            "column": 3,
+            "end_line": 5,
+            "end_column": 10
+          },
+          "quantifier": "forall",
+          "binder": {
+            "name": "c",
+            "type": {
+              "kind": "named",
+              "name": "Return"
+            },
+            "kind": "typed"
+          },
+          "body": {
+            "kind": "binary",
+            "type": {
+              "kind": "bool"
+            },
+            "span": {
+              "file": "examples/layers/return_policy.fsl",
+              "line": 5,
+              "column": 3,
+              "end_line": 5,
+              "end_column": 10
+            },
+            "operator": "or",
+            "left": {
+              "kind": "binary",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/layers/return_policy.fsl",
+                "line": 5,
+                "column": 3,
+                "end_line": 5,
+                "end_column": 10
+              },
+              "operator": "==",
+              "left": {
+                "kind": "index",
+                "type": {
+                  "kind": "named",
+                  "name": "ReturnStage"
+                },
+                "span": {
+                  "file": "examples/layers/return_policy.fsl",
+                  "line": 5,
+                  "column": 3,
+                  "end_line": 5,
+                  "end_column": 10
+                },
+                "collection": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "map",
+                    "key": {
+                      "kind": "named",
+                      "name": "Return"
+                    },
+                    "value": {
+                      "kind": "named",
+                      "name": "ReturnStage"
+                    }
+                  },
+                  "span": {
+                    "file": "examples/layers/return_policy.fsl",
+                    "line": 5,
+                    "column": 3,
+                    "end_line": 5,
+                    "end_column": 10
+                  },
+                  "name": "return_stage"
+                },
+                "index": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "named",
+                    "name": "Return"
+                  },
+                  "span": {
+                    "file": "examples/layers/return_policy.fsl",
+                    "line": 5,
+                    "column": 3,
+                    "end_line": 5,
+                    "end_column": 10
+                  },
+                  "name": "c"
+                }
+              },
+              "right": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "ReturnStage"
+                },
+                "span": {
+                  "file": "examples/layers/return_policy.fsl",
+                  "line": 5,
+                  "column": 3,
+                  "end_line": 5,
+                  "end_column": 10
+                },
+                "name": "Rejected"
+              }
+            },
+            "right": {
+              "kind": "binary",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/layers/return_policy.fsl",
+                "line": 5,
+                "column": 3,
+                "end_line": 5,
+                "end_column": 10
+              },
+              "operator": "==",
+              "left": {
+                "kind": "index",
+                "type": {
+                  "kind": "named",
+                  "name": "ReturnStage"
+                },
+                "span": {
+                  "file": "examples/layers/return_policy.fsl",
+                  "line": 5,
+                  "column": 3,
+                  "end_line": 5,
+                  "end_column": 10
+                },
+                "collection": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "map",
+                    "key": {
+                      "kind": "named",
+                      "name": "Return"
+                    },
+                    "value": {
+                      "kind": "named",
+                      "name": "ReturnStage"
+                    }
+                  },
+                  "span": {
+                    "file": "examples/layers/return_policy.fsl",
+                    "line": 5,
+                    "column": 3,
+                    "end_line": 5,
+                    "end_column": 10
+                  },
+                  "name": "return_stage"
+                },
+                "index": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "named",
+                    "name": "Return"
+                  },
+                  "span": {
+                    "file": "examples/layers/return_policy.fsl",
+                    "line": 5,
+                    "column": 3,
+                    "end_line": 5,
+                    "end_column": 10
+                  },
+                  "name": "c"
+                }
+              },
+              "right": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "ReturnStage"
+                },
+                "span": {
+                  "file": "examples/layers/return_policy.fsl",
+                  "line": 5,
+                  "column": 3,
+                  "end_line": 5,
+                  "end_column": 10
+                },
+                "name": "Refunded"
+              }
+            }
+          }
+        },
+        "span": {
+          "file": "examples/layers/return_policy.fsl",
+          "line": 5,
+          "column": 3,
+          "end_line": 5,
+          "end_column": 10
+        }
+      }
+    }
+  },
+  "fsl": "1.0"
+}

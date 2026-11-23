@@ -1,0 +1,23 @@
+[workspace]
+members = ["crates/fsl-testgen-core", "crates/fsl-testgen"]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "Apache-2.0"
+rust-version = "1.88"
+repository = "https://github.com/ymm-oss/fsl-testgen"
+publish = false
+
+[workspace.dependencies]
+# `preserve_order` is part of reading `testgen-input.v1`: the order of object
+# members is part of that contract, and generators print them as given.
+# `float_roundtrip` keeps a number's spelling the same after a parse.
+serde_json = { version = "1.0", features = ["preserve_order", "float_roundtrip"] }
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+
+[workspace.lints.clippy]
+all = { level = "warn", priority = -1 }

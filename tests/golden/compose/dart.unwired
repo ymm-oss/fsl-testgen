@@ -1,0 +1,140 @@
+// SPDX-License-Identifier: Apache-2.0
+//
+// Auto-generated FSL conformance tests (package:test).
+// Source: bank_system.fsl
+//
+// Wire `makeAdapter()` to your implementation. Until it is wired every test is
+// skipped (a top-level probe sets `skip:` on each test), mirroring the other
+// targets' skip-when-unwired behaviour.
+//
+// The random-walk trace below was baked at generation time by the FSL Monitor
+// (the spec's concrete interpreter) under a fixed seed, so these tests need no
+// `fslc`/Python at runtime — they replay the baked oracle states and assert.
+import 'package:test/test.dart';
+
+class StepResult {
+  final bool ok;
+  final String? kind;
+  StepResult(this.ok, [this.kind]);
+}
+
+/// Connect your implementation to the spec actions/state.
+///  - reset(): put the implementation in the same initial state as spec `init`
+///  - step(action, params): drive one spec action; return a StepResult for
+///    forbidden-rejection scenarios (null is fine for ordinary steps)
+///  - observe(): project implementation state onto the spec's logical-state shape
+///    (enum = name string, Option = null|value, Seq = List, Map = Map with string
+///     keys, struct = Map)
+abstract class Adapter {
+  void reset();
+  StepResult? step(String action, Map<String, dynamic> params);
+  Map<String, dynamic> observe();
+}
+
+// Wire your implementation here. Return your adapter instead of throwing.
+Adapter makeAdapter() =>
+    throw UnimplementedError('wire your implementation: implement makeAdapter()');
+
+bool _adapterWired() {
+  try {
+    final a = makeAdapter();
+    a.reset();
+    a.observe();
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+
+// Assert only the fields the spec mentions; recurse into nested (Map/struct)
+// shapes. `equals` (from package:test's matcher) is deep on List/Map, so leaves
+// and sequences are compared structurally with the generated file depending only
+// on package:test.
+void assertPartial(Map<String, dynamic> observed, Map<String, dynamic> expected) {
+  expected.forEach((key, value) {
+    expect(observed.containsKey(key), isTrue, reason: 'missing state key $key');
+    final seen = observed[key];
+    if (value is Map && seen is Map) {
+      assertPartial(
+        Map<String, dynamic>.from(seen),
+        Map<String, dynamic>.from(value),
+      );
+    } else {
+      expect(seen, equals(value), reason: 'state $key');
+    }
+  });
+}
+
+void assertRejected(StepResult? result, String? expectedKind) {
+  expect(result, isNotNull, reason: 'forbidden step must return a StepResult');
+  expect(result!.ok, isFalse);
+  if (expectedKind != null) {
+    expect(result.kind, equals(expectedKind));
+  }
+}
+
+
+void main() {
+  final wired = _adapterWired();
+
+  test('scenario: cover_bank.settle', () {
+    final a = makeAdapter();
+    a.reset();
+    a.step('deposit_audited', {'a': 1});
+    assertPartial(a.observe(), {'bank.cleared': 0, 'bank.pending': 1, 'audit.balance': 1, 'audit.log': [1], 'withdrawn': 0});
+    a.step('bank.settle', <String, dynamic>{});
+    assertPartial(a.observe(), {'bank.cleared': 1, 'bank.pending': 0, 'audit.balance': 1, 'audit.log': [1], 'withdrawn': 0});
+  }, skip: wired ? null : 'Adapter not wired');
+
+  test('scenario: cover_deposit_audited', () {
+    final a = makeAdapter();
+    a.reset();
+    a.step('deposit_audited', {'a': 1});
+    assertPartial(a.observe(), {'bank.cleared': 0, 'bank.pending': 1, 'audit.balance': 1, 'audit.log': [1], 'withdrawn': 0});
+  }, skip: wired ? null : 'Adapter not wired');
+
+  test('scenario: cover_withdraw_audited', () {
+    final a = makeAdapter();
+    a.reset();
+    a.step('deposit_audited', {'a': 1});
+    assertPartial(a.observe(), {'bank.cleared': 0, 'bank.pending': 1, 'audit.balance': 1, 'audit.log': [1], 'withdrawn': 0});
+    a.step('bank.settle', <String, dynamic>{});
+    assertPartial(a.observe(), {'bank.cleared': 1, 'bank.pending': 0, 'audit.balance': 1, 'audit.log': [1], 'withdrawn': 0});
+    a.step('withdraw_audited', {'a': 1});
+    assertPartial(a.observe(), {'bank.cleared': 0, 'bank.pending': 0, 'audit.balance': 1, 'audit.log': [1], 'withdrawn': 1});
+  }, skip: wired ? null : 'Adapter not wired');
+
+  test('scenario: reach_bank.Settled', () {
+    final a = makeAdapter();
+    a.reset();
+    a.step('deposit_audited', {'a': 3});
+    assertPartial(a.observe(), {'bank.cleared': 0, 'bank.pending': 3, 'audit.balance': 3, 'audit.log': [3], 'withdrawn': 0});
+    a.step('bank.settle', <String, dynamic>{});
+    assertPartial(a.observe(), {'bank.cleared': 3, 'bank.pending': 0, 'audit.balance': 3, 'audit.log': [3], 'withdrawn': 0});
+  }, skip: wired ? null : 'Adapter not wired');
+
+  test('random-walk conformance (baked oracle trace)', () {
+    final a = makeAdapter();
+    a.reset();
+    final initial = {'withdrawn': 0, 'audit.balance': 0, 'audit.log': <dynamic>[], 'bank.cleared': 0, 'bank.pending': 0};
+    assertPartial(a.observe(), Map<String, dynamic>.from(initial));
+    final walk = <Map<String, dynamic>>[
+      {'action': 'deposit_audited', 'params': {'a': 2}, 'expected': {'withdrawn': 0, 'audit.balance': 2, 'audit.log': [2], 'bank.cleared': 0, 'bank.pending': 2}},
+      {'action': 'deposit_audited', 'params': {'a': 3}, 'expected': {'withdrawn': 0, 'audit.balance': 5, 'audit.log': [2, 3], 'bank.cleared': 0, 'bank.pending': 5}},
+      {'action': 'bank.settle', 'params': <String, dynamic>{}, 'expected': {'withdrawn': 0, 'audit.balance': 5, 'audit.log': [2, 3], 'bank.cleared': 5, 'bank.pending': 0}},
+      {'action': 'deposit_audited', 'params': {'a': 3}, 'expected': {'withdrawn': 0, 'audit.balance': 8, 'audit.log': [2, 3, 3], 'bank.cleared': 5, 'bank.pending': 3}},
+      {'action': 'withdraw_audited', 'params': {'a': 1}, 'expected': {'withdrawn': 1, 'audit.balance': 8, 'audit.log': [2, 3, 3], 'bank.cleared': 4, 'bank.pending': 3}},
+      {'action': 'deposit_audited', 'params': {'a': 3}, 'expected': {'withdrawn': 1, 'audit.balance': 11, 'audit.log': [2, 3, 3, 3], 'bank.cleared': 4, 'bank.pending': 6}},
+      {'action': 'withdraw_audited', 'params': {'a': 3}, 'expected': {'withdrawn': 4, 'audit.balance': 11, 'audit.log': [2, 3, 3, 3], 'bank.cleared': 1, 'bank.pending': 6}},
+      {'action': 'withdraw_audited', 'params': {'a': 1}, 'expected': {'withdrawn': 5, 'audit.balance': 11, 'audit.log': [2, 3, 3, 3], 'bank.cleared': 0, 'bank.pending': 6}},
+      {'action': 'bank.settle', 'params': <String, dynamic>{}, 'expected': {'withdrawn': 5, 'audit.balance': 11, 'audit.log': [2, 3, 3, 3], 'bank.cleared': 6, 'bank.pending': 0}},
+      {'action': 'withdraw_audited', 'params': {'a': 2}, 'expected': {'withdrawn': 7, 'audit.balance': 11, 'audit.log': [2, 3, 3, 3], 'bank.cleared': 4, 'bank.pending': 0}},
+      {'action': 'withdraw_audited', 'params': {'a': 3}, 'expected': {'withdrawn': 10, 'audit.balance': 11, 'audit.log': [2, 3, 3, 3], 'bank.cleared': 1, 'bank.pending': 0}},
+      {'action': 'withdraw_audited', 'params': {'a': 1}, 'expected': {'withdrawn': 11, 'audit.balance': 11, 'audit.log': [2, 3, 3, 3], 'bank.cleared': 0, 'bank.pending': 0}},
+    ];
+    for (final step in walk) {
+      a.step(step['action'] as String, step['params'] as Map<String, dynamic>);
+      assertPartial(a.observe(), step['expected'] as Map<String, dynamic>);
+    }
+  }, skip: wired ? null : 'Adapter not wired');
+}

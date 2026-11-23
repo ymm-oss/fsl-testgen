@@ -1,0 +1,156 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fsl.dev/schemas/fslc/kernel/testgen-input.v1.schema.json",
+  "title": "FSL test-generator input v1",
+  "description": "Everything a test generator reads, in one document written from one read of the root source and one checked model. `fslc testgen-input` emits it only after the gate of `fslc testgen` has passed (bounded verification and scenarios, the refinement fold, and a violation-free conformance walk), under the options recorded in `gate`. The order of object members is part of the document: generators print state objects, parameter objects and scenarios in the order given, so a reader must preserve it.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schema_version",
+    "kernel_schema_version",
+    "result",
+    "fslc_version",
+    "spec",
+    "source",
+    "dialect",
+    "gate",
+    "state",
+    "actions",
+    "scenarios",
+    "walk",
+    "kernel"
+  ],
+  "properties": {
+    "$schema": {
+      "const": "https://fsl.dev/schemas/fslc/kernel/testgen-input.v1.schema.json"
+    },
+    "schema_version": { "const": "1.0.0" },
+    "kernel_schema_version": { "const": "1.0.0" },
+    "fsl": { "const": "1.0" },
+    "result": { "const": "testgen_input" },
+    "fslc_version": {
+      "description": "Version of the fslc that passed the gate and wrote this document.",
+      "type": "string",
+      "minLength": 1
+    },
+    "spec": {
+      "description": "Name of the checked specification. `walk.spec` and, when `kernel` is not null, `kernel.spec.name` are the same name.",
+      "type": "string",
+      "minLength": 1
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "digest"],
+      "properties": {
+        "name": {
+          "description": "File name of the root source, without its directory and unescaped. A generator that prints it into a header escapes it for that header itself.",
+          "type": "string",
+          "minLength": 1
+        },
+        "digest": {
+          "description": "SHA-256 over the bytes of the root source file as the command read it, once. It covers the root file only: files the root imports, and the component files a compose root names, are read separately while the model is built and are not covered, so two documents with equal digests can still differ when such a file changed.",
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        }
+      }
+    },
+    "dialect": {
+      "description": "Source dialect of the root, as `fslc kernel` records it in `spec.source.dialect`; `compose` for a compose root.",
+      "type": "string",
+      "minLength": 1
+    },
+    "gate": {
+      "description": "The options under which the gate passed.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["depth", "deadlock", "strict"],
+      "properties": {
+        "depth": { "type": "integer", "minimum": 0 },
+        "deadlock": { "enum": ["warn", "error", "ignore"] },
+        "strict": { "type": "boolean" }
+      }
+    },
+    "state": {
+      "description": "Public state field names, in the order the state objects of `scenarios` are keyed. The state objects of `walk` keep the order the walk produced them in, which is this order except for a compose root.",
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "actions": {
+      "description": "Public action names with their parameter names, in declaration order: the order `scenarios` is sorted by and the order the parameter objects of its steps are keyed.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "params"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "params": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    },
+    "scenarios": {
+      "description": "The scenarios, normalized: sorted by the position of their `action` in `actions` (scenarios without one last, otherwise in the order `fslc scenarios` gives), state objects keyed in `state` order and step parameters in the action's `params` order. Generators print them in the order given.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/scenario" }
+    },
+    "walk": {
+      "$ref": "https://fsl.dev/schemas/fslc/kernel/testgen-trace.v1.schema.json"
+    },
+    "kernel": {
+      "description": "The Public Kernel v1 document of the same checked model, or null for a compose root, which Public Kernel v1 does not export.",
+      "oneOf": [
+        { "type": "null" },
+        {
+          "$ref": "https://fsl.dev/schemas/fslc/kernel/kernel.v1.schema.json"
+        }
+      ]
+    },
+    "test_plan": {
+      "description": "The test-plan.v1 document of the same checked model. Present only when requested with --with-test-plan or --test-plan-depth.",
+      "$ref": "https://fsl.dev/schemas/fslc/kernel/test-plan.v1.schema.json"
+    }
+  },
+  "if": {
+    "required": ["dialect"],
+    "properties": { "dialect": { "const": "compose" } }
+  },
+  "then": { "properties": { "kernel": { "type": "null" } } },
+  "else": { "properties": { "kernel": { "type": "object" } } },
+  "$defs": {
+    "state": { "type": "object" },
+    "step": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["action", "params"],
+      "properties": {
+        "action": { "type": "string", "minLength": 1 },
+        "params": { "type": "object" }
+      }
+    },
+    "scenario": {
+      "description": "One scenario of `fslc scenarios`. The properties listed here are the ones generators read; the object is extensible and carries the further descriptive fields `fslc scenarios` attaches (for example `property`, `bindings`, `requirement`). `steps` and `expected_states` have equal lengths, `initial_state` names every field of `state`, and an expected state names a subset of them.",
+      "type": "object",
+      "required": ["name", "initial_state", "steps", "expected_states"],
+      "properties": {
+        "name": { "type": "string" },
+        "kind": { "type": "string" },
+        "action": { "type": "string" },
+        "initial_state": { "$ref": "#/$defs/state" },
+        "steps": { "type": "array", "items": { "$ref": "#/$defs/step" } },
+        "expected_states": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/state" }
+        },
+        "forbidden_step": { "$ref": "#/$defs/step" },
+        "rejected_by": { "type": ["string", "null"] }
+      }
+    }
+  }
+}

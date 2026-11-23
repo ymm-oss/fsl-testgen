@@ -1,0 +1,1279 @@
+{
+  "$schema": "https://fsl.dev/schemas/fslc/kernel/testgen-input.v1.schema.json",
+  "schema_version": "1.0.0",
+  "kernel_schema_version": "1.0.0",
+  "result": "testgen_input",
+  "fslc_version": "5.2.0",
+  "spec": "ForbiddenGuardedCancel",
+  "source": {
+    "name": "small_forbidden_guarded_cancel.fsl",
+    "digest": "sha256:27d9dae252277620ef424854e87a9f308a4a62dfc7dbdc58149695de7a954bab"
+  },
+  "dialect": "requirements",
+  "gate": {
+    "depth": 3,
+    "deadlock": "warn",
+    "strict": false
+  },
+  "state": [
+    "order"
+  ],
+  "actions": [
+    {
+      "name": "pay",
+      "params": [
+        "o"
+      ]
+    },
+    {
+      "name": "ship",
+      "params": [
+        "o"
+      ]
+    },
+    {
+      "name": "cancel",
+      "params": [
+        "o"
+      ]
+    }
+  ],
+  "scenarios": [
+    {
+      "steps": [
+        {
+          "action": "pay",
+          "params": {
+            "o": 0
+          }
+        }
+      ],
+      "initial_state": {
+        "order": {
+          "0": "Cart",
+          "1": "Cart"
+        }
+      },
+      "expected_states": [
+        {
+          "order": {
+            "0": "Paid",
+            "1": "Cart"
+          }
+        }
+      ],
+      "name": "cover_pay",
+      "kind": "action_coverage",
+      "action": "pay",
+      "requirement": {
+        "id": "REQ-1",
+        "text": "Order lifecycle"
+      },
+      "requirements": [
+        {
+          "id": "REQ-1",
+          "text": "Order lifecycle"
+        }
+      ]
+    },
+    {
+      "steps": [
+        {
+          "action": "pay",
+          "params": {
+            "o": 0
+          }
+        },
+        {
+          "action": "ship",
+          "params": {
+            "o": 0
+          }
+        }
+      ],
+      "initial_state": {
+        "order": {
+          "0": "Cart",
+          "1": "Cart"
+        }
+      },
+      "expected_states": [
+        {
+          "order": {
+            "0": "Paid",
+            "1": "Cart"
+          }
+        },
+        {
+          "order": {
+            "0": "Shipped",
+            "1": "Cart"
+          }
+        }
+      ],
+      "name": "cover_ship",
+      "kind": "action_coverage",
+      "action": "ship",
+      "requirement": {
+        "id": "REQ-1",
+        "text": "Order lifecycle"
+      },
+      "requirements": [
+        {
+          "id": "REQ-1",
+          "text": "Order lifecycle"
+        }
+      ]
+    },
+    {
+      "steps": [
+        {
+          "action": "pay",
+          "params": {
+            "o": 0
+          }
+        },
+        {
+          "action": "cancel",
+          "params": {
+            "o": 0
+          }
+        }
+      ],
+      "initial_state": {
+        "order": {
+          "0": "Cart",
+          "1": "Cart"
+        }
+      },
+      "expected_states": [
+        {
+          "order": {
+            "0": "Paid",
+            "1": "Cart"
+          }
+        },
+        {
+          "order": {
+            "0": "Cancelled",
+            "1": "Cart"
+          }
+        }
+      ],
+      "name": "cover_cancel",
+      "kind": "action_coverage",
+      "action": "cancel",
+      "requirement": {
+        "id": "REQ-1",
+        "text": "Order lifecycle"
+      },
+      "requirements": [
+        {
+          "id": "REQ-1",
+          "text": "Order lifecycle"
+        }
+      ]
+    },
+    {
+      "name": "forbidden_FB-1",
+      "kind": "forbidden",
+      "forbidden": "FB-1",
+      "requirement": {
+        "id": "FB-1",
+        "text": "Cancellation after shipping is rejected"
+      },
+      "steps": [
+        {
+          "action": "pay",
+          "params": {
+            "o": 0
+          }
+        },
+        {
+          "action": "ship",
+          "params": {
+            "o": 0
+          }
+        }
+      ],
+      "initial_state": {
+        "order": {
+          "0": "Cart",
+          "1": "Cart"
+        }
+      },
+      "expected_states": [
+        {
+          "order": {
+            "0": "Paid",
+            "1": "Cart"
+          }
+        },
+        {
+          "order": {
+            "0": "Shipped",
+            "1": "Cart"
+          }
+        }
+      ],
+      "forbidden_step": {
+        "action": "cancel",
+        "params": {
+          "o": 0
+        }
+      },
+      "rejected_by": "requires_failed"
+    }
+  ],
+  "walk": {
+    "$schema": "https://fsl.dev/schemas/fslc/kernel/testgen-trace.v1.schema.json",
+    "schema_version": "1.0.0",
+    "kernel_schema_version": "1.0.0",
+    "result": "testgen_trace",
+    "spec": "ForbiddenGuardedCancel",
+    "initial": {
+      "order": {
+        "0": "Cart",
+        "1": "Cart"
+      }
+    },
+    "steps": [
+      {
+        "action": "pay",
+        "params": {
+          "o": 1
+        },
+        "expected": {
+          "order": {
+            "0": "Cart",
+            "1": "Paid"
+          }
+        }
+      },
+      {
+        "action": "ship",
+        "params": {
+          "o": 1
+        },
+        "expected": {
+          "order": {
+            "0": "Cart",
+            "1": "Shipped"
+          }
+        }
+      },
+      {
+        "action": "pay",
+        "params": {
+          "o": 0
+        },
+        "expected": {
+          "order": {
+            "0": "Paid",
+            "1": "Shipped"
+          }
+        }
+      },
+      {
+        "action": "cancel",
+        "params": {
+          "o": 0
+        },
+        "expected": {
+          "order": {
+            "0": "Cancelled",
+            "1": "Shipped"
+          }
+        }
+      }
+    ]
+  },
+  "kernel": {
+    "$schema": "https://fsl.dev/schemas/fslc/kernel/kernel.v1.schema.json",
+    "schema_version": "1.0.0",
+    "language_version": "1.0",
+    "spec": {
+      "name": "ForbiddenGuardedCancel",
+      "source": {
+        "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+        "dialect": "requirements"
+      }
+    },
+    "semantics": {
+      "assignment": "simultaneous",
+      "reads": "pre_state",
+      "requires_false": "not_enabled",
+      "failure_state": "rollback",
+      "old": "pre_state",
+      "integer_division": "euclidean",
+      "terminal_deadlock": "terminal_states_excluded",
+      "fairness": "weak"
+    },
+    "constants": [],
+    "types": [
+      {
+        "name": "OSt",
+        "span": null,
+        "symmetric": false,
+        "definition": {
+          "kind": "enum",
+          "members": [
+            "Cart",
+            "Paid",
+            "Shipped",
+            "Cancelled"
+          ]
+        },
+        "origin": {
+          "dialect": "requirements",
+          "declaration": "OSt",
+          "lowered": true,
+          "generated": false
+        }
+      },
+      {
+        "name": "OrderId",
+        "span": null,
+        "symmetric": false,
+        "definition": {
+          "kind": "domain",
+          "lo": 0,
+          "hi": 1
+        },
+        "origin": {
+          "dialect": "requirements",
+          "declaration": "OrderId",
+          "lowered": true,
+          "generated": false
+        }
+      }
+    ],
+    "state": [
+      {
+        "name": "order",
+        "type": {
+          "kind": "map",
+          "key": {
+            "kind": "named",
+            "name": "OrderId"
+          },
+          "value": {
+            "kind": "named",
+            "name": "OSt"
+          }
+        },
+        "span": null,
+        "origin": {
+          "dialect": "requirements",
+          "declaration": "order",
+          "lowered": true,
+          "generated": false
+        }
+      }
+    ],
+    "init": {
+      "statements": [
+        {
+          "kind": "forall",
+          "type": {
+            "kind": "statement"
+          },
+          "span": {
+            "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+            "line": 11,
+            "column": 10,
+            "end_line": 11,
+            "end_column": 16
+          },
+          "binder": {
+            "name": "o",
+            "type": {
+              "kind": "named",
+              "name": "OrderId"
+            },
+            "kind": "typed"
+          },
+          "statements": [
+            {
+              "kind": "assign",
+              "type": {
+                "kind": "statement"
+              },
+              "span": {
+                "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+                "line": 11,
+                "column": 30,
+                "end_line": 11,
+                "end_column": 35
+              },
+              "target": {
+                "kind": "index",
+                "type": {
+                  "kind": "named",
+                  "name": "OSt"
+                },
+                "span": {
+                  "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+                  "line": 11,
+                  "column": 30,
+                  "end_line": 11,
+                  "end_column": 35
+                },
+                "name": "order",
+                "index": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "named",
+                    "name": "OrderId"
+                  },
+                  "span": {
+                    "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+                    "line": 11,
+                    "column": 30,
+                    "end_line": 11,
+                    "end_column": 35
+                  },
+                  "name": "o"
+                }
+              },
+              "value": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "OSt"
+                },
+                "span": {
+                  "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+                  "line": 11,
+                  "column": 30,
+                  "end_line": 11,
+                  "end_column": 35
+                },
+                "name": "Cart"
+              }
+            }
+          ]
+        }
+      ],
+      "requirement": null,
+      "origin": {
+        "dialect": "requirements",
+        "declaration": "init",
+        "lowered": true,
+        "generated": false
+      },
+      "span": {
+        "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+        "line": 11,
+        "column": 10,
+        "end_line": 11,
+        "end_column": 16
+      }
+    },
+    "actions": [
+      {
+        "name": "cancel",
+        "parameters": [
+          {
+            "name": "o",
+            "type": {
+              "kind": "named",
+              "name": "OrderId"
+            },
+            "finite_domain": {
+              "lo": 0,
+              "hi": 1
+            }
+          }
+        ],
+        "fair": false,
+        "guards": [
+          {
+            "kind": "requires",
+            "expression": {
+              "kind": "binary",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+                "line": 16,
+                "column": 33,
+                "end_line": 16,
+                "end_column": 41
+              },
+              "operator": "==",
+              "left": {
+                "kind": "index",
+                "type": {
+                  "kind": "named",
+                  "name": "OSt"
+                },
+                "span": {
+                  "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+                  "line": 16,
+                  "column": 33,
+                  "end_line": 16,
+                  "end_column": 41
+                },
+                "collection": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "map",
+                    "key": {
+                      "kind": "named",
+                      "name": "OrderId"
+                    },
+                    "value": {
+                      "kind": "named",
+                      "name": "OSt"
+                    }
+                  },
+                  "span": {
+                    "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+                    "line": 16,
+                    "column": 33,
+                    "end_line": 16,
+                    "end_column": 41
+                  },
+                  "name": "order"
+                },
+                "index": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "named",
+                    "name": "OrderId"
+                  },
+                  "span": {
+                    "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+                    "line": 16,
+                    "column": 33,
+                    "end_line": 16,
+                    "end_column": 41
+                  },
+                  "name": "o"
+                }
+              },
+              "right": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "OSt"
+                },
+                "span": {
+                  "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+                  "line": 16,
+                  "column": 33,
+                  "end_line": 16,
+                  "end_column": 41
+                },
+                "name": "Paid"
+              }
+            }
+          }
+        ],
+        "requires": [
+          {
+            "kind": "binary",
+            "type": {
+              "kind": "bool"
+            },
+            "span": {
+              "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+              "line": 16,
+              "column": 33,
+              "end_line": 16,
+              "end_column": 41
+            },
+            "operator": "==",
+            "left": {
+              "kind": "index",
+              "type": {
+                "kind": "named",
+                "name": "OSt"
+              },
+              "span": {
+                "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+                "line": 16,
+                "column": 33,
+                "end_line": 16,
+                "end_column": 41
+              },
+              "collection": {
+                "kind": "var",
+                "type": {
+                  "kind": "map",
+                  "key": {
+                    "kind": "named",
+                    "name": "OrderId"
+                  },
+                  "value": {
+                    "kind": "named",
+                    "name": "OSt"
+                  }
+                },
+                "span": {
+                  "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+                  "line": 16,
+                  "column": 33,
+                  "end_line": 16,
+                  "end_column": 41
+                },
+                "name": "order"
+              },
+              "index": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "OrderId"
+                },
+                "span": {
+                  "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+                  "line": 16,
+                  "column": 33,
+                  "end_line": 16,
+                  "end_column": 41
+                },
+                "name": "o"
+              }
+            },
+            "right": {
+              "kind": "var",
+              "type": {
+                "kind": "named",
+                "name": "OSt"
+              },
+              "span": {
+                "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+                "line": 16,
+                "column": 33,
+                "end_line": 16,
+                "end_column": 41
+              },
+              "name": "Paid"
+            }
+          }
+        ],
+        "lets": [],
+        "updates": [
+          {
+            "kind": "assign",
+            "type": {
+              "kind": "statement"
+            },
+            "span": {
+              "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+              "line": 16,
+              "column": 60,
+              "end_line": 16,
+              "end_column": 65
+            },
+            "target": {
+              "kind": "index",
+              "type": {
+                "kind": "named",
+                "name": "OSt"
+              },
+              "span": {
+                "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+                "line": 16,
+                "column": 60,
+                "end_line": 16,
+                "end_column": 65
+              },
+              "name": "order",
+              "index": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "OrderId"
+                },
+                "span": {
+                  "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+                  "line": 16,
+                  "column": 60,
+                  "end_line": 16,
+                  "end_column": 65
+                },
+                "name": "o"
+              }
+            },
+            "value": {
+              "kind": "var",
+              "type": {
+                "kind": "named",
+                "name": "OSt"
+              },
+              "span": {
+                "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+                "line": 16,
+                "column": 60,
+                "end_line": 16,
+                "end_column": 65
+              },
+              "name": "Cancelled"
+            }
+          }
+        ],
+        "update_semantics": "simultaneous",
+        "ensures": [],
+        "partial_operations": [],
+        "requirement": {
+          "id": "REQ-1",
+          "text": "Order lifecycle"
+        },
+        "origin": {
+          "dialect": "requirements",
+          "declaration": "REQ-1",
+          "lowered": true,
+          "generated": false
+        },
+        "span": {
+          "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+          "line": 16,
+          "column": 5,
+          "end_line": 16,
+          "end_column": 11
+        }
+      },
+      {
+        "name": "pay",
+        "parameters": [
+          {
+            "name": "o",
+            "type": {
+              "kind": "named",
+              "name": "OrderId"
+            },
+            "finite_domain": {
+              "lo": 0,
+              "hi": 1
+            }
+          }
+        ],
+        "fair": false,
+        "guards": [
+          {
+            "kind": "requires",
+            "expression": {
+              "kind": "binary",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+                "line": 14,
+                "column": 33,
+                "end_line": 14,
+                "end_column": 41
+              },
+              "operator": "==",
+              "left": {
+                "kind": "index",
+                "type": {
+                  "kind": "named",
+                  "name": "OSt"
+                },
+                "span": {
+                  "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+                  "line": 14,
+                  "column": 33,
+                  "end_line": 14,
+                  "end_column": 41
+                },
+                "collection": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "map",
+                    "key": {
+                      "kind": "named",
+                      "name": "OrderId"
+                    },
+                    "value": {
+                      "kind": "named",
+                      "name": "OSt"
+                    }
+                  },
+                  "span": {
+                    "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+                    "line": 14,
+                    "column": 33,
+                    "end_line": 14,
+                    "end_column": 41
+                  },
+                  "name": "order"
+                },
+                "index": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "named",
+                    "name": "OrderId"
+                  },
+                  "span": {
+                    "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+                    "line": 14,
+                    "column": 33,
+                    "end_line": 14,
+                    "end_column": 41
+                  },
+                  "name": "o"
+                }
+              },
+              "right": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "OSt"
+                },
+                "span": {
+                  "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+                  "line": 14,
+                  "column": 33,
+                  "end_line": 14,
+                  "end_column": 41
+                },
+                "name": "Cart"
+              }
+            }
+          }
+        ],
+        "requires": [
+          {
+            "kind": "binary",
+            "type": {
+              "kind": "bool"
+            },
+            "span": {
+              "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+              "line": 14,
+              "column": 33,
+              "end_line": 14,
+              "end_column": 41
+            },
+            "operator": "==",
+            "left": {
+              "kind": "index",
+              "type": {
+                "kind": "named",
+                "name": "OSt"
+              },
+              "span": {
+                "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+                "line": 14,
+                "column": 33,
+                "end_line": 14,
+                "end_column": 41
+              },
+              "collection": {
+                "kind": "var",
+                "type": {
+                  "kind": "map",
+                  "key": {
+                    "kind": "named",
+                    "name": "OrderId"
+                  },
+                  "value": {
+                    "kind": "named",
+                    "name": "OSt"
+                  }
+                },
+                "span": {
+                  "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+                  "line": 14,
+                  "column": 33,
+                  "end_line": 14,
+                  "end_column": 41
+                },
+                "name": "order"
+              },
+              "index": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "OrderId"
+                },
+                "span": {
+                  "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+                  "line": 14,
+                  "column": 33,
+                  "end_line": 14,
+                  "end_column": 41
+                },
+                "name": "o"
+              }
+            },
+            "right": {
+              "kind": "var",
+              "type": {
+                "kind": "named",
+                "name": "OSt"
+              },
+              "span": {
+                "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+                "line": 14,
+                "column": 33,
+                "end_line": 14,
+                "end_column": 41
+              },
+              "name": "Cart"
+            }
+          }
+        ],
+        "lets": [],
+        "updates": [
+          {
+            "kind": "assign",
+            "type": {
+              "kind": "statement"
+            },
+            "span": {
+              "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+              "line": 14,
+              "column": 60,
+              "end_line": 14,
+              "end_column": 65
+            },
+            "target": {
+              "kind": "index",
+              "type": {
+                "kind": "named",
+                "name": "OSt"
+              },
+              "span": {
+                "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+                "line": 14,
+                "column": 60,
+                "end_line": 14,
+                "end_column": 65
+              },
+              "name": "order",
+              "index": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "OrderId"
+                },
+                "span": {
+                  "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+                  "line": 14,
+                  "column": 60,
+                  "end_line": 14,
+                  "end_column": 65
+                },
+                "name": "o"
+              }
+            },
+            "value": {
+              "kind": "var",
+              "type": {
+                "kind": "named",
+                "name": "OSt"
+              },
+              "span": {
+                "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+                "line": 14,
+                "column": 60,
+                "end_line": 14,
+                "end_column": 65
+              },
+              "name": "Paid"
+            }
+          }
+        ],
+        "update_semantics": "simultaneous",
+        "ensures": [],
+        "partial_operations": [],
+        "requirement": {
+          "id": "REQ-1",
+          "text": "Order lifecycle"
+        },
+        "origin": {
+          "dialect": "requirements",
+          "declaration": "REQ-1",
+          "lowered": true,
+          "generated": false
+        },
+        "span": {
+          "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+          "line": 14,
+          "column": 5,
+          "end_line": 14,
+          "end_column": 11
+        }
+      },
+      {
+        "name": "ship",
+        "parameters": [
+          {
+            "name": "o",
+            "type": {
+              "kind": "named",
+              "name": "OrderId"
+            },
+            "finite_domain": {
+              "lo": 0,
+              "hi": 1
+            }
+          }
+        ],
+        "fair": false,
+        "guards": [
+          {
+            "kind": "requires",
+            "expression": {
+              "kind": "binary",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+                "line": 15,
+                "column": 33,
+                "end_line": 15,
+                "end_column": 41
+              },
+              "operator": "==",
+              "left": {
+                "kind": "index",
+                "type": {
+                  "kind": "named",
+                  "name": "OSt"
+                },
+                "span": {
+                  "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+                  "line": 15,
+                  "column": 33,
+                  "end_line": 15,
+                  "end_column": 41
+                },
+                "collection": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "map",
+                    "key": {
+                      "kind": "named",
+                      "name": "OrderId"
+                    },
+                    "value": {
+                      "kind": "named",
+                      "name": "OSt"
+                    }
+                  },
+                  "span": {
+                    "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+                    "line": 15,
+                    "column": 33,
+                    "end_line": 15,
+                    "end_column": 41
+                  },
+                  "name": "order"
+                },
+                "index": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "named",
+                    "name": "OrderId"
+                  },
+                  "span": {
+                    "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+                    "line": 15,
+                    "column": 33,
+                    "end_line": 15,
+                    "end_column": 41
+                  },
+                  "name": "o"
+                }
+              },
+              "right": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "OSt"
+                },
+                "span": {
+                  "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+                  "line": 15,
+                  "column": 33,
+                  "end_line": 15,
+                  "end_column": 41
+                },
+                "name": "Paid"
+              }
+            }
+          }
+        ],
+        "requires": [
+          {
+            "kind": "binary",
+            "type": {
+              "kind": "bool"
+            },
+            "span": {
+              "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+              "line": 15,
+              "column": 33,
+              "end_line": 15,
+              "end_column": 41
+            },
+            "operator": "==",
+            "left": {
+              "kind": "index",
+              "type": {
+                "kind": "named",
+                "name": "OSt"
+              },
+              "span": {
+                "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+                "line": 15,
+                "column": 33,
+                "end_line": 15,
+                "end_column": 41
+              },
+              "collection": {
+                "kind": "var",
+                "type": {
+                  "kind": "map",
+                  "key": {
+                    "kind": "named",
+                    "name": "OrderId"
+                  },
+                  "value": {
+                    "kind": "named",
+                    "name": "OSt"
+                  }
+                },
+                "span": {
+                  "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+                  "line": 15,
+                  "column": 33,
+                  "end_line": 15,
+                  "end_column": 41
+                },
+                "name": "order"
+              },
+              "index": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "OrderId"
+                },
+                "span": {
+                  "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+                  "line": 15,
+                  "column": 33,
+                  "end_line": 15,
+                  "end_column": 41
+                },
+                "name": "o"
+              }
+            },
+            "right": {
+              "kind": "var",
+              "type": {
+                "kind": "named",
+                "name": "OSt"
+              },
+              "span": {
+                "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+                "line": 15,
+                "column": 33,
+                "end_line": 15,
+                "end_column": 41
+              },
+              "name": "Paid"
+            }
+          }
+        ],
+        "lets": [],
+        "updates": [
+          {
+            "kind": "assign",
+            "type": {
+              "kind": "statement"
+            },
+            "span": {
+              "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+              "line": 15,
+              "column": 60,
+              "end_line": 15,
+              "end_column": 65
+            },
+            "target": {
+              "kind": "index",
+              "type": {
+                "kind": "named",
+                "name": "OSt"
+              },
+              "span": {
+                "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+                "line": 15,
+                "column": 60,
+                "end_line": 15,
+                "end_column": 65
+              },
+              "name": "order",
+              "index": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "OrderId"
+                },
+                "span": {
+                  "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+                  "line": 15,
+                  "column": 60,
+                  "end_line": 15,
+                  "end_column": 65
+                },
+                "name": "o"
+              }
+            },
+            "value": {
+              "kind": "var",
+              "type": {
+                "kind": "named",
+                "name": "OSt"
+              },
+              "span": {
+                "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+                "line": 15,
+                "column": 60,
+                "end_line": 15,
+                "end_column": 65
+              },
+              "name": "Shipped"
+            }
+          }
+        ],
+        "update_semantics": "simultaneous",
+        "ensures": [],
+        "partial_operations": [],
+        "requirement": {
+          "id": "REQ-1",
+          "text": "Order lifecycle"
+        },
+        "origin": {
+          "dialect": "requirements",
+          "declaration": "REQ-1",
+          "lowered": true,
+          "generated": false
+        },
+        "span": {
+          "file": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
+          "line": 15,
+          "column": 5,
+          "end_line": 15,
+          "end_column": 11
+        }
+      }
+    ],
+    "properties": {
+      "invariants": [],
+      "transitions": [],
+      "reachables": [],
+      "leads_to": [],
+      "terminal": null
+    }
+  },
+  "fsl": "1.0"
+}

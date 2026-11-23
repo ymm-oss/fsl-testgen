@@ -1,0 +1,141 @@
+// SPDX-License-Identifier: Apache-2.0
+//
+// Auto-generated FSL conformance tests (kotlin.test).
+// Source: bank_system.fsl
+//
+// Wire `makeAdapter()` to your implementation. Until it is wired it returns null
+// and every test FAILS with "adapter not wired" (issue #1200): a suite that never
+// calls the implementation is not evidence that it conforms. kotlin.test has no
+// portable runtime skip, so `fslc testgen --allow-unwired` rejects this target.
+//
+// The random-walk trace below was baked at generation time by the FSL Monitor
+// (the spec's concrete interpreter) under a fixed seed, so these tests need no
+// `fslc`/Python at runtime — they replay the baked oracle states and assert.
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
+import kotlin.test.fail
+
+data class StepResult(val ok: Boolean, val kind: String? = null)
+
+/**
+ * Connect your implementation to the spec actions/state.
+ *  - reset(): put the implementation in the same initial state as spec `init`
+ *  - step(action, params): drive one spec action; return a StepResult for
+ *    forbidden-rejection scenarios (null is fine for ordinary steps)
+ *  - observe(): project implementation state onto the spec's logical-state shape
+ *    (enum = name string, Option = null|value, Seq = List, Map = Map with string
+ *     keys, struct = Map)
+ */
+interface Adapter {
+    fun reset()
+    fun step(action: String, params: Map<String, Any?>): StepResult?
+    fun observe(): Map<String, Any?>
+}
+
+// Wire your implementation here. Return your adapter instead of null.
+fun makeAdapter(): Adapter? = null
+
+const val ADAPTER_NOT_WIRED: String = "adapter not wired: implement makeAdapter() to connect your implementation"
+
+// Assert only the fields the spec mentions; recurse into nested (Map/struct)
+// shapes. Normalize integral values to Long recursively through List/Map before
+// equality, preserving exact list order/length and Float/Double distinctions.
+fun normalizeIntegral(value: Any?): Any? = when (value) {
+    is Byte -> value.toLong()
+    is Short -> value.toLong()
+    is Int -> value.toLong()
+    is Long -> value
+    is List<*> -> value.map { normalizeIntegral(it) }
+    is Map<*, *> -> value.mapValues { normalizeIntegral(it.value) }
+    else -> value
+}
+
+fun assertPartial(observed: Map<String, Any?>, expected: Map<String, Any?>) {
+    for ((key, value) in expected) {
+        assertTrue(observed.containsKey(key), "missing state key $key")
+        val seen = observed[key]
+        if (value is Map<*, *> && seen is Map<*, *>) {
+            @Suppress("UNCHECKED_CAST")
+            assertPartial(seen as Map<String, Any?>, value as Map<String, Any?>)
+        } else {
+            assertEquals(normalizeIntegral(value), normalizeIntegral(seen), "state $key")
+        }
+    }
+}
+
+fun assertRejected(result: StepResult?, expectedKind: String?) {
+    assertNotNull(result, "forbidden step must return a StepResult")
+    assertFalse(result.ok)
+    if (expectedKind != null) {
+        assertEquals(expectedKind, result.kind)
+    }
+}
+
+
+class BankSystemConformanceTest {
+
+    @Test fun scenario_cover_bank_settle() {
+        val a = makeAdapter() ?: fail(ADAPTER_NOT_WIRED)
+        a.reset()
+        a.step("deposit_audited", mapOf("a" to 1))
+        assertPartial(a.observe(), mapOf("bank.cleared" to 0, "bank.pending" to 1, "audit.balance" to 1, "audit.log" to listOf(1), "withdrawn" to 0))
+        a.step("bank.settle", mapOf<String, Any?>())
+        assertPartial(a.observe(), mapOf("bank.cleared" to 1, "bank.pending" to 0, "audit.balance" to 1, "audit.log" to listOf(1), "withdrawn" to 0))
+    }
+
+    @Test fun scenario_cover_deposit_audited() {
+        val a = makeAdapter() ?: fail(ADAPTER_NOT_WIRED)
+        a.reset()
+        a.step("deposit_audited", mapOf("a" to 1))
+        assertPartial(a.observe(), mapOf("bank.cleared" to 0, "bank.pending" to 1, "audit.balance" to 1, "audit.log" to listOf(1), "withdrawn" to 0))
+    }
+
+    @Test fun scenario_cover_withdraw_audited() {
+        val a = makeAdapter() ?: fail(ADAPTER_NOT_WIRED)
+        a.reset()
+        a.step("deposit_audited", mapOf("a" to 1))
+        assertPartial(a.observe(), mapOf("bank.cleared" to 0, "bank.pending" to 1, "audit.balance" to 1, "audit.log" to listOf(1), "withdrawn" to 0))
+        a.step("bank.settle", mapOf<String, Any?>())
+        assertPartial(a.observe(), mapOf("bank.cleared" to 1, "bank.pending" to 0, "audit.balance" to 1, "audit.log" to listOf(1), "withdrawn" to 0))
+        a.step("withdraw_audited", mapOf("a" to 1))
+        assertPartial(a.observe(), mapOf("bank.cleared" to 0, "bank.pending" to 0, "audit.balance" to 1, "audit.log" to listOf(1), "withdrawn" to 1))
+    }
+
+    @Test fun scenario_reach_bank_Settled() {
+        val a = makeAdapter() ?: fail(ADAPTER_NOT_WIRED)
+        a.reset()
+        a.step("deposit_audited", mapOf("a" to 3))
+        assertPartial(a.observe(), mapOf("bank.cleared" to 0, "bank.pending" to 3, "audit.balance" to 3, "audit.log" to listOf(3), "withdrawn" to 0))
+        a.step("bank.settle", mapOf<String, Any?>())
+        assertPartial(a.observe(), mapOf("bank.cleared" to 3, "bank.pending" to 0, "audit.balance" to 3, "audit.log" to listOf(3), "withdrawn" to 0))
+    }
+
+    @Test fun randomWalkConformance() {
+        // random-walk conformance (baked oracle trace)
+        val a = makeAdapter() ?: fail(ADAPTER_NOT_WIRED)
+        a.reset()
+        val initial: Map<String, Any?> = mapOf("withdrawn" to 0, "audit.balance" to 0, "audit.log" to listOf<Any?>(), "bank.cleared" to 0, "bank.pending" to 0)
+        assertPartial(a.observe(), initial)
+        val walk: List<Triple<String, Map<String, Any?>, Map<String, Any?>>> = listOf(
+            Triple("deposit_audited", mapOf("a" to 2), mapOf("withdrawn" to 0, "audit.balance" to 2, "audit.log" to listOf(2), "bank.cleared" to 0, "bank.pending" to 2)),
+            Triple("deposit_audited", mapOf("a" to 3), mapOf("withdrawn" to 0, "audit.balance" to 5, "audit.log" to listOf(2, 3), "bank.cleared" to 0, "bank.pending" to 5)),
+            Triple("bank.settle", mapOf<String, Any?>(), mapOf("withdrawn" to 0, "audit.balance" to 5, "audit.log" to listOf(2, 3), "bank.cleared" to 5, "bank.pending" to 0)),
+            Triple("deposit_audited", mapOf("a" to 3), mapOf("withdrawn" to 0, "audit.balance" to 8, "audit.log" to listOf(2, 3, 3), "bank.cleared" to 5, "bank.pending" to 3)),
+            Triple("withdraw_audited", mapOf("a" to 1), mapOf("withdrawn" to 1, "audit.balance" to 8, "audit.log" to listOf(2, 3, 3), "bank.cleared" to 4, "bank.pending" to 3)),
+            Triple("deposit_audited", mapOf("a" to 3), mapOf("withdrawn" to 1, "audit.balance" to 11, "audit.log" to listOf(2, 3, 3, 3), "bank.cleared" to 4, "bank.pending" to 6)),
+            Triple("withdraw_audited", mapOf("a" to 3), mapOf("withdrawn" to 4, "audit.balance" to 11, "audit.log" to listOf(2, 3, 3, 3), "bank.cleared" to 1, "bank.pending" to 6)),
+            Triple("withdraw_audited", mapOf("a" to 1), mapOf("withdrawn" to 5, "audit.balance" to 11, "audit.log" to listOf(2, 3, 3, 3), "bank.cleared" to 0, "bank.pending" to 6)),
+            Triple("bank.settle", mapOf<String, Any?>(), mapOf("withdrawn" to 5, "audit.balance" to 11, "audit.log" to listOf(2, 3, 3, 3), "bank.cleared" to 6, "bank.pending" to 0)),
+            Triple("withdraw_audited", mapOf("a" to 2), mapOf("withdrawn" to 7, "audit.balance" to 11, "audit.log" to listOf(2, 3, 3, 3), "bank.cleared" to 4, "bank.pending" to 0)),
+            Triple("withdraw_audited", mapOf("a" to 3), mapOf("withdrawn" to 10, "audit.balance" to 11, "audit.log" to listOf(2, 3, 3, 3), "bank.cleared" to 1, "bank.pending" to 0)),
+            Triple("withdraw_audited", mapOf("a" to 1), mapOf("withdrawn" to 11, "audit.balance" to 11, "audit.log" to listOf(2, 3, 3, 3), "bank.cleared" to 0, "bank.pending" to 0)),
+        )
+        for ((action, params, expected) in walk) {
+            a.step(action, params)
+            assertPartial(a.observe(), expected)
+        }
+    }
+}

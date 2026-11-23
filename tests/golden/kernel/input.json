@@ -1,0 +1,3582 @@
+{
+  "$schema": "https://fsl.dev/schemas/fslc/kernel/testgen-input.v1.schema.json",
+  "schema_version": "1.0.0",
+  "kernel_schema_version": "1.0.0",
+  "result": "testgen_input",
+  "fslc_version": "5.2.0",
+  "spec": "ShoppingCart",
+  "source": {
+    "name": "cart_v1.fsl",
+    "digest": "sha256:28863f758e5767380d22c205241cb6f09f91ed007e5493c9934678907ab9041e"
+  },
+  "dialect": "kernel",
+  "gate": {
+    "depth": 3,
+    "deadlock": "warn",
+    "strict": false
+  },
+  "state": [
+    "stock",
+    "cart"
+  ],
+  "actions": [
+    {
+      "name": "add_to_cart",
+      "params": [
+        "u",
+        "i"
+      ]
+    },
+    {
+      "name": "remove_from_cart",
+      "params": [
+        "u"
+      ]
+    },
+    {
+      "name": "checkout",
+      "params": [
+        "u"
+      ]
+    }
+  ],
+  "scenarios": [
+    {
+      "steps": [
+        {
+          "action": "add_to_cart",
+          "params": {
+            "u": 0,
+            "i": 0
+          }
+        }
+      ],
+      "initial_state": {
+        "stock": {
+          "0": 1,
+          "1": 1
+        },
+        "cart": {
+          "0": null,
+          "1": null
+        }
+      },
+      "expected_states": [
+        {
+          "stock": {
+            "0": 1,
+            "1": 1
+          },
+          "cart": {
+            "0": 0,
+            "1": null
+          }
+        }
+      ],
+      "name": "cover_add_to_cart",
+      "kind": "action_coverage",
+      "action": "add_to_cart"
+    },
+    {
+      "steps": [
+        {
+          "action": "add_to_cart",
+          "params": {
+            "u": 0,
+            "i": 0
+          }
+        },
+        {
+          "action": "remove_from_cart",
+          "params": {
+            "u": 0
+          }
+        }
+      ],
+      "initial_state": {
+        "stock": {
+          "0": 1,
+          "1": 1
+        },
+        "cart": {
+          "0": null,
+          "1": null
+        }
+      },
+      "expected_states": [
+        {
+          "stock": {
+            "0": 1,
+            "1": 1
+          },
+          "cart": {
+            "0": 0,
+            "1": null
+          }
+        },
+        {
+          "stock": {
+            "0": 1,
+            "1": 1
+          },
+          "cart": {
+            "0": null,
+            "1": null
+          }
+        }
+      ],
+      "name": "cover_remove_from_cart",
+      "kind": "action_coverage",
+      "action": "remove_from_cart"
+    },
+    {
+      "steps": [
+        {
+          "action": "add_to_cart",
+          "params": {
+            "u": 0,
+            "i": 0
+          }
+        },
+        {
+          "action": "checkout",
+          "params": {
+            "u": 0
+          }
+        }
+      ],
+      "initial_state": {
+        "stock": {
+          "0": 1,
+          "1": 1
+        },
+        "cart": {
+          "0": null,
+          "1": null
+        }
+      },
+      "expected_states": [
+        {
+          "stock": {
+            "0": 1,
+            "1": 1
+          },
+          "cart": {
+            "0": 0,
+            "1": null
+          }
+        },
+        {
+          "stock": {
+            "0": 0,
+            "1": 1
+          },
+          "cart": {
+            "0": null,
+            "1": null
+          }
+        }
+      ],
+      "name": "cover_checkout",
+      "kind": "action_coverage",
+      "action": "checkout"
+    }
+  ],
+  "walk": {
+    "$schema": "https://fsl.dev/schemas/fslc/kernel/testgen-trace.v1.schema.json",
+    "schema_version": "1.0.0",
+    "kernel_schema_version": "1.0.0",
+    "result": "testgen_trace",
+    "spec": "ShoppingCart",
+    "initial": {
+      "stock": {
+        "0": 1,
+        "1": 1
+      },
+      "cart": {
+        "0": null,
+        "1": null
+      }
+    },
+    "steps": [
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 1,
+          "i": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 1,
+            "1": 1
+          },
+          "cart": {
+            "0": null,
+            "1": 1
+          }
+        }
+      },
+      {
+        "action": "checkout",
+        "params": {
+          "u": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 1,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": null
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 0,
+          "i": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 1,
+            "1": 0
+          },
+          "cart": {
+            "0": 0,
+            "1": null
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 1,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": null
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 1,
+          "i": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 1,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": 1
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 0,
+          "i": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 1,
+            "1": 0
+          },
+          "cart": {
+            "0": 1,
+            "1": 1
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 1,
+            "1": 0
+          },
+          "cart": {
+            "0": 1,
+            "1": null
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 1,
+          "i": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 1,
+            "1": 0
+          },
+          "cart": {
+            "0": 1,
+            "1": 1
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 1,
+            "1": 0
+          },
+          "cart": {
+            "0": 1,
+            "1": null
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 1,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": null
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 0,
+          "i": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 1,
+            "1": 0
+          },
+          "cart": {
+            "0": 1,
+            "1": null
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 1,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": null
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 0,
+          "i": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 1,
+            "1": 0
+          },
+          "cart": {
+            "0": 1,
+            "1": null
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 1,
+          "i": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 1,
+            "1": 0
+          },
+          "cart": {
+            "0": 1,
+            "1": 1
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 1,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": 1
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 0,
+          "i": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 1,
+            "1": 0
+          },
+          "cart": {
+            "0": 0,
+            "1": 1
+          }
+        }
+      },
+      {
+        "action": "checkout",
+        "params": {
+          "u": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": 1
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 0,
+          "i": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": 1,
+            "1": 1
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": 1
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 0,
+          "i": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": 1,
+            "1": 1
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": 1
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": null
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 0,
+          "i": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": 0,
+            "1": null
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": null
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 1,
+          "i": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": 0
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 0,
+          "i": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": 1,
+            "1": 0
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": 0
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 0,
+          "i": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": 1,
+            "1": 0
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": 1,
+            "1": null
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 1,
+          "i": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": 1,
+            "1": 1
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": 1
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": null
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 1,
+          "i": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": 1
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 0,
+          "i": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": 1,
+            "1": 1
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": 1,
+            "1": null
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 1,
+          "i": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": 1,
+            "1": 0
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": 0
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 0,
+          "i": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": 0,
+            "1": 0
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": 0,
+            "1": null
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": null
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 0,
+          "i": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": 0,
+            "1": null
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": null
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 1,
+          "i": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": 1
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 0,
+          "i": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": 1,
+            "1": 1
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": 1
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": null
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 1,
+          "i": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": 0
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": null
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 0,
+          "i": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": 0,
+            "1": null
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 1,
+          "i": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": 0,
+            "1": 0
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": 0
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 0,
+          "i": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": 0,
+            "1": 0
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": 0
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": null
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 1,
+          "i": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": 1
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 0,
+          "i": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": 0,
+            "1": 1
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": 1
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 0,
+          "i": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": 1,
+            "1": 1
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": 1,
+            "1": null
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 1,
+          "i": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": 1,
+            "1": 0
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": 1,
+            "1": null
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": null
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 1,
+          "i": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": 0
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": null
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 0,
+          "i": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": 0,
+            "1": null
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": null
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 1,
+          "i": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": 0
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": null
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 0,
+          "i": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": 1,
+            "1": null
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": null
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 1,
+          "i": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": 0
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 0,
+          "i": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": 1,
+            "1": 0
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": 0
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": null
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 1,
+          "i": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": 1
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 0,
+          "i": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": 1,
+            "1": 1
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": 1
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 0,
+          "i": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": 1,
+            "1": 1
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": 1
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 0,
+          "i": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": 0,
+            "1": 1
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": 1
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 0,
+          "i": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": 0,
+            "1": 1
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": 0,
+            "1": null
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 1,
+          "i": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": 0,
+            "1": 1
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": 1
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 0,
+          "i": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": 0,
+            "1": 1
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": 1
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 0,
+          "i": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": 0,
+            "1": 1
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": 1
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 0,
+          "i": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": 0,
+            "1": 1
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": 0,
+            "1": null
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": null
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 1,
+          "i": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": 0
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": null
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 0,
+          "i": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": 1,
+            "1": null
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 1,
+          "i": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": 1,
+            "1": 0
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": 1,
+            "1": null
+          }
+        }
+      },
+      {
+        "action": "remove_from_cart",
+        "params": {
+          "u": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": null
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 1,
+          "i": 0
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": null,
+            "1": 0
+          }
+        }
+      },
+      {
+        "action": "add_to_cart",
+        "params": {
+          "u": 0,
+          "i": 1
+        },
+        "expected": {
+          "stock": {
+            "0": 0,
+            "1": 0
+          },
+          "cart": {
+            "0": 1,
+            "1": 0
+          }
+        }
+      }
+    ]
+  },
+  "kernel": {
+    "$schema": "https://fsl.dev/schemas/fslc/kernel/kernel.v1.schema.json",
+    "schema_version": "1.0.0",
+    "language_version": "1.0",
+    "spec": {
+      "name": "ShoppingCart",
+      "source": {
+        "file": "specs/cart_v1.fsl",
+        "dialect": "kernel"
+      }
+    },
+    "semantics": {
+      "assignment": "simultaneous",
+      "reads": "pre_state",
+      "requires_false": "not_enabled",
+      "failure_state": "rollback",
+      "old": "pre_state",
+      "integer_division": "euclidean",
+      "terminal_deadlock": "terminal_states_excluded",
+      "fairness": "weak"
+    },
+    "constants": [],
+    "types": [
+      {
+        "name": "ItemId",
+        "span": null,
+        "symmetric": false,
+        "definition": {
+          "kind": "domain",
+          "lo": 0,
+          "hi": 1
+        },
+        "origin": {
+          "dialect": "kernel",
+          "declaration": "ItemId",
+          "lowered": false,
+          "generated": false
+        }
+      },
+      {
+        "name": "Qty",
+        "span": null,
+        "symmetric": false,
+        "definition": {
+          "kind": "domain",
+          "lo": 0,
+          "hi": 3
+        },
+        "origin": {
+          "dialect": "kernel",
+          "declaration": "Qty",
+          "lowered": false,
+          "generated": false
+        }
+      },
+      {
+        "name": "UserId",
+        "span": null,
+        "symmetric": false,
+        "definition": {
+          "kind": "domain",
+          "lo": 0,
+          "hi": 1
+        },
+        "origin": {
+          "dialect": "kernel",
+          "declaration": "UserId",
+          "lowered": false,
+          "generated": false
+        }
+      }
+    ],
+    "state": [
+      {
+        "name": "cart",
+        "type": {
+          "kind": "map",
+          "key": {
+            "kind": "named",
+            "name": "UserId"
+          },
+          "value": {
+            "kind": "option",
+            "item": {
+              "kind": "named",
+              "name": "ItemId"
+            }
+          }
+        },
+        "span": null,
+        "origin": {
+          "dialect": "kernel",
+          "declaration": "cart",
+          "lowered": false,
+          "generated": false
+        }
+      },
+      {
+        "name": "stock",
+        "type": {
+          "kind": "map",
+          "key": {
+            "kind": "named",
+            "name": "ItemId"
+          },
+          "value": {
+            "kind": "named",
+            "name": "Qty"
+          }
+        },
+        "span": null,
+        "origin": {
+          "dialect": "kernel",
+          "declaration": "stock",
+          "lowered": false,
+          "generated": false
+        }
+      }
+    ],
+    "init": {
+      "statements": [
+        {
+          "kind": "forall",
+          "type": {
+            "kind": "statement"
+          },
+          "span": {
+            "file": "specs/cart_v1.fsl",
+            "line": 12,
+            "column": 5,
+            "end_line": 12,
+            "end_column": 11
+          },
+          "binder": {
+            "name": "i",
+            "type": {
+              "kind": "named",
+              "name": "ItemId"
+            },
+            "kind": "typed"
+          },
+          "statements": [
+            {
+              "kind": "assign",
+              "type": {
+                "kind": "statement"
+              },
+              "span": {
+                "file": "specs/cart_v1.fsl",
+                "line": 12,
+                "column": 24,
+                "end_line": 12,
+                "end_column": 29
+              },
+              "target": {
+                "kind": "index",
+                "type": {
+                  "kind": "named",
+                  "name": "Qty"
+                },
+                "span": {
+                  "file": "specs/cart_v1.fsl",
+                  "line": 12,
+                  "column": 24,
+                  "end_line": 12,
+                  "end_column": 29
+                },
+                "name": "stock",
+                "index": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "named",
+                    "name": "ItemId"
+                  },
+                  "span": {
+                    "file": "specs/cart_v1.fsl",
+                    "line": 12,
+                    "column": 24,
+                    "end_line": 12,
+                    "end_column": 29
+                  },
+                  "name": "i"
+                }
+              },
+              "value": {
+                "kind": "num",
+                "type": {
+                  "kind": "domain",
+                  "lo": 0,
+                  "hi": 3
+                },
+                "span": {
+                  "file": "specs/cart_v1.fsl",
+                  "line": 12,
+                  "column": 24,
+                  "end_line": 12,
+                  "end_column": 29
+                },
+                "value": 1
+              }
+            }
+          ]
+        },
+        {
+          "kind": "forall",
+          "type": {
+            "kind": "statement"
+          },
+          "span": {
+            "file": "specs/cart_v1.fsl",
+            "line": 13,
+            "column": 5,
+            "end_line": 13,
+            "end_column": 11
+          },
+          "binder": {
+            "name": "u",
+            "type": {
+              "kind": "named",
+              "name": "UserId"
+            },
+            "kind": "typed"
+          },
+          "statements": [
+            {
+              "kind": "assign",
+              "type": {
+                "kind": "statement"
+              },
+              "span": {
+                "file": "specs/cart_v1.fsl",
+                "line": 13,
+                "column": 24,
+                "end_line": 13,
+                "end_column": 28
+              },
+              "target": {
+                "kind": "index",
+                "type": {
+                  "kind": "option",
+                  "item": {
+                    "kind": "named",
+                    "name": "ItemId"
+                  }
+                },
+                "span": {
+                  "file": "specs/cart_v1.fsl",
+                  "line": 13,
+                  "column": 24,
+                  "end_line": 13,
+                  "end_column": 28
+                },
+                "name": "cart",
+                "index": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "named",
+                    "name": "UserId"
+                  },
+                  "span": {
+                    "file": "specs/cart_v1.fsl",
+                    "line": 13,
+                    "column": 24,
+                    "end_line": 13,
+                    "end_column": 28
+                  },
+                  "name": "u"
+                }
+              },
+              "value": {
+                "kind": "none",
+                "type": {
+                  "kind": "option",
+                  "item": {
+                    "kind": "named",
+                    "name": "ItemId"
+                  }
+                },
+                "span": {
+                  "file": "specs/cart_v1.fsl",
+                  "line": 13,
+                  "column": 24,
+                  "end_line": 13,
+                  "end_column": 28
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "requirement": null,
+      "origin": {
+        "dialect": "kernel",
+        "declaration": "init",
+        "lowered": false,
+        "generated": false
+      },
+      "span": {
+        "file": "specs/cart_v1.fsl",
+        "line": 12,
+        "column": 5,
+        "end_line": 12,
+        "end_column": 11
+      }
+    },
+    "actions": [
+      {
+        "name": "add_to_cart",
+        "parameters": [
+          {
+            "name": "u",
+            "type": {
+              "kind": "named",
+              "name": "UserId"
+            },
+            "finite_domain": {
+              "lo": 0,
+              "hi": 1
+            }
+          },
+          {
+            "name": "i",
+            "type": {
+              "kind": "named",
+              "name": "ItemId"
+            },
+            "finite_domain": {
+              "lo": 0,
+              "hi": 1
+            }
+          }
+        ],
+        "fair": false,
+        "guards": [
+          {
+            "kind": "requires",
+            "expression": {
+              "kind": "binary",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "specs/cart_v1.fsl",
+                "line": 17,
+                "column": 5,
+                "end_line": 17,
+                "end_column": 13
+              },
+              "operator": "==",
+              "left": {
+                "kind": "index",
+                "type": {
+                  "kind": "option",
+                  "item": {
+                    "kind": "named",
+                    "name": "ItemId"
+                  }
+                },
+                "span": {
+                  "file": "specs/cart_v1.fsl",
+                  "line": 17,
+                  "column": 5,
+                  "end_line": 17,
+                  "end_column": 13
+                },
+                "collection": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "map",
+                    "key": {
+                      "kind": "named",
+                      "name": "UserId"
+                    },
+                    "value": {
+                      "kind": "option",
+                      "item": {
+                        "kind": "named",
+                        "name": "ItemId"
+                      }
+                    }
+                  },
+                  "span": {
+                    "file": "specs/cart_v1.fsl",
+                    "line": 17,
+                    "column": 5,
+                    "end_line": 17,
+                    "end_column": 13
+                  },
+                  "name": "cart"
+                },
+                "index": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "named",
+                    "name": "UserId"
+                  },
+                  "span": {
+                    "file": "specs/cart_v1.fsl",
+                    "line": 17,
+                    "column": 5,
+                    "end_line": 17,
+                    "end_column": 13
+                  },
+                  "name": "u"
+                }
+              },
+              "right": {
+                "kind": "none",
+                "type": {
+                  "kind": "option",
+                  "item": {
+                    "kind": "named",
+                    "name": "ItemId"
+                  }
+                },
+                "span": {
+                  "file": "specs/cart_v1.fsl",
+                  "line": 17,
+                  "column": 5,
+                  "end_line": 17,
+                  "end_column": 13
+                }
+              }
+            }
+          }
+        ],
+        "requires": [
+          {
+            "kind": "binary",
+            "type": {
+              "kind": "bool"
+            },
+            "span": {
+              "file": "specs/cart_v1.fsl",
+              "line": 17,
+              "column": 5,
+              "end_line": 17,
+              "end_column": 13
+            },
+            "operator": "==",
+            "left": {
+              "kind": "index",
+              "type": {
+                "kind": "option",
+                "item": {
+                  "kind": "named",
+                  "name": "ItemId"
+                }
+              },
+              "span": {
+                "file": "specs/cart_v1.fsl",
+                "line": 17,
+                "column": 5,
+                "end_line": 17,
+                "end_column": 13
+              },
+              "collection": {
+                "kind": "var",
+                "type": {
+                  "kind": "map",
+                  "key": {
+                    "kind": "named",
+                    "name": "UserId"
+                  },
+                  "value": {
+                    "kind": "option",
+                    "item": {
+                      "kind": "named",
+                      "name": "ItemId"
+                    }
+                  }
+                },
+                "span": {
+                  "file": "specs/cart_v1.fsl",
+                  "line": 17,
+                  "column": 5,
+                  "end_line": 17,
+                  "end_column": 13
+                },
+                "name": "cart"
+              },
+              "index": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "UserId"
+                },
+                "span": {
+                  "file": "specs/cart_v1.fsl",
+                  "line": 17,
+                  "column": 5,
+                  "end_line": 17,
+                  "end_column": 13
+                },
+                "name": "u"
+              }
+            },
+            "right": {
+              "kind": "none",
+              "type": {
+                "kind": "option",
+                "item": {
+                  "kind": "named",
+                  "name": "ItemId"
+                }
+              },
+              "span": {
+                "file": "specs/cart_v1.fsl",
+                "line": 17,
+                "column": 5,
+                "end_line": 17,
+                "end_column": 13
+              }
+            }
+          }
+        ],
+        "lets": [],
+        "updates": [
+          {
+            "kind": "assign",
+            "type": {
+              "kind": "statement"
+            },
+            "span": {
+              "file": "specs/cart_v1.fsl",
+              "line": 18,
+              "column": 5,
+              "end_line": 18,
+              "end_column": 9
+            },
+            "target": {
+              "kind": "index",
+              "type": {
+                "kind": "option",
+                "item": {
+                  "kind": "named",
+                  "name": "ItemId"
+                }
+              },
+              "span": {
+                "file": "specs/cart_v1.fsl",
+                "line": 18,
+                "column": 5,
+                "end_line": 18,
+                "end_column": 9
+              },
+              "name": "cart",
+              "index": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "UserId"
+                },
+                "span": {
+                  "file": "specs/cart_v1.fsl",
+                  "line": 18,
+                  "column": 5,
+                  "end_line": 18,
+                  "end_column": 9
+                },
+                "name": "u"
+              }
+            },
+            "value": {
+              "kind": "some",
+              "type": {
+                "kind": "option",
+                "item": {
+                  "kind": "named",
+                  "name": "ItemId"
+                }
+              },
+              "span": {
+                "file": "specs/cart_v1.fsl",
+                "line": 18,
+                "column": 5,
+                "end_line": 18,
+                "end_column": 9
+              },
+              "operand": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "ItemId"
+                },
+                "span": {
+                  "file": "specs/cart_v1.fsl",
+                  "line": 18,
+                  "column": 5,
+                  "end_line": 18,
+                  "end_column": 9
+                },
+                "name": "i"
+              }
+            }
+          }
+        ],
+        "update_semantics": "simultaneous",
+        "ensures": [],
+        "partial_operations": [],
+        "requirement": null,
+        "origin": {
+          "dialect": "kernel",
+          "declaration": "add_to_cart",
+          "lowered": false,
+          "generated": false
+        },
+        "span": {
+          "file": "specs/cart_v1.fsl",
+          "line": 16,
+          "column": 3,
+          "end_line": 16,
+          "end_column": 9
+        }
+      },
+      {
+        "name": "checkout",
+        "parameters": [
+          {
+            "name": "u",
+            "type": {
+              "kind": "named",
+              "name": "UserId"
+            },
+            "finite_domain": {
+              "lo": 0,
+              "hi": 1
+            }
+          }
+        ],
+        "fair": false,
+        "guards": [
+          {
+            "kind": "requires",
+            "expression": {
+              "kind": "is",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "specs/cart_v1.fsl",
+                "line": 27,
+                "column": 5,
+                "end_line": 27,
+                "end_column": 13
+              },
+              "operand": {
+                "kind": "index",
+                "type": {
+                  "kind": "option",
+                  "item": {
+                    "kind": "named",
+                    "name": "ItemId"
+                  }
+                },
+                "span": {
+                  "file": "specs/cart_v1.fsl",
+                  "line": 27,
+                  "column": 5,
+                  "end_line": 27,
+                  "end_column": 13
+                },
+                "collection": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "map",
+                    "key": {
+                      "kind": "named",
+                      "name": "UserId"
+                    },
+                    "value": {
+                      "kind": "option",
+                      "item": {
+                        "kind": "named",
+                        "name": "ItemId"
+                      }
+                    }
+                  },
+                  "span": {
+                    "file": "specs/cart_v1.fsl",
+                    "line": 27,
+                    "column": 5,
+                    "end_line": 27,
+                    "end_column": 13
+                  },
+                  "name": "cart"
+                },
+                "index": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "named",
+                    "name": "UserId"
+                  },
+                  "span": {
+                    "file": "specs/cart_v1.fsl",
+                    "line": 27,
+                    "column": 5,
+                    "end_line": 27,
+                    "end_column": 13
+                  },
+                  "name": "u"
+                }
+              },
+              "pattern": {
+                "kind": "some",
+                "binding": "i"
+              }
+            }
+          },
+          {
+            "kind": "requires",
+            "expression": {
+              "kind": "binary",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "specs/cart_v1.fsl",
+                "line": 28,
+                "column": 5,
+                "end_line": 28,
+                "end_column": 13
+              },
+              "operator": ">",
+              "left": {
+                "kind": "index",
+                "type": {
+                  "kind": "named",
+                  "name": "Qty"
+                },
+                "span": {
+                  "file": "specs/cart_v1.fsl",
+                  "line": 28,
+                  "column": 5,
+                  "end_line": 28,
+                  "end_column": 13
+                },
+                "collection": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "map",
+                    "key": {
+                      "kind": "named",
+                      "name": "ItemId"
+                    },
+                    "value": {
+                      "kind": "named",
+                      "name": "Qty"
+                    }
+                  },
+                  "span": {
+                    "file": "specs/cart_v1.fsl",
+                    "line": 28,
+                    "column": 5,
+                    "end_line": 28,
+                    "end_column": 13
+                  },
+                  "name": "stock"
+                },
+                "index": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "named",
+                    "name": "ItemId"
+                  },
+                  "span": {
+                    "file": "specs/cart_v1.fsl",
+                    "line": 28,
+                    "column": 5,
+                    "end_line": 28,
+                    "end_column": 13
+                  },
+                  "name": "i"
+                }
+              },
+              "right": {
+                "kind": "num",
+                "type": {
+                  "kind": "int"
+                },
+                "span": {
+                  "file": "specs/cart_v1.fsl",
+                  "line": 28,
+                  "column": 5,
+                  "end_line": 28,
+                  "end_column": 13
+                },
+                "value": 0
+              }
+            }
+          }
+        ],
+        "requires": [
+          {
+            "kind": "is",
+            "type": {
+              "kind": "bool"
+            },
+            "span": {
+              "file": "specs/cart_v1.fsl",
+              "line": 27,
+              "column": 5,
+              "end_line": 27,
+              "end_column": 13
+            },
+            "operand": {
+              "kind": "index",
+              "type": {
+                "kind": "option",
+                "item": {
+                  "kind": "named",
+                  "name": "ItemId"
+                }
+              },
+              "span": {
+                "file": "specs/cart_v1.fsl",
+                "line": 27,
+                "column": 5,
+                "end_line": 27,
+                "end_column": 13
+              },
+              "collection": {
+                "kind": "var",
+                "type": {
+                  "kind": "map",
+                  "key": {
+                    "kind": "named",
+                    "name": "UserId"
+                  },
+                  "value": {
+                    "kind": "option",
+                    "item": {
+                      "kind": "named",
+                      "name": "ItemId"
+                    }
+                  }
+                },
+                "span": {
+                  "file": "specs/cart_v1.fsl",
+                  "line": 27,
+                  "column": 5,
+                  "end_line": 27,
+                  "end_column": 13
+                },
+                "name": "cart"
+              },
+              "index": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "UserId"
+                },
+                "span": {
+                  "file": "specs/cart_v1.fsl",
+                  "line": 27,
+                  "column": 5,
+                  "end_line": 27,
+                  "end_column": 13
+                },
+                "name": "u"
+              }
+            },
+            "pattern": {
+              "kind": "some",
+              "binding": "i"
+            }
+          },
+          {
+            "kind": "binary",
+            "type": {
+              "kind": "bool"
+            },
+            "span": {
+              "file": "specs/cart_v1.fsl",
+              "line": 28,
+              "column": 5,
+              "end_line": 28,
+              "end_column": 13
+            },
+            "operator": ">",
+            "left": {
+              "kind": "index",
+              "type": {
+                "kind": "named",
+                "name": "Qty"
+              },
+              "span": {
+                "file": "specs/cart_v1.fsl",
+                "line": 28,
+                "column": 5,
+                "end_line": 28,
+                "end_column": 13
+              },
+              "collection": {
+                "kind": "var",
+                "type": {
+                  "kind": "map",
+                  "key": {
+                    "kind": "named",
+                    "name": "ItemId"
+                  },
+                  "value": {
+                    "kind": "named",
+                    "name": "Qty"
+                  }
+                },
+                "span": {
+                  "file": "specs/cart_v1.fsl",
+                  "line": 28,
+                  "column": 5,
+                  "end_line": 28,
+                  "end_column": 13
+                },
+                "name": "stock"
+              },
+              "index": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "ItemId"
+                },
+                "span": {
+                  "file": "specs/cart_v1.fsl",
+                  "line": 28,
+                  "column": 5,
+                  "end_line": 28,
+                  "end_column": 13
+                },
+                "name": "i"
+              }
+            },
+            "right": {
+              "kind": "num",
+              "type": {
+                "kind": "int"
+              },
+              "span": {
+                "file": "specs/cart_v1.fsl",
+                "line": 28,
+                "column": 5,
+                "end_line": 28,
+                "end_column": 13
+              },
+              "value": 0
+            }
+          }
+        ],
+        "lets": [],
+        "updates": [
+          {
+            "kind": "assign",
+            "type": {
+              "kind": "statement"
+            },
+            "span": {
+              "file": "specs/cart_v1.fsl",
+              "line": 29,
+              "column": 5,
+              "end_line": 29,
+              "end_column": 10
+            },
+            "target": {
+              "kind": "index",
+              "type": {
+                "kind": "named",
+                "name": "Qty"
+              },
+              "span": {
+                "file": "specs/cart_v1.fsl",
+                "line": 29,
+                "column": 5,
+                "end_line": 29,
+                "end_column": 10
+              },
+              "name": "stock",
+              "index": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "ItemId"
+                },
+                "span": {
+                  "file": "specs/cart_v1.fsl",
+                  "line": 29,
+                  "column": 5,
+                  "end_line": 29,
+                  "end_column": 10
+                },
+                "name": "i"
+              }
+            },
+            "value": {
+              "kind": "binary",
+              "type": {
+                "kind": "int"
+              },
+              "span": {
+                "file": "specs/cart_v1.fsl",
+                "line": 29,
+                "column": 5,
+                "end_line": 29,
+                "end_column": 10
+              },
+              "operator": "-",
+              "left": {
+                "kind": "index",
+                "type": {
+                  "kind": "named",
+                  "name": "Qty"
+                },
+                "span": {
+                  "file": "specs/cart_v1.fsl",
+                  "line": 29,
+                  "column": 5,
+                  "end_line": 29,
+                  "end_column": 10
+                },
+                "collection": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "map",
+                    "key": {
+                      "kind": "named",
+                      "name": "ItemId"
+                    },
+                    "value": {
+                      "kind": "named",
+                      "name": "Qty"
+                    }
+                  },
+                  "span": {
+                    "file": "specs/cart_v1.fsl",
+                    "line": 29,
+                    "column": 5,
+                    "end_line": 29,
+                    "end_column": 10
+                  },
+                  "name": "stock"
+                },
+                "index": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "named",
+                    "name": "ItemId"
+                  },
+                  "span": {
+                    "file": "specs/cart_v1.fsl",
+                    "line": 29,
+                    "column": 5,
+                    "end_line": 29,
+                    "end_column": 10
+                  },
+                  "name": "i"
+                }
+              },
+              "right": {
+                "kind": "num",
+                "type": {
+                  "kind": "int"
+                },
+                "span": {
+                  "file": "specs/cart_v1.fsl",
+                  "line": 29,
+                  "column": 5,
+                  "end_line": 29,
+                  "end_column": 10
+                },
+                "value": 1
+              }
+            }
+          },
+          {
+            "kind": "assign",
+            "type": {
+              "kind": "statement"
+            },
+            "span": {
+              "file": "specs/cart_v1.fsl",
+              "line": 30,
+              "column": 5,
+              "end_line": 30,
+              "end_column": 9
+            },
+            "target": {
+              "kind": "index",
+              "type": {
+                "kind": "option",
+                "item": {
+                  "kind": "named",
+                  "name": "ItemId"
+                }
+              },
+              "span": {
+                "file": "specs/cart_v1.fsl",
+                "line": 30,
+                "column": 5,
+                "end_line": 30,
+                "end_column": 9
+              },
+              "name": "cart",
+              "index": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "UserId"
+                },
+                "span": {
+                  "file": "specs/cart_v1.fsl",
+                  "line": 30,
+                  "column": 5,
+                  "end_line": 30,
+                  "end_column": 9
+                },
+                "name": "u"
+              }
+            },
+            "value": {
+              "kind": "none",
+              "type": {
+                "kind": "option",
+                "item": {
+                  "kind": "named",
+                  "name": "ItemId"
+                }
+              },
+              "span": {
+                "file": "specs/cart_v1.fsl",
+                "line": 30,
+                "column": 5,
+                "end_line": 30,
+                "end_column": 9
+              }
+            }
+          }
+        ],
+        "update_semantics": "simultaneous",
+        "ensures": [
+          {
+            "kind": "binary",
+            "type": {
+              "kind": "bool"
+            },
+            "span": {
+              "file": "specs/cart_v1.fsl",
+              "line": 31,
+              "column": 5,
+              "end_line": 31,
+              "end_column": 12
+            },
+            "operator": "==",
+            "left": {
+              "kind": "index",
+              "type": {
+                "kind": "named",
+                "name": "Qty"
+              },
+              "span": {
+                "file": "specs/cart_v1.fsl",
+                "line": 31,
+                "column": 5,
+                "end_line": 31,
+                "end_column": 12
+              },
+              "collection": {
+                "kind": "var",
+                "type": {
+                  "kind": "map",
+                  "key": {
+                    "kind": "named",
+                    "name": "ItemId"
+                  },
+                  "value": {
+                    "kind": "named",
+                    "name": "Qty"
+                  }
+                },
+                "span": {
+                  "file": "specs/cart_v1.fsl",
+                  "line": 31,
+                  "column": 5,
+                  "end_line": 31,
+                  "end_column": 12
+                },
+                "name": "stock"
+              },
+              "index": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "ItemId"
+                },
+                "span": {
+                  "file": "specs/cart_v1.fsl",
+                  "line": 31,
+                  "column": 5,
+                  "end_line": 31,
+                  "end_column": 12
+                },
+                "name": "i"
+              }
+            },
+            "right": {
+              "kind": "binary",
+              "type": {
+                "kind": "int"
+              },
+              "span": {
+                "file": "specs/cart_v1.fsl",
+                "line": 31,
+                "column": 5,
+                "end_line": 31,
+                "end_column": 12
+              },
+              "operator": "-",
+              "left": {
+                "kind": "old",
+                "type": {
+                  "kind": "named",
+                  "name": "Qty"
+                },
+                "span": {
+                  "file": "specs/cart_v1.fsl",
+                  "line": 31,
+                  "column": 5,
+                  "end_line": 31,
+                  "end_column": 12
+                },
+                "operand": {
+                  "kind": "index",
+                  "type": {
+                    "kind": "named",
+                    "name": "Qty"
+                  },
+                  "span": {
+                    "file": "specs/cart_v1.fsl",
+                    "line": 31,
+                    "column": 5,
+                    "end_line": 31,
+                    "end_column": 12
+                  },
+                  "collection": {
+                    "kind": "var",
+                    "type": {
+                      "kind": "map",
+                      "key": {
+                        "kind": "named",
+                        "name": "ItemId"
+                      },
+                      "value": {
+                        "kind": "named",
+                        "name": "Qty"
+                      }
+                    },
+                    "span": {
+                      "file": "specs/cart_v1.fsl",
+                      "line": 31,
+                      "column": 5,
+                      "end_line": 31,
+                      "end_column": 12
+                    },
+                    "name": "stock"
+                  },
+                  "index": {
+                    "kind": "var",
+                    "type": {
+                      "kind": "named",
+                      "name": "ItemId"
+                    },
+                    "span": {
+                      "file": "specs/cart_v1.fsl",
+                      "line": 31,
+                      "column": 5,
+                      "end_line": 31,
+                      "end_column": 12
+                    },
+                    "name": "i"
+                  }
+                }
+              },
+              "right": {
+                "kind": "num",
+                "type": {
+                  "kind": "int"
+                },
+                "span": {
+                  "file": "specs/cart_v1.fsl",
+                  "line": 31,
+                  "column": 5,
+                  "end_line": 31,
+                  "end_column": 12
+                },
+                "value": 1
+              }
+            }
+          }
+        ],
+        "partial_operations": [],
+        "requirement": null,
+        "origin": {
+          "dialect": "kernel",
+          "declaration": "checkout",
+          "lowered": false,
+          "generated": false
+        },
+        "span": {
+          "file": "specs/cart_v1.fsl",
+          "line": 26,
+          "column": 3,
+          "end_line": 26,
+          "end_column": 9
+        }
+      },
+      {
+        "name": "remove_from_cart",
+        "parameters": [
+          {
+            "name": "u",
+            "type": {
+              "kind": "named",
+              "name": "UserId"
+            },
+            "finite_domain": {
+              "lo": 0,
+              "hi": 1
+            }
+          }
+        ],
+        "fair": false,
+        "guards": [
+          {
+            "kind": "requires",
+            "expression": {
+              "kind": "binary",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "specs/cart_v1.fsl",
+                "line": 22,
+                "column": 5,
+                "end_line": 22,
+                "end_column": 13
+              },
+              "operator": "!=",
+              "left": {
+                "kind": "index",
+                "type": {
+                  "kind": "option",
+                  "item": {
+                    "kind": "named",
+                    "name": "ItemId"
+                  }
+                },
+                "span": {
+                  "file": "specs/cart_v1.fsl",
+                  "line": 22,
+                  "column": 5,
+                  "end_line": 22,
+                  "end_column": 13
+                },
+                "collection": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "map",
+                    "key": {
+                      "kind": "named",
+                      "name": "UserId"
+                    },
+                    "value": {
+                      "kind": "option",
+                      "item": {
+                        "kind": "named",
+                        "name": "ItemId"
+                      }
+                    }
+                  },
+                  "span": {
+                    "file": "specs/cart_v1.fsl",
+                    "line": 22,
+                    "column": 5,
+                    "end_line": 22,
+                    "end_column": 13
+                  },
+                  "name": "cart"
+                },
+                "index": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "named",
+                    "name": "UserId"
+                  },
+                  "span": {
+                    "file": "specs/cart_v1.fsl",
+                    "line": 22,
+                    "column": 5,
+                    "end_line": 22,
+                    "end_column": 13
+                  },
+                  "name": "u"
+                }
+              },
+              "right": {
+                "kind": "none",
+                "type": {
+                  "kind": "option",
+                  "item": {
+                    "kind": "named",
+                    "name": "ItemId"
+                  }
+                },
+                "span": {
+                  "file": "specs/cart_v1.fsl",
+                  "line": 22,
+                  "column": 5,
+                  "end_line": 22,
+                  "end_column": 13
+                }
+              }
+            }
+          }
+        ],
+        "requires": [
+          {
+            "kind": "binary",
+            "type": {
+              "kind": "bool"
+            },
+            "span": {
+              "file": "specs/cart_v1.fsl",
+              "line": 22,
+              "column": 5,
+              "end_line": 22,
+              "end_column": 13
+            },
+            "operator": "!=",
+            "left": {
+              "kind": "index",
+              "type": {
+                "kind": "option",
+                "item": {
+                  "kind": "named",
+                  "name": "ItemId"
+                }
+              },
+              "span": {
+                "file": "specs/cart_v1.fsl",
+                "line": 22,
+                "column": 5,
+                "end_line": 22,
+                "end_column": 13
+              },
+              "collection": {
+                "kind": "var",
+                "type": {
+                  "kind": "map",
+                  "key": {
+                    "kind": "named",
+                    "name": "UserId"
+                  },
+                  "value": {
+                    "kind": "option",
+                    "item": {
+                      "kind": "named",
+                      "name": "ItemId"
+                    }
+                  }
+                },
+                "span": {
+                  "file": "specs/cart_v1.fsl",
+                  "line": 22,
+                  "column": 5,
+                  "end_line": 22,
+                  "end_column": 13
+                },
+                "name": "cart"
+              },
+              "index": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "UserId"
+                },
+                "span": {
+                  "file": "specs/cart_v1.fsl",
+                  "line": 22,
+                  "column": 5,
+                  "end_line": 22,
+                  "end_column": 13
+                },
+                "name": "u"
+              }
+            },
+            "right": {
+              "kind": "none",
+              "type": {
+                "kind": "option",
+                "item": {
+                  "kind": "named",
+                  "name": "ItemId"
+                }
+              },
+              "span": {
+                "file": "specs/cart_v1.fsl",
+                "line": 22,
+                "column": 5,
+                "end_line": 22,
+                "end_column": 13
+              }
+            }
+          }
+        ],
+        "lets": [],
+        "updates": [
+          {
+            "kind": "assign",
+            "type": {
+              "kind": "statement"
+            },
+            "span": {
+              "file": "specs/cart_v1.fsl",
+              "line": 23,
+              "column": 5,
+              "end_line": 23,
+              "end_column": 9
+            },
+            "target": {
+              "kind": "index",
+              "type": {
+                "kind": "option",
+                "item": {
+                  "kind": "named",
+                  "name": "ItemId"
+                }
+              },
+              "span": {
+                "file": "specs/cart_v1.fsl",
+                "line": 23,
+                "column": 5,
+                "end_line": 23,
+                "end_column": 9
+              },
+              "name": "cart",
+              "index": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "UserId"
+                },
+                "span": {
+                  "file": "specs/cart_v1.fsl",
+                  "line": 23,
+                  "column": 5,
+                  "end_line": 23,
+                  "end_column": 9
+                },
+                "name": "u"
+              }
+            },
+            "value": {
+              "kind": "none",
+              "type": {
+                "kind": "option",
+                "item": {
+                  "kind": "named",
+                  "name": "ItemId"
+                }
+              },
+              "span": {
+                "file": "specs/cart_v1.fsl",
+                "line": 23,
+                "column": 5,
+                "end_line": 23,
+                "end_column": 9
+              }
+            }
+          }
+        ],
+        "update_semantics": "simultaneous",
+        "ensures": [],
+        "partial_operations": [],
+        "requirement": null,
+        "origin": {
+          "dialect": "kernel",
+          "declaration": "remove_from_cart",
+          "lowered": false,
+          "generated": false
+        },
+        "span": {
+          "file": "specs/cart_v1.fsl",
+          "line": 21,
+          "column": 3,
+          "end_line": 21,
+          "end_column": 9
+        }
+      }
+    ],
+    "properties": {
+      "invariants": [],
+      "transitions": [],
+      "reachables": [
+        {
+          "name": "SoldOut",
+          "source_kind": "reachable",
+          "expression": {
+            "kind": "forall",
+            "type": {
+              "kind": "bool"
+            },
+            "span": {
+              "file": "specs/cart_v1.fsl",
+              "line": 34,
+              "column": 3,
+              "end_line": 34,
+              "end_column": 12
+            },
+            "quantifier": "forall",
+            "binder": {
+              "name": "i",
+              "type": {
+                "kind": "named",
+                "name": "ItemId"
+              },
+              "kind": "typed"
+            },
+            "body": {
+              "kind": "binary",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "specs/cart_v1.fsl",
+                "line": 34,
+                "column": 3,
+                "end_line": 34,
+                "end_column": 12
+              },
+              "operator": "==",
+              "left": {
+                "kind": "index",
+                "type": {
+                  "kind": "named",
+                  "name": "Qty"
+                },
+                "span": {
+                  "file": "specs/cart_v1.fsl",
+                  "line": 34,
+                  "column": 3,
+                  "end_line": 34,
+                  "end_column": 12
+                },
+                "collection": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "map",
+                    "key": {
+                      "kind": "named",
+                      "name": "ItemId"
+                    },
+                    "value": {
+                      "kind": "named",
+                      "name": "Qty"
+                    }
+                  },
+                  "span": {
+                    "file": "specs/cart_v1.fsl",
+                    "line": 34,
+                    "column": 3,
+                    "end_line": 34,
+                    "end_column": 12
+                  },
+                  "name": "stock"
+                },
+                "index": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "named",
+                    "name": "ItemId"
+                  },
+                  "span": {
+                    "file": "specs/cart_v1.fsl",
+                    "line": 34,
+                    "column": 3,
+                    "end_line": 34,
+                    "end_column": 12
+                  },
+                  "name": "i"
+                }
+              },
+              "right": {
+                "kind": "num",
+                "type": {
+                  "kind": "domain",
+                  "lo": 0,
+                  "hi": 3
+                },
+                "span": {
+                  "file": "specs/cart_v1.fsl",
+                  "line": 34,
+                  "column": 3,
+                  "end_line": 34,
+                  "end_column": 12
+                },
+                "value": 0
+              }
+            }
+          },
+          "requirement": null,
+          "origin": {
+            "dialect": "kernel",
+            "declaration": "SoldOut",
+            "lowered": false,
+            "generated": false
+          },
+          "span": {
+            "file": "specs/cart_v1.fsl",
+            "line": 34,
+            "column": 3,
+            "end_line": 34,
+            "end_column": 12
+          }
+        }
+      ],
+      "leads_to": [],
+      "terminal": null
+    }
+  },
+  "fsl": "1.0"
+}

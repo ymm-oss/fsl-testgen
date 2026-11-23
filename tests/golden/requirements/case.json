@@ -1,0 +1,6 @@
+{
+  "description": "a requirements document with acceptance scenarios",
+  "spec": "examples/self/monitor_action_boundary.fsl",
+  "depth": 3,
+  "spec_path": "/SPEC_ROOT/examples/self/monitor_action_boundary.fsl"
+}

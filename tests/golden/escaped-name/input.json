@@ -1,0 +1,1253 @@
+{
+  "$schema": "https://fsl.dev/schemas/fslc/kernel/testgen-input.v1.schema.json",
+  "schema_version": "1.0.0",
+  "kernel_schema_version": "1.0.0",
+  "result": "testgen_input",
+  "fslc_version": "5.2.0",
+  "spec": "Literals",
+  "source": {
+    "name": "we'ird*na>me?.fsl",
+    "digest": "sha256:77995a92f2efe9476f3bb6d2714733848e3de1d56c58f0136ca299342a2ea477"
+  },
+  "dialect": "kernel",
+  "gate": {
+    "depth": 3,
+    "deadlock": "warn",
+    "strict": false
+  },
+  "state": [
+    "x"
+  ],
+  "actions": [
+    {
+      "name": "set",
+      "params": [
+        "v"
+      ]
+    }
+  ],
+  "scenarios": [
+    {
+      "steps": [
+        {
+          "action": "set",
+          "params": {
+            "v": 0
+          }
+        }
+      ],
+      "initial_state": {
+        "x": 0
+      },
+      "expected_states": [
+        {
+          "x": 0
+        }
+      ],
+      "name": "cover_set",
+      "kind": "action_coverage",
+      "action": "set"
+    },
+    {
+      "steps": [
+        {
+          "action": "set",
+          "params": {
+            "v": 1
+          }
+        }
+      ],
+      "initial_state": {
+        "x": 0
+      },
+      "expected_states": [
+        {
+          "x": 1
+        }
+      ],
+      "name": "reach_One",
+      "kind": "reachable",
+      "property": "One",
+      "final_check": "One"
+    }
+  ],
+  "walk": {
+    "$schema": "https://fsl.dev/schemas/fslc/kernel/testgen-trace.v1.schema.json",
+    "schema_version": "1.0.0",
+    "kernel_schema_version": "1.0.0",
+    "result": "testgen_trace",
+    "spec": "Literals",
+    "initial": {
+      "x": 0
+    },
+    "steps": [
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 1
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      },
+      {
+        "action": "set",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0
+        }
+      }
+    ]
+  },
+  "kernel": {
+    "$schema": "https://fsl.dev/schemas/fslc/kernel/kernel.v1.schema.json",
+    "schema_version": "1.0.0",
+    "language_version": "1.0",
+    "spec": {
+      "name": "Literals",
+      "source": {
+        "file": "we'ird*na>me?.fsl",
+        "dialect": "kernel"
+      }
+    },
+    "semantics": {
+      "assignment": "simultaneous",
+      "reads": "pre_state",
+      "requires_false": "not_enabled",
+      "failure_state": "rollback",
+      "old": "pre_state",
+      "integer_division": "euclidean",
+      "terminal_deadlock": "terminal_states_excluded",
+      "fairness": "weak"
+    },
+    "constants": [],
+    "types": [
+      {
+        "name": "N",
+        "span": null,
+        "symmetric": false,
+        "definition": {
+          "kind": "domain",
+          "lo": 0,
+          "hi": 1
+        },
+        "origin": {
+          "dialect": "kernel",
+          "declaration": "N",
+          "lowered": false,
+          "generated": false
+        }
+      }
+    ],
+    "state": [
+      {
+        "name": "x",
+        "type": {
+          "kind": "int"
+        },
+        "span": null,
+        "origin": {
+          "dialect": "kernel",
+          "declaration": "x",
+          "lowered": false,
+          "generated": false
+        }
+      }
+    ],
+    "init": {
+      "statements": [
+        {
+          "kind": "assign",
+          "type": {
+            "kind": "statement"
+          },
+          "span": {
+            "file": "we'ird*na>me?.fsl",
+            "line": 4,
+            "column": 10,
+            "end_line": 4,
+            "end_column": 11
+          },
+          "target": {
+            "kind": "var",
+            "type": {
+              "kind": "int"
+            },
+            "span": {
+              "file": "we'ird*na>me?.fsl",
+              "line": 4,
+              "column": 10,
+              "end_line": 4,
+              "end_column": 11
+            },
+            "name": "x"
+          },
+          "value": {
+            "kind": "num",
+            "type": {
+              "kind": "int"
+            },
+            "span": {
+              "file": "we'ird*na>me?.fsl",
+              "line": 4,
+              "column": 10,
+              "end_line": 4,
+              "end_column": 11
+            },
+            "value": 0
+          }
+        }
+      ],
+      "requirement": null,
+      "origin": {
+        "dialect": "kernel",
+        "declaration": "init",
+        "lowered": false,
+        "generated": false
+      },
+      "span": {
+        "file": "we'ird*na>me?.fsl",
+        "line": 4,
+        "column": 10,
+        "end_line": 4,
+        "end_column": 11
+      }
+    },
+    "actions": [
+      {
+        "name": "set",
+        "parameters": [
+          {
+            "name": "v",
+            "type": {
+              "kind": "named",
+              "name": "N"
+            },
+            "finite_domain": {
+              "lo": 0,
+              "hi": 1
+            }
+          }
+        ],
+        "fair": false,
+        "guards": [],
+        "requires": [],
+        "lets": [],
+        "updates": [
+          {
+            "kind": "assign",
+            "type": {
+              "kind": "statement"
+            },
+            "span": {
+              "file": "we'ird*na>me?.fsl",
+              "line": 5,
+              "column": 22,
+              "end_line": 5,
+              "end_column": 23
+            },
+            "target": {
+              "kind": "var",
+              "type": {
+                "kind": "int"
+              },
+              "span": {
+                "file": "we'ird*na>me?.fsl",
+                "line": 5,
+                "column": 22,
+                "end_line": 5,
+                "end_column": 23
+              },
+              "name": "x"
+            },
+            "value": {
+              "kind": "var",
+              "type": {
+                "kind": "named",
+                "name": "N"
+              },
+              "span": {
+                "file": "we'ird*na>me?.fsl",
+                "line": 5,
+                "column": 22,
+                "end_line": 5,
+                "end_column": 23
+              },
+              "name": "v"
+            }
+          }
+        ],
+        "update_semantics": "simultaneous",
+        "ensures": [],
+        "partial_operations": [],
+        "requirement": null,
+        "origin": {
+          "dialect": "kernel",
+          "declaration": "set",
+          "lowered": false,
+          "generated": false
+        },
+        "span": {
+          "file": "we'ird*na>me?.fsl",
+          "line": 5,
+          "column": 3,
+          "end_line": 5,
+          "end_column": 9
+        }
+      }
+    ],
+    "properties": {
+      "invariants": [],
+      "transitions": [],
+      "reachables": [
+        {
+          "name": "One",
+          "source_kind": "reachable",
+          "expression": {
+            "kind": "binary",
+            "type": {
+              "kind": "bool"
+            },
+            "span": {
+              "file": "we'ird*na>me?.fsl",
+              "line": 6,
+              "column": 3,
+              "end_line": 6,
+              "end_column": 12
+            },
+            "operator": "==",
+            "left": {
+              "kind": "var",
+              "type": {
+                "kind": "int"
+              },
+              "span": {
+                "file": "we'ird*na>me?.fsl",
+                "line": 6,
+                "column": 3,
+                "end_line": 6,
+                "end_column": 12
+              },
+              "name": "x"
+            },
+            "right": {
+              "kind": "num",
+              "type": {
+                "kind": "int"
+              },
+              "span": {
+                "file": "we'ird*na>me?.fsl",
+                "line": 6,
+                "column": 3,
+                "end_line": 6,
+                "end_column": 12
+              },
+              "value": 1
+            }
+          },
+          "requirement": null,
+          "origin": {
+            "dialect": "kernel",
+            "declaration": "One",
+            "lowered": false,
+            "generated": false
+          },
+          "span": {
+            "file": "we'ird*na>me?.fsl",
+            "line": 6,
+            "column": 3,
+            "end_line": 6,
+            "end_column": 12
+          }
+        }
+      ],
+      "leads_to": [],
+      "terminal": null
+    }
+  },
+  "fsl": "1.0"
+}

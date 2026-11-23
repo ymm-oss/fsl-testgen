@@ -1,0 +1,146 @@
+<?php
+// SPDX-License-Identifier: Apache-2.0
+//
+// Auto-generated FSL conformance tests (PHPUnit, PHP 8.1+ / PHPUnit 10+).
+// Source: bank_system.fsl
+//
+// Wire `makeAdapter()` to your implementation. Until it is wired, setUp() marks
+// every test skipped (mirroring the other targets' skip-when-unwired behaviour).
+//
+// The random-walk trace below was baked at generation time by the FSL Monitor
+// (the spec's concrete interpreter) under a fixed seed, so these tests need no
+// `fslc`/Python at runtime — they replay the baked oracle states and assert.
+declare(strict_types=1);
+
+use PHPUnit\Framework\TestCase;
+
+interface Adapter
+{
+    public function reset(): void;
+    // Return ['ok' => bool, 'kind' => ?string] for forbidden-rejection scenarios;
+    // null is fine for ordinary steps.
+    public function step(string $action, array $params): ?array;
+    public function observe(): array;
+}
+
+
+final class BankSystemConformanceTest extends TestCase
+{
+    private ?Adapter $adapter = null;
+
+    // Wire your implementation here: return your adapter instead of throwing.
+    protected function makeAdapter(): Adapter
+    {
+        throw new \RuntimeException('wire your implementation: implement makeAdapter()');
+    }
+
+    protected function setUp(): void
+    {
+        try {
+            $a = $this->makeAdapter();
+            $a->reset();
+            $a->observe();
+            $this->adapter = $a;
+        } catch (\Throwable $e) {
+            $this->markTestSkipped('Adapter not wired: ' . $e->getMessage());
+        }
+    }
+
+    // Compare the spec's expected state against the observed state. Recurse into
+    // arrays by the EXPECTED keys (so maps match by key — order-independent, and
+    // only the fields the spec mentions are asserted; PHP coerces numeric string
+    // keys like '0' to int consistently on both sides). A list-shaped expected
+    // also pins the length, so sequences are exact. Leaves use assertSame (===),
+    // so int/float, bool and null never coerce — the point of the PHP target.
+    private function assertPartial(mixed $expected, mixed $observed, string $path = 'state'): void
+    {
+        if (is_array($expected) && is_array($observed)) {
+            if (array_is_list($expected)) {
+                $this->assertCount(count($expected), $observed, "length at $path");
+            }
+            foreach ($expected as $key => $value) {
+                $this->assertArrayHasKey($key, $observed, "missing $path.$key");
+                $this->assertPartial($value, $observed[$key], "$path.$key");
+            }
+        } else {
+            $this->assertSame($expected, $observed, "at $path");
+        }
+    }
+
+    private function assertRejected(?array $result, ?string $expectedKind): void
+    {
+        $this->assertIsArray($result, 'forbidden step must return a result array');
+        $this->assertFalse($result['ok']);
+        if ($expectedKind !== null) {
+            $this->assertSame($expectedKind, $result['kind']);
+        }
+    }
+
+    public function testScenario_cover_bank_settle(): void
+    {
+        $a = $this->adapter;
+        $a->reset();
+        $a->step('deposit_audited', ['a' => 1]);
+        $this->assertPartial(['bank.cleared' => 0, 'bank.pending' => 1, 'audit.balance' => 1, 'audit.log' => [1], 'withdrawn' => 0], $a->observe());
+        $a->step('bank.settle', []);
+        $this->assertPartial(['bank.cleared' => 1, 'bank.pending' => 0, 'audit.balance' => 1, 'audit.log' => [1], 'withdrawn' => 0], $a->observe());
+    }
+
+    public function testScenario_cover_deposit_audited(): void
+    {
+        $a = $this->adapter;
+        $a->reset();
+        $a->step('deposit_audited', ['a' => 1]);
+        $this->assertPartial(['bank.cleared' => 0, 'bank.pending' => 1, 'audit.balance' => 1, 'audit.log' => [1], 'withdrawn' => 0], $a->observe());
+    }
+
+    public function testScenario_cover_withdraw_audited(): void
+    {
+        $a = $this->adapter;
+        $a->reset();
+        $a->step('deposit_audited', ['a' => 1]);
+        $this->assertPartial(['bank.cleared' => 0, 'bank.pending' => 1, 'audit.balance' => 1, 'audit.log' => [1], 'withdrawn' => 0], $a->observe());
+        $a->step('bank.settle', []);
+        $this->assertPartial(['bank.cleared' => 1, 'bank.pending' => 0, 'audit.balance' => 1, 'audit.log' => [1], 'withdrawn' => 0], $a->observe());
+        $a->step('withdraw_audited', ['a' => 1]);
+        $this->assertPartial(['bank.cleared' => 0, 'bank.pending' => 0, 'audit.balance' => 1, 'audit.log' => [1], 'withdrawn' => 1], $a->observe());
+    }
+
+    public function testScenario_reach_bank_Settled(): void
+    {
+        $a = $this->adapter;
+        $a->reset();
+        $a->step('deposit_audited', ['a' => 3]);
+        $this->assertPartial(['bank.cleared' => 0, 'bank.pending' => 3, 'audit.balance' => 3, 'audit.log' => [3], 'withdrawn' => 0], $a->observe());
+        $a->step('bank.settle', []);
+        $this->assertPartial(['bank.cleared' => 3, 'bank.pending' => 0, 'audit.balance' => 3, 'audit.log' => [3], 'withdrawn' => 0], $a->observe());
+    }
+
+    private const INITIAL = ['withdrawn' => 0, 'audit.balance' => 0, 'audit.log' => [], 'bank.cleared' => 0, 'bank.pending' => 0];
+    private const WALK = [
+        ['action' => 'deposit_audited', 'params' => ['a' => 2], 'expected' => ['withdrawn' => 0, 'audit.balance' => 2, 'audit.log' => [2], 'bank.cleared' => 0, 'bank.pending' => 2]],
+        ['action' => 'deposit_audited', 'params' => ['a' => 3], 'expected' => ['withdrawn' => 0, 'audit.balance' => 5, 'audit.log' => [2, 3], 'bank.cleared' => 0, 'bank.pending' => 5]],
+        ['action' => 'bank.settle', 'params' => [], 'expected' => ['withdrawn' => 0, 'audit.balance' => 5, 'audit.log' => [2, 3], 'bank.cleared' => 5, 'bank.pending' => 0]],
+        ['action' => 'deposit_audited', 'params' => ['a' => 3], 'expected' => ['withdrawn' => 0, 'audit.balance' => 8, 'audit.log' => [2, 3, 3], 'bank.cleared' => 5, 'bank.pending' => 3]],
+        ['action' => 'withdraw_audited', 'params' => ['a' => 1], 'expected' => ['withdrawn' => 1, 'audit.balance' => 8, 'audit.log' => [2, 3, 3], 'bank.cleared' => 4, 'bank.pending' => 3]],
+        ['action' => 'deposit_audited', 'params' => ['a' => 3], 'expected' => ['withdrawn' => 1, 'audit.balance' => 11, 'audit.log' => [2, 3, 3, 3], 'bank.cleared' => 4, 'bank.pending' => 6]],
+        ['action' => 'withdraw_audited', 'params' => ['a' => 3], 'expected' => ['withdrawn' => 4, 'audit.balance' => 11, 'audit.log' => [2, 3, 3, 3], 'bank.cleared' => 1, 'bank.pending' => 6]],
+        ['action' => 'withdraw_audited', 'params' => ['a' => 1], 'expected' => ['withdrawn' => 5, 'audit.balance' => 11, 'audit.log' => [2, 3, 3, 3], 'bank.cleared' => 0, 'bank.pending' => 6]],
+        ['action' => 'bank.settle', 'params' => [], 'expected' => ['withdrawn' => 5, 'audit.balance' => 11, 'audit.log' => [2, 3, 3, 3], 'bank.cleared' => 6, 'bank.pending' => 0]],
+        ['action' => 'withdraw_audited', 'params' => ['a' => 2], 'expected' => ['withdrawn' => 7, 'audit.balance' => 11, 'audit.log' => [2, 3, 3, 3], 'bank.cleared' => 4, 'bank.pending' => 0]],
+        ['action' => 'withdraw_audited', 'params' => ['a' => 3], 'expected' => ['withdrawn' => 10, 'audit.balance' => 11, 'audit.log' => [2, 3, 3, 3], 'bank.cleared' => 1, 'bank.pending' => 0]],
+        ['action' => 'withdraw_audited', 'params' => ['a' => 1], 'expected' => ['withdrawn' => 11, 'audit.balance' => 11, 'audit.log' => [2, 3, 3, 3], 'bank.cleared' => 0, 'bank.pending' => 0]],
+    ];
+
+    public function testRandomWalkConformance(): void
+    {
+        // random-walk conformance (baked oracle trace)
+        $a = $this->adapter;
+        $a->reset();
+        $this->assertPartial(self::INITIAL, $a->observe());
+        foreach (self::WALK as $step) {
+            $a->step($step['action'], $step['params']);
+            $this->assertPartial($step['expected'], $a->observe());
+        }
+    }
+}

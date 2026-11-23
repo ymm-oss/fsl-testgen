@@ -1,0 +1,152 @@
+// SPDX-License-Identifier: Apache-2.0
+//
+// Auto-generated FSL conformance tests (kotlin.test).
+// Source: return_policy.fsl
+//
+// Wire `makeAdapter()` to your implementation. Until it is wired it returns null
+// and every test FAILS with "adapter not wired" (issue #1200): a suite that never
+// calls the implementation is not evidence that it conforms. kotlin.test has no
+// portable runtime skip, so `fslc testgen --allow-unwired` rejects this target.
+//
+// The random-walk trace below was baked at generation time by the FSL Monitor
+// (the spec's concrete interpreter) under a fixed seed, so these tests need no
+// `fslc`/Python at runtime — they replay the baked oracle states and assert.
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
+import kotlin.test.fail
+
+data class StepResult(val ok: Boolean, val kind: String? = null)
+
+/**
+ * Connect your implementation to the spec actions/state.
+ *  - reset(): put the implementation in the same initial state as spec `init`
+ *  - step(action, params): drive one spec action; return a StepResult for
+ *    forbidden-rejection scenarios (null is fine for ordinary steps)
+ *  - observe(): project implementation state onto the spec's logical-state shape
+ *    (enum = name string, Option = null|value, Seq = List, Map = Map with string
+ *     keys, struct = Map)
+ */
+interface Adapter {
+    fun reset()
+    fun step(action: String, params: Map<String, Any?>): StepResult?
+    fun observe(): Map<String, Any?>
+}
+
+// Wire your implementation here. Return your adapter instead of null.
+fun makeAdapter(): Adapter? = null
+
+const val ADAPTER_NOT_WIRED: String = "adapter not wired: implement makeAdapter() to connect your implementation"
+
+// Assert only the fields the spec mentions; recurse into nested (Map/struct)
+// shapes. Normalize integral values to Long recursively through List/Map before
+// equality, preserving exact list order/length and Float/Double distinctions.
+fun normalizeIntegral(value: Any?): Any? = when (value) {
+    is Byte -> value.toLong()
+    is Short -> value.toLong()
+    is Int -> value.toLong()
+    is Long -> value
+    is List<*> -> value.map { normalizeIntegral(it) }
+    is Map<*, *> -> value.mapValues { normalizeIntegral(it.value) }
+    else -> value
+}
+
+fun assertPartial(observed: Map<String, Any?>, expected: Map<String, Any?>) {
+    for ((key, value) in expected) {
+        assertTrue(observed.containsKey(key), "missing state key $key")
+        val seen = observed[key]
+        if (value is Map<*, *> && seen is Map<*, *>) {
+            @Suppress("UNCHECKED_CAST")
+            assertPartial(seen as Map<String, Any?>, value as Map<String, Any?>)
+        } else {
+            assertEquals(normalizeIntegral(value), normalizeIntegral(seen), "state $key")
+        }
+    }
+}
+
+fun assertRejected(result: StepResult?, expectedKind: String?) {
+    assertNotNull(result, "forbidden step must return a StepResult")
+    assertFalse(result.ok)
+    if (expectedKind != null) {
+        assertEquals(expectedKind, result.kind)
+    }
+}
+
+
+class ReturnHandlingConformanceTest {
+
+    @Test fun scenario_cover_approve() {
+        val a = makeAdapter() ?: fail(ADAPTER_NOT_WIRED)
+        a.reset()
+        a.step("approve", mapOf("c" to 0))
+        assertPartial(a.observe(), mapOf("return_stage" to mapOf("0" to "Approved", "1" to "Requested", "2" to "Requested")))
+    }
+
+    @Test fun scenario_cover_reject() {
+        val a = makeAdapter() ?: fail(ADAPTER_NOT_WIRED)
+        a.reset()
+        a.step("reject", mapOf("c" to 0))
+        assertPartial(a.observe(), mapOf("return_stage" to mapOf("0" to "Rejected", "1" to "Requested", "2" to "Requested")))
+    }
+
+    @Test fun scenario_cover_refund() {
+        val a = makeAdapter() ?: fail(ADAPTER_NOT_WIRED)
+        a.reset()
+        a.step("approve", mapOf("c" to 0))
+        assertPartial(a.observe(), mapOf("return_stage" to mapOf("0" to "Approved", "1" to "Requested", "2" to "Requested")))
+        a.step("refund", mapOf("c" to 0))
+        assertPartial(a.observe(), mapOf("return_stage" to mapOf("0" to "Refunded", "1" to "Requested", "2" to "Requested")))
+    }
+
+    @Test fun scenario_reach_GOAL_RETURN_001() {
+        val a = makeAdapter() ?: fail(ADAPTER_NOT_WIRED)
+        a.reset()
+        a.step("reject", mapOf("c" to 2))
+        assertPartial(a.observe(), mapOf("return_stage" to mapOf("0" to "Requested", "1" to "Requested", "2" to "Rejected")))
+        a.step("reject", mapOf("c" to 1))
+        assertPartial(a.observe(), mapOf("return_stage" to mapOf("0" to "Requested", "1" to "Rejected", "2" to "Rejected")))
+        a.step("reject", mapOf("c" to 0))
+        assertPartial(a.observe(), mapOf("return_stage" to mapOf("0" to "Rejected", "1" to "Rejected", "2" to "Rejected")))
+    }
+
+    @Test fun scenario_respond_POL_RETURN_002_c0() {
+        val a = makeAdapter() ?: fail(ADAPTER_NOT_WIRED)
+        a.reset()
+        a.step("approve", mapOf("c" to 0))
+        assertPartial(a.observe(), mapOf("return_stage" to mapOf("0" to "Approved", "1" to "Requested", "2" to "Requested")))
+    }
+
+    @Test fun scenario_respond_POL_RETURN_002_c1() {
+        val a = makeAdapter() ?: fail(ADAPTER_NOT_WIRED)
+        a.reset()
+        a.step("approve", mapOf("c" to 1))
+        assertPartial(a.observe(), mapOf("return_stage" to mapOf("0" to "Requested", "1" to "Approved", "2" to "Requested")))
+    }
+
+    @Test fun scenario_respond_POL_RETURN_002_c2() {
+        val a = makeAdapter() ?: fail(ADAPTER_NOT_WIRED)
+        a.reset()
+        a.step("approve", mapOf("c" to 2))
+        assertPartial(a.observe(), mapOf("return_stage" to mapOf("0" to "Requested", "1" to "Requested", "2" to "Approved")))
+    }
+
+    @Test fun randomWalkConformance() {
+        // random-walk conformance (baked oracle trace)
+        val a = makeAdapter() ?: fail(ADAPTER_NOT_WIRED)
+        a.reset()
+        val initial: Map<String, Any?> = mapOf("return_stage" to mapOf("0" to "Requested", "1" to "Requested", "2" to "Requested"))
+        assertPartial(a.observe(), initial)
+        val walk: List<Triple<String, Map<String, Any?>, Map<String, Any?>>> = listOf(
+            Triple("reject", mapOf("c" to 0), mapOf("return_stage" to mapOf("0" to "Rejected", "1" to "Requested", "2" to "Requested"))),
+            Triple("reject", mapOf("c" to 2), mapOf("return_stage" to mapOf("0" to "Rejected", "1" to "Requested", "2" to "Rejected"))),
+            Triple("approve", mapOf("c" to 1), mapOf("return_stage" to mapOf("0" to "Rejected", "1" to "Approved", "2" to "Rejected"))),
+            Triple("refund", mapOf("c" to 1), mapOf("return_stage" to mapOf("0" to "Rejected", "1" to "Refunded", "2" to "Rejected"))),
+        )
+        for ((action, params, expected) in walk) {
+            a.step(action, params)
+            assertPartial(a.observe(), expected)
+        }
+    }
+}

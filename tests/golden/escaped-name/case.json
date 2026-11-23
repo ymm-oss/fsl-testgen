@@ -1,0 +1,6 @@
+{
+  "description": "a file name every header has to escape",
+  "spec": "we'ird*na>me?.fsl",
+  "depth": 3,
+  "spec_path": "/SPEC_ROOT/we'ird*na>me?.fsl"
+}

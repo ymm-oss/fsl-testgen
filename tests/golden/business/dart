@@ -1,0 +1,141 @@
+// SPDX-License-Identifier: Apache-2.0
+//
+// Auto-generated FSL conformance tests (package:test).
+// Source: return_policy.fsl
+//
+// Wire `makeAdapter()` to your implementation. Until it is wired, every test
+// FAILS with "adapter not wired" (issue #1200): a suite that never calls the
+// implementation is not evidence that it conforms. Generate with
+// `fslc testgen --allow-unwired` to skip instead.
+//
+// The random-walk trace below was baked at generation time by the FSL Monitor
+// (the spec's concrete interpreter) under a fixed seed, so these tests need no
+// `fslc`/Python at runtime — they replay the baked oracle states and assert.
+import 'package:test/test.dart';
+
+class StepResult {
+  final bool ok;
+  final String? kind;
+  StepResult(this.ok, [this.kind]);
+}
+
+/// Connect your implementation to the spec actions/state.
+///  - reset(): put the implementation in the same initial state as spec `init`
+///  - step(action, params): drive one spec action; return a StepResult for
+///    forbidden-rejection scenarios (null is fine for ordinary steps)
+///  - observe(): project implementation state onto the spec's logical-state shape
+///    (enum = name string, Option = null|value, Seq = List, Map = Map with string
+///     keys, struct = Map)
+abstract class Adapter {
+  void reset();
+  StepResult? step(String action, Map<String, dynamic> params);
+  Map<String, dynamic> observe();
+}
+
+// Wire your implementation here. Return your adapter instead of throwing.
+// Until then every test fails with "adapter not wired".
+Adapter makeAdapter() =>
+    throw UnimplementedError('adapter not wired: implement makeAdapter() to connect your implementation, or generate with `fslc testgen --allow-unwired` to skip instead');
+
+// Assert only the fields the spec mentions; recurse into nested (Map/struct)
+// shapes. `equals` (from package:test's matcher) is deep on List/Map, so leaves
+// and sequences are compared structurally with the generated file depending only
+// on package:test.
+void assertPartial(Map<String, dynamic> observed, Map<String, dynamic> expected) {
+  expected.forEach((key, value) {
+    expect(observed.containsKey(key), isTrue, reason: 'missing state key $key');
+    final seen = observed[key];
+    if (value is Map && seen is Map) {
+      assertPartial(
+        Map<String, dynamic>.from(seen),
+        Map<String, dynamic>.from(value),
+      );
+    } else {
+      expect(seen, equals(value), reason: 'state $key');
+    }
+  });
+}
+
+void assertRejected(StepResult? result, String? expectedKind) {
+  expect(result, isNotNull, reason: 'forbidden step must return a StepResult');
+  expect(result!.ok, isFalse);
+  if (expectedKind != null) {
+    expect(result.kind, equals(expectedKind));
+  }
+}
+
+
+void main() {
+
+  test('scenario: cover_approve', () {
+    final a = makeAdapter();
+    a.reset();
+    a.step('approve', {'c': 0});
+    assertPartial(a.observe(), {'return_stage': {'0': 'Approved', '1': 'Requested', '2': 'Requested'}});
+  });
+
+  test('scenario: cover_reject', () {
+    final a = makeAdapter();
+    a.reset();
+    a.step('reject', {'c': 0});
+    assertPartial(a.observe(), {'return_stage': {'0': 'Rejected', '1': 'Requested', '2': 'Requested'}});
+  });
+
+  test('scenario: cover_refund', () {
+    final a = makeAdapter();
+    a.reset();
+    a.step('approve', {'c': 0});
+    assertPartial(a.observe(), {'return_stage': {'0': 'Approved', '1': 'Requested', '2': 'Requested'}});
+    a.step('refund', {'c': 0});
+    assertPartial(a.observe(), {'return_stage': {'0': 'Refunded', '1': 'Requested', '2': 'Requested'}});
+  });
+
+  test('scenario: reach_GOAL-RETURN-001', () {
+    final a = makeAdapter();
+    a.reset();
+    a.step('reject', {'c': 2});
+    assertPartial(a.observe(), {'return_stage': {'0': 'Requested', '1': 'Requested', '2': 'Rejected'}});
+    a.step('reject', {'c': 1});
+    assertPartial(a.observe(), {'return_stage': {'0': 'Requested', '1': 'Rejected', '2': 'Rejected'}});
+    a.step('reject', {'c': 0});
+    assertPartial(a.observe(), {'return_stage': {'0': 'Rejected', '1': 'Rejected', '2': 'Rejected'}});
+  });
+
+  test('scenario: respond_POL-RETURN-002_c0', () {
+    final a = makeAdapter();
+    a.reset();
+    a.step('approve', {'c': 0});
+    assertPartial(a.observe(), {'return_stage': {'0': 'Approved', '1': 'Requested', '2': 'Requested'}});
+  });
+
+  test('scenario: respond_POL-RETURN-002_c1', () {
+    final a = makeAdapter();
+    a.reset();
+    a.step('approve', {'c': 1});
+    assertPartial(a.observe(), {'return_stage': {'0': 'Requested', '1': 'Approved', '2': 'Requested'}});
+  });
+
+  test('scenario: respond_POL-RETURN-002_c2', () {
+    final a = makeAdapter();
+    a.reset();
+    a.step('approve', {'c': 2});
+    assertPartial(a.observe(), {'return_stage': {'0': 'Requested', '1': 'Requested', '2': 'Approved'}});
+  });
+
+  test('random-walk conformance (baked oracle trace)', () {
+    final a = makeAdapter();
+    a.reset();
+    final initial = {'return_stage': {'0': 'Requested', '1': 'Requested', '2': 'Requested'}};
+    assertPartial(a.observe(), Map<String, dynamic>.from(initial));
+    final walk = <Map<String, dynamic>>[
+      {'action': 'reject', 'params': {'c': 0}, 'expected': {'return_stage': {'0': 'Rejected', '1': 'Requested', '2': 'Requested'}}},
+      {'action': 'reject', 'params': {'c': 2}, 'expected': {'return_stage': {'0': 'Rejected', '1': 'Requested', '2': 'Rejected'}}},
+      {'action': 'approve', 'params': {'c': 1}, 'expected': {'return_stage': {'0': 'Rejected', '1': 'Approved', '2': 'Rejected'}}},
+      {'action': 'refund', 'params': {'c': 1}, 'expected': {'return_stage': {'0': 'Rejected', '1': 'Refunded', '2': 'Rejected'}}},
+    ];
+    for (final step in walk) {
+      a.step(step['action'] as String, step['params'] as Map<String, dynamic>);
+      assertPartial(a.observe(), step['expected'] as Map<String, dynamic>);
+    }
+  });
+}

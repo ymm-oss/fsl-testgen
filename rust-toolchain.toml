@@ -1,0 +1,4 @@
+# The toolchain ymm-oss/fsl builds and tests with.
+[toolchain]
+channel = "1.98.0"
+components = ["rustfmt", "clippy"]

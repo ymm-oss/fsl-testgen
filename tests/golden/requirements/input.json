@@ -1,0 +1,1820 @@
+{
+  "$schema": "https://fsl.dev/schemas/fslc/kernel/testgen-input.v1.schema.json",
+  "schema_version": "1.0.0",
+  "kernel_schema_version": "1.0.0",
+  "result": "testgen_input",
+  "fslc_version": "5.2.0",
+  "spec": "MonitorActionBoundary",
+  "source": {
+    "name": "monitor_action_boundary.fsl",
+    "digest": "sha256:2696c8f54415f3cc9520f5d8f58e331bd3734e7f7c19364ba70a651a1c41a051"
+  },
+  "dialect": "requirements",
+  "gate": {
+    "depth": 3,
+    "deadlock": "warn",
+    "strict": false
+  },
+  "state": [
+    "x",
+    "phase",
+    "selection",
+    "selected"
+  ],
+  "actions": [
+    {
+      "name": "select",
+      "params": [
+        "v"
+      ]
+    },
+    {
+      "name": "execute",
+      "params": [
+        "raw"
+      ]
+    }
+  ],
+  "scenarios": [
+    {
+      "steps": [
+        {
+          "action": "select",
+          "params": {
+            "v": 0
+          }
+        }
+      ],
+      "initial_state": {
+        "x": 0,
+        "phase": "Ready",
+        "selection": "Empty",
+        "selected": 0
+      },
+      "expected_states": [
+        {
+          "x": 0,
+          "phase": "Ready",
+          "selection": "Chosen",
+          "selected": 0
+        }
+      ],
+      "name": "cover_select",
+      "kind": "action_coverage",
+      "action": "select",
+      "requirement": {
+        "id": "REQ-MONITOR-001",
+        "text": "Only a fresh selection with an in-domain raw value may execute"
+      },
+      "requirements": [
+        {
+          "id": "REQ-MONITOR-001",
+          "text": "Only a fresh selection with an in-domain raw value may execute"
+        }
+      ]
+    },
+    {
+      "steps": [
+        {
+          "action": "select",
+          "params": {
+            "v": 0
+          }
+        },
+        {
+          "action": "execute",
+          "params": {
+            "raw": 0
+          }
+        }
+      ],
+      "initial_state": {
+        "x": 0,
+        "phase": "Ready",
+        "selection": "Empty",
+        "selected": 0
+      },
+      "expected_states": [
+        {
+          "x": 0,
+          "phase": "Ready",
+          "selection": "Chosen",
+          "selected": 0
+        },
+        {
+          "x": 0,
+          "phase": "Done",
+          "selection": "Empty",
+          "selected": 0
+        }
+      ],
+      "name": "cover_execute",
+      "kind": "action_coverage",
+      "action": "execute",
+      "requirement": {
+        "id": "REQ-MONITOR-001",
+        "text": "Only a fresh selection with an in-domain raw value may execute"
+      },
+      "requirements": [
+        {
+          "id": "REQ-MONITOR-001",
+          "text": "Only a fresh selection with an in-domain raw value may execute"
+        }
+      ]
+    },
+    {
+      "name": "acceptance_AC-MONITOR-001",
+      "kind": "acceptance",
+      "acceptance": "AC-MONITOR-001",
+      "requirement": {
+        "id": "AC-MONITOR-001",
+        "text": "The lower parameter bound executes"
+      },
+      "steps": [
+        {
+          "action": "select",
+          "params": {
+            "v": 0
+          }
+        },
+        {
+          "action": "execute",
+          "params": {
+            "raw": 0
+          }
+        }
+      ],
+      "initial_state": {
+        "x": 0,
+        "phase": "Ready",
+        "selection": "Empty",
+        "selected": 0
+      },
+      "expected_states": [
+        {
+          "x": 0,
+          "phase": "Ready",
+          "selection": "Chosen",
+          "selected": 0
+        },
+        {
+          "x": 0,
+          "phase": "Done",
+          "selection": "Empty",
+          "selected": 0
+        }
+      ]
+    },
+    {
+      "name": "acceptance_AC-MONITOR-002",
+      "kind": "acceptance",
+      "acceptance": "AC-MONITOR-002",
+      "requirement": {
+        "id": "AC-MONITOR-002",
+        "text": "The upper parameter bound executes"
+      },
+      "steps": [
+        {
+          "action": "select",
+          "params": {
+            "v": 1
+          }
+        },
+        {
+          "action": "execute",
+          "params": {
+            "raw": 1
+          }
+        }
+      ],
+      "initial_state": {
+        "x": 0,
+        "phase": "Ready",
+        "selection": "Empty",
+        "selected": 0
+      },
+      "expected_states": [
+        {
+          "x": 0,
+          "phase": "Ready",
+          "selection": "Chosen",
+          "selected": 1
+        },
+        {
+          "x": 1,
+          "phase": "Done",
+          "selection": "Empty",
+          "selected": 1
+        }
+      ]
+    },
+    {
+      "name": "forbidden_FB-MONITOR-001",
+      "kind": "forbidden",
+      "forbidden": "FB-MONITOR-001",
+      "requirement": {
+        "id": "FB-MONITOR-001",
+        "text": "A consumed selection cannot execute again"
+      },
+      "steps": [
+        {
+          "action": "select",
+          "params": {
+            "v": 0
+          }
+        },
+        {
+          "action": "execute",
+          "params": {
+            "raw": 0
+          }
+        }
+      ],
+      "initial_state": {
+        "x": 0,
+        "phase": "Ready",
+        "selection": "Empty",
+        "selected": 0
+      },
+      "expected_states": [
+        {
+          "x": 0,
+          "phase": "Ready",
+          "selection": "Chosen",
+          "selected": 0
+        },
+        {
+          "x": 0,
+          "phase": "Done",
+          "selection": "Empty",
+          "selected": 0
+        }
+      ],
+      "forbidden_step": {
+        "action": "execute",
+        "params": {
+          "raw": 0
+        }
+      },
+      "rejected_by": "requires_failed"
+    },
+    {
+      "name": "forbidden_FB-MONITOR-002",
+      "kind": "forbidden",
+      "forbidden": "FB-MONITOR-002",
+      "requirement": {
+        "id": "FB-MONITOR-002",
+        "text": "A raw value outside Count is rejected"
+      },
+      "steps": [
+        {
+          "action": "select",
+          "params": {
+            "v": 0
+          }
+        }
+      ],
+      "initial_state": {
+        "x": 0,
+        "phase": "Ready",
+        "selection": "Empty",
+        "selected": 0
+      },
+      "expected_states": [
+        {
+          "x": 0,
+          "phase": "Ready",
+          "selection": "Chosen",
+          "selected": 0
+        }
+      ],
+      "forbidden_step": {
+        "action": "execute",
+        "params": {
+          "raw": 2
+        }
+      },
+      "rejected_by": "requires_failed"
+    }
+  ],
+  "walk": {
+    "$schema": "https://fsl.dev/schemas/fslc/kernel/testgen-trace.v1.schema.json",
+    "schema_version": "1.0.0",
+    "kernel_schema_version": "1.0.0",
+    "result": "testgen_trace",
+    "spec": "MonitorActionBoundary",
+    "initial": {
+      "x": 0,
+      "phase": "Ready",
+      "selection": "Empty",
+      "selected": 0
+    },
+    "steps": [
+      {
+        "action": "select",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 0,
+          "phase": "Ready",
+          "selection": "Chosen",
+          "selected": 1
+        }
+      },
+      {
+        "action": "select",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 0,
+          "phase": "Ready",
+          "selection": "Chosen",
+          "selected": 1
+        }
+      },
+      {
+        "action": "select",
+        "params": {
+          "v": 0
+        },
+        "expected": {
+          "x": 0,
+          "phase": "Ready",
+          "selection": "Chosen",
+          "selected": 0
+        }
+      },
+      {
+        "action": "select",
+        "params": {
+          "v": 1
+        },
+        "expected": {
+          "x": 0,
+          "phase": "Ready",
+          "selection": "Chosen",
+          "selected": 1
+        }
+      },
+      {
+        "action": "execute",
+        "params": {
+          "raw": 1
+        },
+        "expected": {
+          "x": 1,
+          "phase": "Done",
+          "selection": "Empty",
+          "selected": 1
+        }
+      }
+    ]
+  },
+  "kernel": {
+    "$schema": "https://fsl.dev/schemas/fslc/kernel/kernel.v1.schema.json",
+    "schema_version": "1.0.0",
+    "language_version": "1.0",
+    "spec": {
+      "name": "MonitorActionBoundary",
+      "source": {
+        "file": "examples/self/monitor_action_boundary.fsl",
+        "dialect": "requirements"
+      }
+    },
+    "semantics": {
+      "assignment": "simultaneous",
+      "reads": "pre_state",
+      "requires_false": "not_enabled",
+      "failure_state": "rollback",
+      "old": "pre_state",
+      "integer_division": "euclidean",
+      "terminal_deadlock": "terminal_states_excluded",
+      "fairness": "weak"
+    },
+    "constants": [],
+    "types": [
+      {
+        "name": "Count",
+        "span": null,
+        "symmetric": false,
+        "definition": {
+          "kind": "domain",
+          "lo": 0,
+          "hi": 1
+        },
+        "origin": {
+          "dialect": "requirements",
+          "declaration": "Count",
+          "lowered": true,
+          "generated": false
+        }
+      },
+      {
+        "name": "Phase",
+        "span": null,
+        "symmetric": false,
+        "definition": {
+          "kind": "enum",
+          "members": [
+            "Ready",
+            "Done"
+          ]
+        },
+        "origin": {
+          "dialect": "requirements",
+          "declaration": "Phase",
+          "lowered": true,
+          "generated": false
+        }
+      },
+      {
+        "name": "RawInput",
+        "span": null,
+        "symmetric": false,
+        "definition": {
+          "kind": "domain",
+          "lo": -1,
+          "hi": 2
+        },
+        "origin": {
+          "dialect": "requirements",
+          "declaration": "RawInput",
+          "lowered": true,
+          "generated": false
+        }
+      },
+      {
+        "name": "Selection",
+        "span": null,
+        "symmetric": false,
+        "definition": {
+          "kind": "enum",
+          "members": [
+            "Empty",
+            "Chosen"
+          ]
+        },
+        "origin": {
+          "dialect": "requirements",
+          "declaration": "Selection",
+          "lowered": true,
+          "generated": false
+        }
+      }
+    ],
+    "state": [
+      {
+        "name": "phase",
+        "type": {
+          "kind": "named",
+          "name": "Phase"
+        },
+        "span": null,
+        "origin": {
+          "dialect": "requirements",
+          "declaration": "phase",
+          "lowered": true,
+          "generated": false
+        }
+      },
+      {
+        "name": "selected",
+        "type": {
+          "kind": "named",
+          "name": "Count"
+        },
+        "span": null,
+        "origin": {
+          "dialect": "requirements",
+          "declaration": "selected",
+          "lowered": true,
+          "generated": false
+        }
+      },
+      {
+        "name": "selection",
+        "type": {
+          "kind": "named",
+          "name": "Selection"
+        },
+        "span": null,
+        "origin": {
+          "dialect": "requirements",
+          "declaration": "selection",
+          "lowered": true,
+          "generated": false
+        }
+      },
+      {
+        "name": "x",
+        "type": {
+          "kind": "named",
+          "name": "Count"
+        },
+        "span": null,
+        "origin": {
+          "dialect": "requirements",
+          "declaration": "x",
+          "lowered": true,
+          "generated": false
+        }
+      }
+    ],
+    "init": {
+      "statements": [
+        {
+          "kind": "assign",
+          "type": {
+            "kind": "statement"
+          },
+          "span": {
+            "file": "examples/self/monitor_action_boundary.fsl",
+            "line": 20,
+            "column": 5,
+            "end_line": 20,
+            "end_column": 6
+          },
+          "target": {
+            "kind": "var",
+            "type": {
+              "kind": "named",
+              "name": "Count"
+            },
+            "span": {
+              "file": "examples/self/monitor_action_boundary.fsl",
+              "line": 20,
+              "column": 5,
+              "end_line": 20,
+              "end_column": 6
+            },
+            "name": "x"
+          },
+          "value": {
+            "kind": "num",
+            "type": {
+              "kind": "domain",
+              "lo": 0,
+              "hi": 1
+            },
+            "span": {
+              "file": "examples/self/monitor_action_boundary.fsl",
+              "line": 20,
+              "column": 5,
+              "end_line": 20,
+              "end_column": 6
+            },
+            "value": 0
+          }
+        },
+        {
+          "kind": "assign",
+          "type": {
+            "kind": "statement"
+          },
+          "span": {
+            "file": "examples/self/monitor_action_boundary.fsl",
+            "line": 21,
+            "column": 5,
+            "end_line": 21,
+            "end_column": 10
+          },
+          "target": {
+            "kind": "var",
+            "type": {
+              "kind": "named",
+              "name": "Phase"
+            },
+            "span": {
+              "file": "examples/self/monitor_action_boundary.fsl",
+              "line": 21,
+              "column": 5,
+              "end_line": 21,
+              "end_column": 10
+            },
+            "name": "phase"
+          },
+          "value": {
+            "kind": "var",
+            "type": {
+              "kind": "named",
+              "name": "Phase"
+            },
+            "span": {
+              "file": "examples/self/monitor_action_boundary.fsl",
+              "line": 21,
+              "column": 5,
+              "end_line": 21,
+              "end_column": 10
+            },
+            "name": "Ready"
+          }
+        },
+        {
+          "kind": "assign",
+          "type": {
+            "kind": "statement"
+          },
+          "span": {
+            "file": "examples/self/monitor_action_boundary.fsl",
+            "line": 22,
+            "column": 5,
+            "end_line": 22,
+            "end_column": 14
+          },
+          "target": {
+            "kind": "var",
+            "type": {
+              "kind": "named",
+              "name": "Selection"
+            },
+            "span": {
+              "file": "examples/self/monitor_action_boundary.fsl",
+              "line": 22,
+              "column": 5,
+              "end_line": 22,
+              "end_column": 14
+            },
+            "name": "selection"
+          },
+          "value": {
+            "kind": "var",
+            "type": {
+              "kind": "named",
+              "name": "Selection"
+            },
+            "span": {
+              "file": "examples/self/monitor_action_boundary.fsl",
+              "line": 22,
+              "column": 5,
+              "end_line": 22,
+              "end_column": 14
+            },
+            "name": "Empty"
+          }
+        },
+        {
+          "kind": "assign",
+          "type": {
+            "kind": "statement"
+          },
+          "span": {
+            "file": "examples/self/monitor_action_boundary.fsl",
+            "line": 23,
+            "column": 5,
+            "end_line": 23,
+            "end_column": 13
+          },
+          "target": {
+            "kind": "var",
+            "type": {
+              "kind": "named",
+              "name": "Count"
+            },
+            "span": {
+              "file": "examples/self/monitor_action_boundary.fsl",
+              "line": 23,
+              "column": 5,
+              "end_line": 23,
+              "end_column": 13
+            },
+            "name": "selected"
+          },
+          "value": {
+            "kind": "num",
+            "type": {
+              "kind": "domain",
+              "lo": 0,
+              "hi": 1
+            },
+            "span": {
+              "file": "examples/self/monitor_action_boundary.fsl",
+              "line": 23,
+              "column": 5,
+              "end_line": 23,
+              "end_column": 13
+            },
+            "value": 0
+          }
+        }
+      ],
+      "requirement": null,
+      "origin": {
+        "dialect": "requirements",
+        "declaration": "init",
+        "lowered": true,
+        "generated": false
+      },
+      "span": {
+        "file": "examples/self/monitor_action_boundary.fsl",
+        "line": 20,
+        "column": 5,
+        "end_line": 20,
+        "end_column": 6
+      }
+    },
+    "actions": [
+      {
+        "name": "execute",
+        "parameters": [
+          {
+            "name": "raw",
+            "type": {
+              "kind": "named",
+              "name": "RawInput"
+            },
+            "finite_domain": {
+              "lo": -1,
+              "hi": 2
+            }
+          }
+        ],
+        "fair": false,
+        "guards": [
+          {
+            "kind": "requires",
+            "expression": {
+              "kind": "binary",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/self/monitor_action_boundary.fsl",
+                "line": 34,
+                "column": 7,
+                "end_line": 34,
+                "end_column": 15
+              },
+              "operator": "==",
+              "left": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "Selection"
+                },
+                "span": {
+                  "file": "examples/self/monitor_action_boundary.fsl",
+                  "line": 34,
+                  "column": 7,
+                  "end_line": 34,
+                  "end_column": 15
+                },
+                "name": "selection"
+              },
+              "right": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "Selection"
+                },
+                "span": {
+                  "file": "examples/self/monitor_action_boundary.fsl",
+                  "line": 34,
+                  "column": 7,
+                  "end_line": 34,
+                  "end_column": 15
+                },
+                "name": "Chosen"
+              }
+            }
+          },
+          {
+            "kind": "requires",
+            "expression": {
+              "kind": "binary",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/self/monitor_action_boundary.fsl",
+                "line": 35,
+                "column": 7,
+                "end_line": 35,
+                "end_column": 15
+              },
+              "operator": "==",
+              "left": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "Phase"
+                },
+                "span": {
+                  "file": "examples/self/monitor_action_boundary.fsl",
+                  "line": 35,
+                  "column": 7,
+                  "end_line": 35,
+                  "end_column": 15
+                },
+                "name": "phase"
+              },
+              "right": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "Phase"
+                },
+                "span": {
+                  "file": "examples/self/monitor_action_boundary.fsl",
+                  "line": 35,
+                  "column": 7,
+                  "end_line": 35,
+                  "end_column": 15
+                },
+                "name": "Ready"
+              }
+            }
+          },
+          {
+            "kind": "requires",
+            "expression": {
+              "kind": "binary",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/self/monitor_action_boundary.fsl",
+                "line": 36,
+                "column": 7,
+                "end_line": 36,
+                "end_column": 15
+              },
+              "operator": "and",
+              "left": {
+                "kind": "binary",
+                "type": {
+                  "kind": "bool"
+                },
+                "span": {
+                  "file": "examples/self/monitor_action_boundary.fsl",
+                  "line": 36,
+                  "column": 7,
+                  "end_line": 36,
+                  "end_column": 15
+                },
+                "operator": ">=",
+                "left": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "named",
+                    "name": "RawInput"
+                  },
+                  "span": {
+                    "file": "examples/self/monitor_action_boundary.fsl",
+                    "line": 36,
+                    "column": 7,
+                    "end_line": 36,
+                    "end_column": 15
+                  },
+                  "name": "raw"
+                },
+                "right": {
+                  "kind": "num",
+                  "type": {
+                    "kind": "int"
+                  },
+                  "span": {
+                    "file": "examples/self/monitor_action_boundary.fsl",
+                    "line": 36,
+                    "column": 7,
+                    "end_line": 36,
+                    "end_column": 15
+                  },
+                  "value": 0
+                }
+              },
+              "right": {
+                "kind": "binary",
+                "type": {
+                  "kind": "bool"
+                },
+                "span": {
+                  "file": "examples/self/monitor_action_boundary.fsl",
+                  "line": 36,
+                  "column": 7,
+                  "end_line": 36,
+                  "end_column": 15
+                },
+                "operator": "<=",
+                "left": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "named",
+                    "name": "RawInput"
+                  },
+                  "span": {
+                    "file": "examples/self/monitor_action_boundary.fsl",
+                    "line": 36,
+                    "column": 7,
+                    "end_line": 36,
+                    "end_column": 15
+                  },
+                  "name": "raw"
+                },
+                "right": {
+                  "kind": "num",
+                  "type": {
+                    "kind": "int"
+                  },
+                  "span": {
+                    "file": "examples/self/monitor_action_boundary.fsl",
+                    "line": 36,
+                    "column": 7,
+                    "end_line": 36,
+                    "end_column": 15
+                  },
+                  "value": 1
+                }
+              }
+            }
+          },
+          {
+            "kind": "requires",
+            "expression": {
+              "kind": "binary",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/self/monitor_action_boundary.fsl",
+                "line": 37,
+                "column": 7,
+                "end_line": 37,
+                "end_column": 15
+              },
+              "operator": "==",
+              "left": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "RawInput"
+                },
+                "span": {
+                  "file": "examples/self/monitor_action_boundary.fsl",
+                  "line": 37,
+                  "column": 7,
+                  "end_line": 37,
+                  "end_column": 15
+                },
+                "name": "raw"
+              },
+              "right": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "Count"
+                },
+                "span": {
+                  "file": "examples/self/monitor_action_boundary.fsl",
+                  "line": 37,
+                  "column": 7,
+                  "end_line": 37,
+                  "end_column": 15
+                },
+                "name": "selected"
+              }
+            }
+          }
+        ],
+        "requires": [
+          {
+            "kind": "binary",
+            "type": {
+              "kind": "bool"
+            },
+            "span": {
+              "file": "examples/self/monitor_action_boundary.fsl",
+              "line": 34,
+              "column": 7,
+              "end_line": 34,
+              "end_column": 15
+            },
+            "operator": "==",
+            "left": {
+              "kind": "var",
+              "type": {
+                "kind": "named",
+                "name": "Selection"
+              },
+              "span": {
+                "file": "examples/self/monitor_action_boundary.fsl",
+                "line": 34,
+                "column": 7,
+                "end_line": 34,
+                "end_column": 15
+              },
+              "name": "selection"
+            },
+            "right": {
+              "kind": "var",
+              "type": {
+                "kind": "named",
+                "name": "Selection"
+              },
+              "span": {
+                "file": "examples/self/monitor_action_boundary.fsl",
+                "line": 34,
+                "column": 7,
+                "end_line": 34,
+                "end_column": 15
+              },
+              "name": "Chosen"
+            }
+          },
+          {
+            "kind": "binary",
+            "type": {
+              "kind": "bool"
+            },
+            "span": {
+              "file": "examples/self/monitor_action_boundary.fsl",
+              "line": 35,
+              "column": 7,
+              "end_line": 35,
+              "end_column": 15
+            },
+            "operator": "==",
+            "left": {
+              "kind": "var",
+              "type": {
+                "kind": "named",
+                "name": "Phase"
+              },
+              "span": {
+                "file": "examples/self/monitor_action_boundary.fsl",
+                "line": 35,
+                "column": 7,
+                "end_line": 35,
+                "end_column": 15
+              },
+              "name": "phase"
+            },
+            "right": {
+              "kind": "var",
+              "type": {
+                "kind": "named",
+                "name": "Phase"
+              },
+              "span": {
+                "file": "examples/self/monitor_action_boundary.fsl",
+                "line": 35,
+                "column": 7,
+                "end_line": 35,
+                "end_column": 15
+              },
+              "name": "Ready"
+            }
+          },
+          {
+            "kind": "binary",
+            "type": {
+              "kind": "bool"
+            },
+            "span": {
+              "file": "examples/self/monitor_action_boundary.fsl",
+              "line": 36,
+              "column": 7,
+              "end_line": 36,
+              "end_column": 15
+            },
+            "operator": "and",
+            "left": {
+              "kind": "binary",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/self/monitor_action_boundary.fsl",
+                "line": 36,
+                "column": 7,
+                "end_line": 36,
+                "end_column": 15
+              },
+              "operator": ">=",
+              "left": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "RawInput"
+                },
+                "span": {
+                  "file": "examples/self/monitor_action_boundary.fsl",
+                  "line": 36,
+                  "column": 7,
+                  "end_line": 36,
+                  "end_column": 15
+                },
+                "name": "raw"
+              },
+              "right": {
+                "kind": "num",
+                "type": {
+                  "kind": "int"
+                },
+                "span": {
+                  "file": "examples/self/monitor_action_boundary.fsl",
+                  "line": 36,
+                  "column": 7,
+                  "end_line": 36,
+                  "end_column": 15
+                },
+                "value": 0
+              }
+            },
+            "right": {
+              "kind": "binary",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/self/monitor_action_boundary.fsl",
+                "line": 36,
+                "column": 7,
+                "end_line": 36,
+                "end_column": 15
+              },
+              "operator": "<=",
+              "left": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "RawInput"
+                },
+                "span": {
+                  "file": "examples/self/monitor_action_boundary.fsl",
+                  "line": 36,
+                  "column": 7,
+                  "end_line": 36,
+                  "end_column": 15
+                },
+                "name": "raw"
+              },
+              "right": {
+                "kind": "num",
+                "type": {
+                  "kind": "int"
+                },
+                "span": {
+                  "file": "examples/self/monitor_action_boundary.fsl",
+                  "line": 36,
+                  "column": 7,
+                  "end_line": 36,
+                  "end_column": 15
+                },
+                "value": 1
+              }
+            }
+          },
+          {
+            "kind": "binary",
+            "type": {
+              "kind": "bool"
+            },
+            "span": {
+              "file": "examples/self/monitor_action_boundary.fsl",
+              "line": 37,
+              "column": 7,
+              "end_line": 37,
+              "end_column": 15
+            },
+            "operator": "==",
+            "left": {
+              "kind": "var",
+              "type": {
+                "kind": "named",
+                "name": "RawInput"
+              },
+              "span": {
+                "file": "examples/self/monitor_action_boundary.fsl",
+                "line": 37,
+                "column": 7,
+                "end_line": 37,
+                "end_column": 15
+              },
+              "name": "raw"
+            },
+            "right": {
+              "kind": "var",
+              "type": {
+                "kind": "named",
+                "name": "Count"
+              },
+              "span": {
+                "file": "examples/self/monitor_action_boundary.fsl",
+                "line": 37,
+                "column": 7,
+                "end_line": 37,
+                "end_column": 15
+              },
+              "name": "selected"
+            }
+          }
+        ],
+        "lets": [],
+        "updates": [
+          {
+            "kind": "assign",
+            "type": {
+              "kind": "statement"
+            },
+            "span": {
+              "file": "examples/self/monitor_action_boundary.fsl",
+              "line": 38,
+              "column": 7,
+              "end_line": 38,
+              "end_column": 8
+            },
+            "target": {
+              "kind": "var",
+              "type": {
+                "kind": "named",
+                "name": "Count"
+              },
+              "span": {
+                "file": "examples/self/monitor_action_boundary.fsl",
+                "line": 38,
+                "column": 7,
+                "end_line": 38,
+                "end_column": 8
+              },
+              "name": "x"
+            },
+            "value": {
+              "kind": "var",
+              "type": {
+                "kind": "named",
+                "name": "RawInput"
+              },
+              "span": {
+                "file": "examples/self/monitor_action_boundary.fsl",
+                "line": 38,
+                "column": 7,
+                "end_line": 38,
+                "end_column": 8
+              },
+              "name": "raw"
+            }
+          },
+          {
+            "kind": "assign",
+            "type": {
+              "kind": "statement"
+            },
+            "span": {
+              "file": "examples/self/monitor_action_boundary.fsl",
+              "line": 39,
+              "column": 7,
+              "end_line": 39,
+              "end_column": 12
+            },
+            "target": {
+              "kind": "var",
+              "type": {
+                "kind": "named",
+                "name": "Phase"
+              },
+              "span": {
+                "file": "examples/self/monitor_action_boundary.fsl",
+                "line": 39,
+                "column": 7,
+                "end_line": 39,
+                "end_column": 12
+              },
+              "name": "phase"
+            },
+            "value": {
+              "kind": "var",
+              "type": {
+                "kind": "named",
+                "name": "Phase"
+              },
+              "span": {
+                "file": "examples/self/monitor_action_boundary.fsl",
+                "line": 39,
+                "column": 7,
+                "end_line": 39,
+                "end_column": 12
+              },
+              "name": "Done"
+            }
+          },
+          {
+            "kind": "assign",
+            "type": {
+              "kind": "statement"
+            },
+            "span": {
+              "file": "examples/self/monitor_action_boundary.fsl",
+              "line": 40,
+              "column": 7,
+              "end_line": 40,
+              "end_column": 16
+            },
+            "target": {
+              "kind": "var",
+              "type": {
+                "kind": "named",
+                "name": "Selection"
+              },
+              "span": {
+                "file": "examples/self/monitor_action_boundary.fsl",
+                "line": 40,
+                "column": 7,
+                "end_line": 40,
+                "end_column": 16
+              },
+              "name": "selection"
+            },
+            "value": {
+              "kind": "var",
+              "type": {
+                "kind": "named",
+                "name": "Selection"
+              },
+              "span": {
+                "file": "examples/self/monitor_action_boundary.fsl",
+                "line": 40,
+                "column": 7,
+                "end_line": 40,
+                "end_column": 16
+              },
+              "name": "Empty"
+            }
+          }
+        ],
+        "update_semantics": "simultaneous",
+        "ensures": [
+          {
+            "kind": "binary",
+            "type": {
+              "kind": "bool"
+            },
+            "span": {
+              "file": "examples/self/monitor_action_boundary.fsl",
+              "line": 41,
+              "column": 7,
+              "end_line": 41,
+              "end_column": 14
+            },
+            "operator": "==",
+            "left": {
+              "kind": "var",
+              "type": {
+                "kind": "named",
+                "name": "Count"
+              },
+              "span": {
+                "file": "examples/self/monitor_action_boundary.fsl",
+                "line": 41,
+                "column": 7,
+                "end_line": 41,
+                "end_column": 14
+              },
+              "name": "x"
+            },
+            "right": {
+              "kind": "var",
+              "type": {
+                "kind": "named",
+                "name": "Count"
+              },
+              "span": {
+                "file": "examples/self/monitor_action_boundary.fsl",
+                "line": 41,
+                "column": 7,
+                "end_line": 41,
+                "end_column": 14
+              },
+              "name": "selected"
+            }
+          }
+        ],
+        "partial_operations": [],
+        "requirement": {
+          "id": "REQ-MONITOR-001",
+          "text": "Only a fresh selection with an in-domain raw value may execute"
+        },
+        "origin": {
+          "dialect": "requirements",
+          "declaration": "REQ-MONITOR-001",
+          "lowered": true,
+          "generated": false
+        },
+        "span": {
+          "file": "examples/self/monitor_action_boundary.fsl",
+          "line": 33,
+          "column": 5,
+          "end_line": 33,
+          "end_column": 11
+        }
+      },
+      {
+        "name": "select",
+        "parameters": [
+          {
+            "name": "v",
+            "type": {
+              "kind": "named",
+              "name": "Count"
+            },
+            "finite_domain": {
+              "lo": 0,
+              "hi": 1
+            }
+          }
+        ],
+        "fair": false,
+        "guards": [
+          {
+            "kind": "requires",
+            "expression": {
+              "kind": "binary",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/self/monitor_action_boundary.fsl",
+                "line": 28,
+                "column": 7,
+                "end_line": 28,
+                "end_column": 15
+              },
+              "operator": "==",
+              "left": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "Phase"
+                },
+                "span": {
+                  "file": "examples/self/monitor_action_boundary.fsl",
+                  "line": 28,
+                  "column": 7,
+                  "end_line": 28,
+                  "end_column": 15
+                },
+                "name": "phase"
+              },
+              "right": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "Phase"
+                },
+                "span": {
+                  "file": "examples/self/monitor_action_boundary.fsl",
+                  "line": 28,
+                  "column": 7,
+                  "end_line": 28,
+                  "end_column": 15
+                },
+                "name": "Ready"
+              }
+            }
+          }
+        ],
+        "requires": [
+          {
+            "kind": "binary",
+            "type": {
+              "kind": "bool"
+            },
+            "span": {
+              "file": "examples/self/monitor_action_boundary.fsl",
+              "line": 28,
+              "column": 7,
+              "end_line": 28,
+              "end_column": 15
+            },
+            "operator": "==",
+            "left": {
+              "kind": "var",
+              "type": {
+                "kind": "named",
+                "name": "Phase"
+              },
+              "span": {
+                "file": "examples/self/monitor_action_boundary.fsl",
+                "line": 28,
+                "column": 7,
+                "end_line": 28,
+                "end_column": 15
+              },
+              "name": "phase"
+            },
+            "right": {
+              "kind": "var",
+              "type": {
+                "kind": "named",
+                "name": "Phase"
+              },
+              "span": {
+                "file": "examples/self/monitor_action_boundary.fsl",
+                "line": 28,
+                "column": 7,
+                "end_line": 28,
+                "end_column": 15
+              },
+              "name": "Ready"
+            }
+          }
+        ],
+        "lets": [],
+        "updates": [
+          {
+            "kind": "assign",
+            "type": {
+              "kind": "statement"
+            },
+            "span": {
+              "file": "examples/self/monitor_action_boundary.fsl",
+              "line": 29,
+              "column": 7,
+              "end_line": 29,
+              "end_column": 16
+            },
+            "target": {
+              "kind": "var",
+              "type": {
+                "kind": "named",
+                "name": "Selection"
+              },
+              "span": {
+                "file": "examples/self/monitor_action_boundary.fsl",
+                "line": 29,
+                "column": 7,
+                "end_line": 29,
+                "end_column": 16
+              },
+              "name": "selection"
+            },
+            "value": {
+              "kind": "var",
+              "type": {
+                "kind": "named",
+                "name": "Selection"
+              },
+              "span": {
+                "file": "examples/self/monitor_action_boundary.fsl",
+                "line": 29,
+                "column": 7,
+                "end_line": 29,
+                "end_column": 16
+              },
+              "name": "Chosen"
+            }
+          },
+          {
+            "kind": "assign",
+            "type": {
+              "kind": "statement"
+            },
+            "span": {
+              "file": "examples/self/monitor_action_boundary.fsl",
+              "line": 30,
+              "column": 7,
+              "end_line": 30,
+              "end_column": 15
+            },
+            "target": {
+              "kind": "var",
+              "type": {
+                "kind": "named",
+                "name": "Count"
+              },
+              "span": {
+                "file": "examples/self/monitor_action_boundary.fsl",
+                "line": 30,
+                "column": 7,
+                "end_line": 30,
+                "end_column": 15
+              },
+              "name": "selected"
+            },
+            "value": {
+              "kind": "var",
+              "type": {
+                "kind": "named",
+                "name": "Count"
+              },
+              "span": {
+                "file": "examples/self/monitor_action_boundary.fsl",
+                "line": 30,
+                "column": 7,
+                "end_line": 30,
+                "end_column": 15
+              },
+              "name": "v"
+            }
+          }
+        ],
+        "update_semantics": "simultaneous",
+        "ensures": [],
+        "partial_operations": [],
+        "requirement": {
+          "id": "REQ-MONITOR-001",
+          "text": "Only a fresh selection with an in-domain raw value may execute"
+        },
+        "origin": {
+          "dialect": "requirements",
+          "declaration": "REQ-MONITOR-001",
+          "lowered": true,
+          "generated": false
+        },
+        "span": {
+          "file": "examples/self/monitor_action_boundary.fsl",
+          "line": 27,
+          "column": 5,
+          "end_line": 27,
+          "end_column": 11
+        }
+      }
+    ],
+    "properties": {
+      "invariants": [
+        {
+          "name": "ConsumedSelectionIsCleared",
+          "source_kind": "invariant",
+          "expression": {
+            "kind": "binary",
+            "type": {
+              "kind": "bool"
+            },
+            "span": {
+              "file": "examples/self/monitor_action_boundary.fsl",
+              "line": 44,
+              "column": 5,
+              "end_line": 44,
+              "end_column": 14
+            },
+            "operator": "or",
+            "left": {
+              "kind": "binary",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/self/monitor_action_boundary.fsl",
+                "line": 44,
+                "column": 5,
+                "end_line": 44,
+                "end_column": 14
+              },
+              "operator": "==",
+              "left": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "Phase"
+                },
+                "span": {
+                  "file": "examples/self/monitor_action_boundary.fsl",
+                  "line": 44,
+                  "column": 5,
+                  "end_line": 44,
+                  "end_column": 14
+                },
+                "name": "phase"
+              },
+              "right": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "Phase"
+                },
+                "span": {
+                  "file": "examples/self/monitor_action_boundary.fsl",
+                  "line": 44,
+                  "column": 5,
+                  "end_line": 44,
+                  "end_column": 14
+                },
+                "name": "Ready"
+              }
+            },
+            "right": {
+              "kind": "binary",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/self/monitor_action_boundary.fsl",
+                "line": 44,
+                "column": 5,
+                "end_line": 44,
+                "end_column": 14
+              },
+              "operator": "==",
+              "left": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "Selection"
+                },
+                "span": {
+                  "file": "examples/self/monitor_action_boundary.fsl",
+                  "line": 44,
+                  "column": 5,
+                  "end_line": 44,
+                  "end_column": 14
+                },
+                "name": "selection"
+              },
+              "right": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "Selection"
+                },
+                "span": {
+                  "file": "examples/self/monitor_action_boundary.fsl",
+                  "line": 44,
+                  "column": 5,
+                  "end_line": 44,
+                  "end_column": 14
+                },
+                "name": "Empty"
+              }
+            }
+          },
+          "requirement": {
+            "id": "REQ-MONITOR-001",
+            "text": "Only a fresh selection with an in-domain raw value may execute"
+          },
+          "origin": {
+            "dialect": "requirements",
+            "declaration": "REQ-MONITOR-001",
+            "lowered": true,
+            "generated": false
+          },
+          "span": {
+            "file": "examples/self/monitor_action_boundary.fsl",
+            "line": 44,
+            "column": 5,
+            "end_line": 44,
+            "end_column": 14
+          }
+        }
+      ],
+      "transitions": [],
+      "reachables": [],
+      "leads_to": [],
+      "terminal": {
+        "source_kind": "terminal",
+        "expression": {
+          "kind": "binary",
+          "type": {
+            "kind": "bool"
+          },
+          "span": {
+            "file": "examples/self/monitor_action_boundary.fsl",
+            "line": 74,
+            "column": 3,
+            "end_line": 74,
+            "end_column": 11
+          },
+          "operator": "==",
+          "left": {
+            "kind": "var",
+            "type": {
+              "kind": "named",
+              "name": "Phase"
+            },
+            "span": {
+              "file": "examples/self/monitor_action_boundary.fsl",
+              "line": 74,
+              "column": 3,
+              "end_line": 74,
+              "end_column": 11
+            },
+            "name": "phase"
+          },
+          "right": {
+            "kind": "var",
+            "type": {
+              "kind": "named",
+              "name": "Phase"
+            },
+            "span": {
+              "file": "examples/self/monitor_action_boundary.fsl",
+              "line": 74,
+              "column": 3,
+              "end_line": 74,
+              "end_column": 11
+            },
+            "name": "Done"
+          }
+        },
+        "span": {
+          "file": "examples/self/monitor_action_boundary.fsl",
+          "line": 74,
+          "column": 3,
+          "end_line": 74,
+          "end_column": 11
+        }
+      }
+    }
+  },
+  "fsl": "1.0"
+}

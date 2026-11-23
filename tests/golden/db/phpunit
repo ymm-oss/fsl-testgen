@@ -1,0 +1,105 @@
+<?php
+// SPDX-License-Identifier: Apache-2.0
+//
+// Auto-generated FSL conformance tests (PHPUnit, PHP 8.1+ / PHPUnit 10+).
+// Source: safe_rollback_equivalence.fsl
+//
+// Wire `makeAdapter()` to your implementation. Until it is wired, every test
+// FAILS with "adapter not wired" (issue #1200): a suite that never calls the
+// implementation is not evidence that it conforms. Generate with
+// `fslc testgen --allow-unwired` to skip instead.
+//
+// The random-walk trace below was baked at generation time by the FSL Monitor
+// (the spec's concrete interpreter) under a fixed seed, so these tests need no
+// `fslc`/Python at runtime — they replay the baked oracle states and assert.
+declare(strict_types=1);
+
+use PHPUnit\Framework\TestCase;
+
+interface Adapter
+{
+    public function reset(): void;
+    // Return ['ok' => bool, 'kind' => ?string] for forbidden-rejection scenarios;
+    // null is fine for ordinary steps.
+    public function step(string $action, array $params): ?array;
+    public function observe(): array;
+}
+
+
+final class SafeRollbackEquivalenceConformanceTest extends TestCase
+{
+    private ?Adapter $adapter = null;
+
+    // Wire your implementation here: return your adapter instead of throwing.
+    protected function makeAdapter(): Adapter
+    {
+        throw new \RuntimeException('wire your implementation: implement makeAdapter()');
+    }
+
+    protected function setUp(): void
+    {
+        try {
+            $a = $this->makeAdapter();
+            $a->reset();
+            $a->observe();
+            $this->adapter = $a;
+        } catch (\Throwable $e) {
+            $this->fail('adapter not wired: implement makeAdapter() to connect your implementation, or generate with `fslc testgen --allow-unwired` to skip instead' . ' (' . $e->getMessage() . ')');
+        }
+    }
+
+    // Compare the spec's expected state against the observed state. Recurse into
+    // arrays by the EXPECTED keys (so maps match by key — order-independent, and
+    // only the fields the spec mentions are asserted; PHP coerces numeric string
+    // keys like '0' to int consistently on both sides). A list-shaped expected
+    // also pins the length, so sequences are exact. Leaves use assertSame (===),
+    // so int/float, bool and null never coerce — the point of the PHP target.
+    private function assertPartial(mixed $expected, mixed $observed, string $path = 'state'): void
+    {
+        if (is_array($expected) && is_array($observed)) {
+            if (array_is_list($expected)) {
+                $this->assertCount(count($expected), $observed, "length at $path");
+            }
+            foreach ($expected as $key => $value) {
+                $this->assertArrayHasKey($key, $observed, "missing $path.$key");
+                $this->assertPartial($value, $observed[$key], "$path.$key");
+            }
+        } else {
+            $this->assertSame($expected, $observed, "at $path");
+        }
+    }
+
+    private function assertRejected(?array $result, ?string $expectedKind): void
+    {
+        $this->assertIsArray($result, 'forbidden step must return a result array');
+        $this->assertFalse($result['ok']);
+        if ($expectedKind !== null) {
+            $this->assertSame($expectedKind, $result['kind']);
+        }
+    }
+
+    public function testScenario_cover_migrate_add_display_name(): void
+    {
+        $a = $this->adapter;
+        $a->reset();
+        $a->step('migrate_add_display_name', []);
+        $this->assertPartial(['schema_version' => 1, 'column_exists' => ['col_users_display_name' => true, 'col_users_id' => true], 'column_backfilled' => ['col_users_display_name' => false, 'col_users_id' => true], 'column_not_null' => ['col_users_display_name' => false, 'col_users_id' => true]], $a->observe());
+    }
+
+    private const INITIAL = ['schema_version' => 0, 'column_exists' => ['col_users_display_name' => false, 'col_users_id' => true], 'column_backfilled' => ['col_users_display_name' => false, 'col_users_id' => true], 'column_not_null' => ['col_users_display_name' => false, 'col_users_id' => true]];
+    private const WALK = [
+        ['action' => 'migrate_add_display_name', 'params' => [], 'expected' => ['schema_version' => 1, 'column_exists' => ['col_users_display_name' => true, 'col_users_id' => true], 'column_backfilled' => ['col_users_display_name' => false, 'col_users_id' => true], 'column_not_null' => ['col_users_display_name' => false, 'col_users_id' => true]]],
+    ];
+
+    public function testRandomWalkConformance(): void
+    {
+        // random-walk conformance (baked oracle trace)
+        $a = $this->adapter;
+        $a->reset();
+        $this->assertPartial(self::INITIAL, $a->observe());
+        foreach (self::WALK as $step) {
+            $a->step($step['action'], $step['params']);
+            $this->assertPartial($step['expected'], $a->observe());
+        }
+    }
+}

@@ -1,0 +1,6 @@
+{
+  "description": "a business document with leadsTo and reachable scenarios",
+  "spec": "examples/layers/return_policy.fsl",
+  "depth": 3,
+  "spec_path": "/SPEC_ROOT/examples/layers/return_policy.fsl"
+}

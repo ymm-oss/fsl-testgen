@@ -1,0 +1,15 @@
+[package]
+name = "fsl-testgen-core"
+description = "The testgen-input.v1 reader, its cross-checks, and the target interface of fsl-testgen"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+repository.workspace = true
+publish.workspace = true
+
+[dependencies]
+serde_json.workspace = true
+
+[lints]
+workspace = true

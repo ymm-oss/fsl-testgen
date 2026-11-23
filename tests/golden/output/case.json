@@ -1,0 +1,7 @@
+{
+  "description": "written with -o: the spec path is relative to the output",
+  "spec": "specs/literals.fsl",
+  "depth": 3,
+  "spec_path": "/SPEC_ROOT/specs/literals.fsl",
+  "output": "generated/nested/conformance.out"
+}

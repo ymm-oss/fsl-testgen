@@ -1,0 +1,313 @@
+{
+  "$schema": "https://fsl.dev/schemas/fslc/kernel/testgen-input.v1.schema.json",
+  "schema_version": "1.0.0",
+  "kernel_schema_version": "1.0.0",
+  "result": "testgen_input",
+  "fslc_version": "5.2.0",
+  "spec": "ExpenseTransformationControls",
+  "source": {
+    "name": "governance_controls.fsl",
+    "digest": "sha256:0167ae57689223a617736ce5354d3776eb71fc11a91371bef31befff674f3488"
+  },
+  "dialect": "governance",
+  "gate": {
+    "depth": 3,
+    "deadlock": "warn",
+    "strict": false
+  },
+  "state": [
+    "_governance_ok"
+  ],
+  "actions": [
+    {
+      "name": "_governance_noop",
+      "params": []
+    }
+  ],
+  "scenarios": [],
+  "walk": {
+    "$schema": "https://fsl.dev/schemas/fslc/kernel/testgen-trace.v1.schema.json",
+    "schema_version": "1.0.0",
+    "kernel_schema_version": "1.0.0",
+    "result": "testgen_trace",
+    "spec": "ExpenseTransformationControls",
+    "initial": {
+      "_governance_ok": true
+    },
+    "steps": []
+  },
+  "kernel": {
+    "$schema": "https://fsl.dev/schemas/fslc/kernel/kernel.v1.schema.json",
+    "schema_version": "1.0.0",
+    "language_version": "1.0",
+    "spec": {
+      "name": "ExpenseTransformationControls",
+      "source": {
+        "file": "examples/consulting/governance_controls.fsl",
+        "dialect": "governance"
+      }
+    },
+    "semantics": {
+      "assignment": "simultaneous",
+      "reads": "pre_state",
+      "requires_false": "not_enabled",
+      "failure_state": "rollback",
+      "old": "pre_state",
+      "integer_division": "euclidean",
+      "terminal_deadlock": "terminal_states_excluded",
+      "fairness": "weak"
+    },
+    "constants": [],
+    "types": [
+      {
+        "name": "_GovernanceUnit",
+        "span": null,
+        "symmetric": false,
+        "definition": {
+          "kind": "domain",
+          "lo": 0,
+          "hi": 0
+        },
+        "origin": {
+          "dialect": "governance",
+          "declaration": "_GovernanceUnit",
+          "lowered": true,
+          "generated": true
+        }
+      }
+    ],
+    "state": [
+      {
+        "name": "_governance_ok",
+        "type": {
+          "kind": "bool"
+        },
+        "span": null,
+        "origin": {
+          "dialect": "governance",
+          "declaration": "_governance_ok",
+          "lowered": true,
+          "generated": true
+        }
+      }
+    ],
+    "init": {
+      "statements": [
+        {
+          "kind": "assign",
+          "type": {
+            "kind": "statement"
+          },
+          "span": {
+            "file": "examples/consulting/governance_controls.fsl",
+            "line": 0,
+            "column": 0,
+            "end_line": 0,
+            "end_column": 0
+          },
+          "target": {
+            "kind": "var",
+            "type": {
+              "kind": "bool"
+            },
+            "span": {
+              "file": "examples/consulting/governance_controls.fsl",
+              "line": 0,
+              "column": 0,
+              "end_line": 0,
+              "end_column": 0
+            },
+            "name": "_governance_ok"
+          },
+          "value": {
+            "kind": "bool",
+            "type": {
+              "kind": "bool"
+            },
+            "span": {
+              "file": "examples/consulting/governance_controls.fsl",
+              "line": 0,
+              "column": 0,
+              "end_line": 0,
+              "end_column": 0
+            },
+            "value": true
+          }
+        }
+      ],
+      "requirement": null,
+      "origin": {
+        "dialect": "governance",
+        "declaration": "init",
+        "lowered": true,
+        "generated": false
+      },
+      "span": {
+        "file": "examples/consulting/governance_controls.fsl",
+        "line": 0,
+        "column": 0,
+        "end_line": 0,
+        "end_column": 0
+      }
+    },
+    "actions": [
+      {
+        "name": "_governance_noop",
+        "parameters": [],
+        "fair": false,
+        "guards": [
+          {
+            "kind": "requires",
+            "expression": {
+              "kind": "bool",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/consulting/governance_controls.fsl",
+                "line": 0,
+                "column": 0,
+                "end_line": 0,
+                "end_column": 0
+              },
+              "value": false
+            }
+          }
+        ],
+        "requires": [
+          {
+            "kind": "bool",
+            "type": {
+              "kind": "bool"
+            },
+            "span": {
+              "file": "examples/consulting/governance_controls.fsl",
+              "line": 0,
+              "column": 0,
+              "end_line": 0,
+              "end_column": 0
+            },
+            "value": false
+          }
+        ],
+        "lets": [],
+        "updates": [],
+        "update_semantics": "simultaneous",
+        "ensures": [],
+        "partial_operations": [],
+        "requirement": {
+          "id": "GOV",
+          "text": "governance catalog ExpenseTransformationControls"
+        },
+        "origin": {
+          "dialect": "governance",
+          "declaration": "GOV",
+          "lowered": true,
+          "generated": true
+        },
+        "span": {
+          "file": "examples/consulting/governance_controls.fsl",
+          "line": 0,
+          "column": 0,
+          "end_line": 0,
+          "end_column": 0
+        }
+      }
+    ],
+    "properties": {
+      "invariants": [
+        {
+          "name": "_governance_catalog_ok",
+          "source_kind": "invariant",
+          "expression": {
+            "kind": "binary",
+            "type": {
+              "kind": "bool"
+            },
+            "span": {
+              "file": "examples/consulting/governance_controls.fsl",
+              "line": 0,
+              "column": 0,
+              "end_line": 0,
+              "end_column": 0
+            },
+            "operator": "==",
+            "left": {
+              "kind": "var",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/consulting/governance_controls.fsl",
+                "line": 0,
+                "column": 0,
+                "end_line": 0,
+                "end_column": 0
+              },
+              "name": "_governance_ok"
+            },
+            "right": {
+              "kind": "bool",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/consulting/governance_controls.fsl",
+                "line": 0,
+                "column": 0,
+                "end_line": 0,
+                "end_column": 0
+              },
+              "value": true
+            }
+          },
+          "requirement": {
+            "id": "GOV",
+            "text": "governance catalog ExpenseTransformationControls"
+          },
+          "origin": {
+            "dialect": "governance",
+            "declaration": "GOV",
+            "lowered": true,
+            "generated": true
+          },
+          "span": {
+            "file": "examples/consulting/governance_controls.fsl",
+            "line": 0,
+            "column": 0,
+            "end_line": 0,
+            "end_column": 0
+          }
+        }
+      ],
+      "transitions": [],
+      "reachables": [],
+      "leads_to": [],
+      "terminal": {
+        "source_kind": "terminal",
+        "expression": {
+          "kind": "bool",
+          "type": {
+            "kind": "bool"
+          },
+          "span": {
+            "file": "examples/consulting/governance_controls.fsl",
+            "line": 0,
+            "column": 0,
+            "end_line": 0,
+            "end_column": 0
+          },
+          "value": true
+        },
+        "span": {
+          "file": "examples/consulting/governance_controls.fsl",
+          "line": 0,
+          "column": 0,
+          "end_line": 0,
+          "end_column": 0
+        }
+      }
+    }
+  },
+  "fsl": "1.0"
+}

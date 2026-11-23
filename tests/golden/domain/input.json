@@ -1,0 +1,1822 @@
+{
+  "$schema": "https://fsl.dev/schemas/fslc/kernel/testgen-input.v1.schema.json",
+  "schema_version": "1.0.0",
+  "kernel_schema_version": "1.0.0",
+  "result": "testgen_input",
+  "fslc_version": "5.2.0",
+  "spec": "OrderFunctionalDdd",
+  "source": {
+    "name": "order_functional_ddd.fsl",
+    "digest": "sha256:a84e6512793839a696d8a51cfc2beede150a76ad7a86bf61b486803fbd760006"
+  },
+  "dialect": "domain",
+  "gate": {
+    "depth": 3,
+    "deadlock": "warn",
+    "strict": false
+  },
+  "state": [
+    "order_status",
+    "order_refund_issued",
+    "event_OrderApproved",
+    "event_OrderCancelled",
+    "event_OrderShipped"
+  ],
+  "actions": [
+    {
+      "name": "order_approve_order",
+      "params": []
+    },
+    {
+      "name": "order_cancel_order",
+      "params": []
+    },
+    {
+      "name": "order_ship_order",
+      "params": []
+    }
+  ],
+  "scenarios": [
+    {
+      "steps": [
+        {
+          "action": "order_approve_order",
+          "params": {}
+        }
+      ],
+      "initial_state": {
+        "order_status": "OrderStatus_Pending",
+        "order_refund_issued": false,
+        "event_OrderApproved": false,
+        "event_OrderCancelled": false,
+        "event_OrderShipped": false
+      },
+      "expected_states": [
+        {
+          "order_status": "OrderStatus_Approved",
+          "order_refund_issued": false,
+          "event_OrderApproved": true,
+          "event_OrderCancelled": false,
+          "event_OrderShipped": false
+        }
+      ],
+      "name": "cover_order_approve_order",
+      "kind": "action_coverage",
+      "action": "order_approve_order"
+    },
+    {
+      "steps": [
+        {
+          "action": "order_cancel_order",
+          "params": {}
+        }
+      ],
+      "initial_state": {
+        "order_status": "OrderStatus_Pending",
+        "order_refund_issued": false,
+        "event_OrderApproved": false,
+        "event_OrderCancelled": false,
+        "event_OrderShipped": false
+      },
+      "expected_states": [
+        {
+          "order_status": "OrderStatus_Cancelled",
+          "order_refund_issued": false,
+          "event_OrderApproved": false,
+          "event_OrderCancelled": true,
+          "event_OrderShipped": false
+        }
+      ],
+      "name": "cover_order_cancel_order",
+      "kind": "action_coverage",
+      "action": "order_cancel_order"
+    },
+    {
+      "steps": [
+        {
+          "action": "order_approve_order",
+          "params": {}
+        },
+        {
+          "action": "order_ship_order",
+          "params": {}
+        }
+      ],
+      "initial_state": {
+        "order_status": "OrderStatus_Pending",
+        "order_refund_issued": false,
+        "event_OrderApproved": false,
+        "event_OrderCancelled": false,
+        "event_OrderShipped": false
+      },
+      "expected_states": [
+        {
+          "order_status": "OrderStatus_Approved",
+          "order_refund_issued": false,
+          "event_OrderApproved": true,
+          "event_OrderCancelled": false,
+          "event_OrderShipped": false
+        },
+        {
+          "order_status": "OrderStatus_Shipped",
+          "order_refund_issued": false,
+          "event_OrderApproved": false,
+          "event_OrderCancelled": false,
+          "event_OrderShipped": true
+        }
+      ],
+      "name": "cover_order_ship_order",
+      "kind": "action_coverage",
+      "action": "order_ship_order"
+    },
+    {
+      "steps": [
+        {
+          "action": "order_cancel_order",
+          "params": {}
+        }
+      ],
+      "initial_state": {
+        "order_status": "OrderStatus_Pending",
+        "order_refund_issued": false,
+        "event_OrderApproved": false,
+        "event_OrderCancelled": false,
+        "event_OrderShipped": false
+      },
+      "expected_states": [
+        {
+          "order_status": "OrderStatus_Cancelled",
+          "order_refund_issued": false,
+          "event_OrderApproved": false,
+          "event_OrderCancelled": true,
+          "event_OrderShipped": false
+        }
+      ],
+      "name": "deadlock_terminal",
+      "kind": "deadlock",
+      "note": "after these steps no action is enabled"
+    }
+  ],
+  "walk": {
+    "$schema": "https://fsl.dev/schemas/fslc/kernel/testgen-trace.v1.schema.json",
+    "schema_version": "1.0.0",
+    "kernel_schema_version": "1.0.0",
+    "result": "testgen_trace",
+    "spec": "OrderFunctionalDdd",
+    "initial": {
+      "order_status": "OrderStatus_Pending",
+      "order_refund_issued": false,
+      "event_OrderApproved": false,
+      "event_OrderCancelled": false,
+      "event_OrderShipped": false
+    },
+    "steps": [
+      {
+        "action": "order_cancel_order",
+        "params": {},
+        "expected": {
+          "order_status": "OrderStatus_Cancelled",
+          "order_refund_issued": false,
+          "event_OrderApproved": false,
+          "event_OrderCancelled": true,
+          "event_OrderShipped": false
+        }
+      }
+    ]
+  },
+  "kernel": {
+    "$schema": "https://fsl.dev/schemas/fslc/kernel/kernel.v1.schema.json",
+    "schema_version": "1.0.0",
+    "language_version": "1.0",
+    "spec": {
+      "name": "OrderFunctionalDdd",
+      "source": {
+        "file": "examples/domain/order_functional_ddd.fsl",
+        "dialect": "domain"
+      }
+    },
+    "semantics": {
+      "assignment": "simultaneous",
+      "reads": "pre_state",
+      "requires_false": "not_enabled",
+      "failure_state": "rollback",
+      "old": "pre_state",
+      "integer_division": "euclidean",
+      "terminal_deadlock": "terminal_states_excluded",
+      "fairness": "weak"
+    },
+    "constants": [],
+    "types": [
+      {
+        "name": "OrderId",
+        "span": null,
+        "symmetric": false,
+        "definition": {
+          "kind": "domain",
+          "lo": 0,
+          "hi": 1
+        },
+        "origin": {
+          "dialect": "domain",
+          "declaration": "OrderId",
+          "lowered": true,
+          "generated": false
+        }
+      },
+      {
+        "name": "OrderStatus",
+        "span": null,
+        "symmetric": false,
+        "definition": {
+          "kind": "enum",
+          "members": [
+            "OrderStatus_Pending",
+            "OrderStatus_Approved",
+            "OrderStatus_Cancelled",
+            "OrderStatus_Shipped"
+          ]
+        },
+        "origin": {
+          "dialect": "domain",
+          "declaration": "OrderStatus",
+          "lowered": true,
+          "generated": false
+        }
+      }
+    ],
+    "state": [
+      {
+        "name": "event_OrderApproved",
+        "type": {
+          "kind": "bool"
+        },
+        "span": null,
+        "origin": {
+          "dialect": "domain",
+          "declaration": "event_OrderApproved",
+          "lowered": true,
+          "generated": false
+        }
+      },
+      {
+        "name": "event_OrderCancelled",
+        "type": {
+          "kind": "bool"
+        },
+        "span": null,
+        "origin": {
+          "dialect": "domain",
+          "declaration": "event_OrderCancelled",
+          "lowered": true,
+          "generated": false
+        }
+      },
+      {
+        "name": "event_OrderShipped",
+        "type": {
+          "kind": "bool"
+        },
+        "span": null,
+        "origin": {
+          "dialect": "domain",
+          "declaration": "event_OrderShipped",
+          "lowered": true,
+          "generated": false
+        }
+      },
+      {
+        "name": "order_refund_issued",
+        "type": {
+          "kind": "bool"
+        },
+        "span": null,
+        "origin": {
+          "dialect": "domain",
+          "declaration": "order_refund_issued",
+          "lowered": true,
+          "generated": false
+        }
+      },
+      {
+        "name": "order_status",
+        "type": {
+          "kind": "named",
+          "name": "OrderStatus"
+        },
+        "span": null,
+        "origin": {
+          "dialect": "domain",
+          "declaration": "order_status",
+          "lowered": true,
+          "generated": false
+        }
+      }
+    ],
+    "init": {
+      "statements": [
+        {
+          "kind": "assign",
+          "type": {
+            "kind": "statement"
+          },
+          "span": {
+            "file": "examples/domain/order_functional_ddd.fsl",
+            "line": 10,
+            "column": 7,
+            "end_line": 10,
+            "end_column": 37
+          },
+          "target": {
+            "kind": "var",
+            "type": {
+              "kind": "named",
+              "name": "OrderStatus"
+            },
+            "span": {
+              "file": "examples/domain/order_functional_ddd.fsl",
+              "line": 10,
+              "column": 7,
+              "end_line": 10,
+              "end_column": 37
+            },
+            "name": "order_status"
+          },
+          "value": {
+            "kind": "var",
+            "type": {
+              "kind": "named",
+              "name": "OrderStatus"
+            },
+            "span": {
+              "file": "examples/domain/order_functional_ddd.fsl",
+              "line": 10,
+              "column": 7,
+              "end_line": 10,
+              "end_column": 37
+            },
+            "name": "OrderStatus_Pending"
+          }
+        },
+        {
+          "kind": "assign",
+          "type": {
+            "kind": "statement"
+          },
+          "span": {
+            "file": "examples/domain/order_functional_ddd.fsl",
+            "line": 11,
+            "column": 7,
+            "end_line": 11,
+            "end_column": 35
+          },
+          "target": {
+            "kind": "var",
+            "type": {
+              "kind": "bool"
+            },
+            "span": {
+              "file": "examples/domain/order_functional_ddd.fsl",
+              "line": 11,
+              "column": 7,
+              "end_line": 11,
+              "end_column": 35
+            },
+            "name": "order_refund_issued"
+          },
+          "value": {
+            "kind": "bool",
+            "type": {
+              "kind": "bool"
+            },
+            "span": {
+              "file": "examples/domain/order_functional_ddd.fsl",
+              "line": 11,
+              "column": 7,
+              "end_line": 11,
+              "end_column": 35
+            },
+            "value": false
+          }
+        },
+        {
+          "kind": "assign",
+          "type": {
+            "kind": "statement"
+          },
+          "span": {
+            "file": "examples/domain/order_functional_ddd.fsl",
+            "line": 1,
+            "column": 1,
+            "end_line": 1,
+            "end_column": 7
+          },
+          "target": {
+            "kind": "var",
+            "type": {
+              "kind": "bool"
+            },
+            "span": {
+              "file": "examples/domain/order_functional_ddd.fsl",
+              "line": 1,
+              "column": 1,
+              "end_line": 1,
+              "end_column": 7
+            },
+            "name": "event_OrderApproved"
+          },
+          "value": {
+            "kind": "bool",
+            "type": {
+              "kind": "bool"
+            },
+            "span": {
+              "file": "examples/domain/order_functional_ddd.fsl",
+              "line": 1,
+              "column": 1,
+              "end_line": 1,
+              "end_column": 7
+            },
+            "value": false
+          }
+        },
+        {
+          "kind": "assign",
+          "type": {
+            "kind": "statement"
+          },
+          "span": {
+            "file": "examples/domain/order_functional_ddd.fsl",
+            "line": 1,
+            "column": 1,
+            "end_line": 1,
+            "end_column": 7
+          },
+          "target": {
+            "kind": "var",
+            "type": {
+              "kind": "bool"
+            },
+            "span": {
+              "file": "examples/domain/order_functional_ddd.fsl",
+              "line": 1,
+              "column": 1,
+              "end_line": 1,
+              "end_column": 7
+            },
+            "name": "event_OrderCancelled"
+          },
+          "value": {
+            "kind": "bool",
+            "type": {
+              "kind": "bool"
+            },
+            "span": {
+              "file": "examples/domain/order_functional_ddd.fsl",
+              "line": 1,
+              "column": 1,
+              "end_line": 1,
+              "end_column": 7
+            },
+            "value": false
+          }
+        },
+        {
+          "kind": "assign",
+          "type": {
+            "kind": "statement"
+          },
+          "span": {
+            "file": "examples/domain/order_functional_ddd.fsl",
+            "line": 1,
+            "column": 1,
+            "end_line": 1,
+            "end_column": 7
+          },
+          "target": {
+            "kind": "var",
+            "type": {
+              "kind": "bool"
+            },
+            "span": {
+              "file": "examples/domain/order_functional_ddd.fsl",
+              "line": 1,
+              "column": 1,
+              "end_line": 1,
+              "end_column": 7
+            },
+            "name": "event_OrderShipped"
+          },
+          "value": {
+            "kind": "bool",
+            "type": {
+              "kind": "bool"
+            },
+            "span": {
+              "file": "examples/domain/order_functional_ddd.fsl",
+              "line": 1,
+              "column": 1,
+              "end_line": 1,
+              "end_column": 7
+            },
+            "value": false
+          }
+        }
+      ],
+      "requirement": null,
+      "origin": {
+        "dialect": "domain",
+        "declaration": "init",
+        "lowered": true,
+        "generated": false
+      },
+      "span": {
+        "file": "examples/domain/order_functional_ddd.fsl",
+        "line": 10,
+        "column": 7,
+        "end_line": 10,
+        "end_column": 37
+      }
+    },
+    "actions": [
+      {
+        "name": "order_approve_order",
+        "parameters": [],
+        "fair": false,
+        "guards": [
+          {
+            "kind": "requires",
+            "expression": {
+              "kind": "binary",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/domain/order_functional_ddd.fsl",
+                "line": 27,
+                "column": 16,
+                "end_line": 27,
+                "end_column": 33
+              },
+              "operator": "==",
+              "left": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "OrderStatus"
+                },
+                "span": {
+                  "file": "examples/domain/order_functional_ddd.fsl",
+                  "line": 27,
+                  "column": 16,
+                  "end_line": 27,
+                  "end_column": 33
+                },
+                "name": "order_status"
+              },
+              "right": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "OrderStatus"
+                },
+                "span": {
+                  "file": "examples/domain/order_functional_ddd.fsl",
+                  "line": 27,
+                  "column": 16,
+                  "end_line": 27,
+                  "end_column": 33
+                },
+                "name": "OrderStatus_Pending"
+              }
+            }
+          }
+        ],
+        "requires": [
+          {
+            "kind": "binary",
+            "type": {
+              "kind": "bool"
+            },
+            "span": {
+              "file": "examples/domain/order_functional_ddd.fsl",
+              "line": 27,
+              "column": 16,
+              "end_line": 27,
+              "end_column": 33
+            },
+            "operator": "==",
+            "left": {
+              "kind": "var",
+              "type": {
+                "kind": "named",
+                "name": "OrderStatus"
+              },
+              "span": {
+                "file": "examples/domain/order_functional_ddd.fsl",
+                "line": 27,
+                "column": 16,
+                "end_line": 27,
+                "end_column": 33
+              },
+              "name": "order_status"
+            },
+            "right": {
+              "kind": "var",
+              "type": {
+                "kind": "named",
+                "name": "OrderStatus"
+              },
+              "span": {
+                "file": "examples/domain/order_functional_ddd.fsl",
+                "line": 27,
+                "column": 16,
+                "end_line": 27,
+                "end_column": 33
+              },
+              "name": "OrderStatus_Pending"
+            }
+          }
+        ],
+        "lets": [],
+        "updates": [
+          {
+            "kind": "assign",
+            "type": {
+              "kind": "statement"
+            },
+            "span": {
+              "file": "examples/domain/order_functional_ddd.fsl",
+              "line": 26,
+              "column": 5,
+              "end_line": 26,
+              "end_column": 11
+            },
+            "target": {
+              "kind": "var",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/domain/order_functional_ddd.fsl",
+                "line": 26,
+                "column": 5,
+                "end_line": 26,
+                "end_column": 11
+              },
+              "name": "event_OrderApproved"
+            },
+            "value": {
+              "kind": "bool",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/domain/order_functional_ddd.fsl",
+                "line": 26,
+                "column": 5,
+                "end_line": 26,
+                "end_column": 11
+              },
+              "value": true
+            }
+          },
+          {
+            "kind": "assign",
+            "type": {
+              "kind": "statement"
+            },
+            "span": {
+              "file": "examples/domain/order_functional_ddd.fsl",
+              "line": 26,
+              "column": 5,
+              "end_line": 26,
+              "end_column": 11
+            },
+            "target": {
+              "kind": "var",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/domain/order_functional_ddd.fsl",
+                "line": 26,
+                "column": 5,
+                "end_line": 26,
+                "end_column": 11
+              },
+              "name": "event_OrderCancelled"
+            },
+            "value": {
+              "kind": "bool",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/domain/order_functional_ddd.fsl",
+                "line": 26,
+                "column": 5,
+                "end_line": 26,
+                "end_column": 11
+              },
+              "value": false
+            }
+          },
+          {
+            "kind": "assign",
+            "type": {
+              "kind": "statement"
+            },
+            "span": {
+              "file": "examples/domain/order_functional_ddd.fsl",
+              "line": 26,
+              "column": 5,
+              "end_line": 26,
+              "end_column": 11
+            },
+            "target": {
+              "kind": "var",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/domain/order_functional_ddd.fsl",
+                "line": 26,
+                "column": 5,
+                "end_line": 26,
+                "end_column": 11
+              },
+              "name": "event_OrderShipped"
+            },
+            "value": {
+              "kind": "bool",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/domain/order_functional_ddd.fsl",
+                "line": 26,
+                "column": 5,
+                "end_line": 26,
+                "end_column": 11
+              },
+              "value": false
+            }
+          },
+          {
+            "kind": "assign",
+            "type": {
+              "kind": "statement"
+            },
+            "span": {
+              "file": "examples/domain/order_functional_ddd.fsl",
+              "line": 43,
+              "column": 7,
+              "end_line": 43,
+              "end_column": 24
+            },
+            "target": {
+              "kind": "var",
+              "type": {
+                "kind": "named",
+                "name": "OrderStatus"
+              },
+              "span": {
+                "file": "examples/domain/order_functional_ddd.fsl",
+                "line": 43,
+                "column": 7,
+                "end_line": 43,
+                "end_column": 24
+              },
+              "name": "order_status"
+            },
+            "value": {
+              "kind": "var",
+              "type": {
+                "kind": "named",
+                "name": "OrderStatus"
+              },
+              "span": {
+                "file": "examples/domain/order_functional_ddd.fsl",
+                "line": 43,
+                "column": 7,
+                "end_line": 43,
+                "end_column": 24
+              },
+              "name": "OrderStatus_Approved"
+            }
+          }
+        ],
+        "update_semantics": "simultaneous",
+        "ensures": [],
+        "partial_operations": [],
+        "requirement": null,
+        "origin": {
+          "dialect": "domain",
+          "declaration": "order_approve_order",
+          "lowered": true,
+          "generated": false
+        },
+        "span": {
+          "file": "examples/domain/order_functional_ddd.fsl",
+          "line": 26,
+          "column": 5,
+          "end_line": 26,
+          "end_column": 11
+        }
+      },
+      {
+        "name": "order_cancel_order",
+        "parameters": [],
+        "fair": false,
+        "guards": [
+          {
+            "kind": "requires",
+            "expression": {
+              "kind": "not",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/domain/order_functional_ddd.fsl",
+                "line": 32,
+                "column": 45,
+                "end_line": 32,
+                "end_column": 62
+              },
+              "operand": {
+                "kind": "binary",
+                "type": {
+                  "kind": "bool"
+                },
+                "span": {
+                  "file": "examples/domain/order_functional_ddd.fsl",
+                  "line": 32,
+                  "column": 45,
+                  "end_line": 32,
+                  "end_column": 62
+                },
+                "operator": "==",
+                "left": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "named",
+                    "name": "OrderStatus"
+                  },
+                  "span": {
+                    "file": "examples/domain/order_functional_ddd.fsl",
+                    "line": 32,
+                    "column": 45,
+                    "end_line": 32,
+                    "end_column": 62
+                  },
+                  "name": "order_status"
+                },
+                "right": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "named",
+                    "name": "OrderStatus"
+                  },
+                  "span": {
+                    "file": "examples/domain/order_functional_ddd.fsl",
+                    "line": 32,
+                    "column": 45,
+                    "end_line": 32,
+                    "end_column": 62
+                  },
+                  "name": "OrderStatus_Shipped"
+                }
+              }
+            }
+          },
+          {
+            "kind": "requires",
+            "expression": {
+              "kind": "not",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/domain/order_functional_ddd.fsl",
+                "line": 33,
+                "column": 54,
+                "end_line": 33,
+                "end_column": 73
+              },
+              "operand": {
+                "kind": "binary",
+                "type": {
+                  "kind": "bool"
+                },
+                "span": {
+                  "file": "examples/domain/order_functional_ddd.fsl",
+                  "line": 33,
+                  "column": 54,
+                  "end_line": 33,
+                  "end_column": 73
+                },
+                "operator": "==",
+                "left": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "named",
+                    "name": "OrderStatus"
+                  },
+                  "span": {
+                    "file": "examples/domain/order_functional_ddd.fsl",
+                    "line": 33,
+                    "column": 54,
+                    "end_line": 33,
+                    "end_column": 73
+                  },
+                  "name": "order_status"
+                },
+                "right": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "named",
+                    "name": "OrderStatus"
+                  },
+                  "span": {
+                    "file": "examples/domain/order_functional_ddd.fsl",
+                    "line": 33,
+                    "column": 54,
+                    "end_line": 33,
+                    "end_column": 73
+                  },
+                  "name": "OrderStatus_Cancelled"
+                }
+              }
+            }
+          }
+        ],
+        "requires": [
+          {
+            "kind": "not",
+            "type": {
+              "kind": "bool"
+            },
+            "span": {
+              "file": "examples/domain/order_functional_ddd.fsl",
+              "line": 32,
+              "column": 45,
+              "end_line": 32,
+              "end_column": 62
+            },
+            "operand": {
+              "kind": "binary",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/domain/order_functional_ddd.fsl",
+                "line": 32,
+                "column": 45,
+                "end_line": 32,
+                "end_column": 62
+              },
+              "operator": "==",
+              "left": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "OrderStatus"
+                },
+                "span": {
+                  "file": "examples/domain/order_functional_ddd.fsl",
+                  "line": 32,
+                  "column": 45,
+                  "end_line": 32,
+                  "end_column": 62
+                },
+                "name": "order_status"
+              },
+              "right": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "OrderStatus"
+                },
+                "span": {
+                  "file": "examples/domain/order_functional_ddd.fsl",
+                  "line": 32,
+                  "column": 45,
+                  "end_line": 32,
+                  "end_column": 62
+                },
+                "name": "OrderStatus_Shipped"
+              }
+            }
+          },
+          {
+            "kind": "not",
+            "type": {
+              "kind": "bool"
+            },
+            "span": {
+              "file": "examples/domain/order_functional_ddd.fsl",
+              "line": 33,
+              "column": 54,
+              "end_line": 33,
+              "end_column": 73
+            },
+            "operand": {
+              "kind": "binary",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/domain/order_functional_ddd.fsl",
+                "line": 33,
+                "column": 54,
+                "end_line": 33,
+                "end_column": 73
+              },
+              "operator": "==",
+              "left": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "OrderStatus"
+                },
+                "span": {
+                  "file": "examples/domain/order_functional_ddd.fsl",
+                  "line": 33,
+                  "column": 54,
+                  "end_line": 33,
+                  "end_column": 73
+                },
+                "name": "order_status"
+              },
+              "right": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "OrderStatus"
+                },
+                "span": {
+                  "file": "examples/domain/order_functional_ddd.fsl",
+                  "line": 33,
+                  "column": 54,
+                  "end_line": 33,
+                  "end_column": 73
+                },
+                "name": "OrderStatus_Cancelled"
+              }
+            }
+          }
+        ],
+        "lets": [],
+        "updates": [
+          {
+            "kind": "assign",
+            "type": {
+              "kind": "statement"
+            },
+            "span": {
+              "file": "examples/domain/order_functional_ddd.fsl",
+              "line": 31,
+              "column": 5,
+              "end_line": 31,
+              "end_column": 11
+            },
+            "target": {
+              "kind": "var",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/domain/order_functional_ddd.fsl",
+                "line": 31,
+                "column": 5,
+                "end_line": 31,
+                "end_column": 11
+              },
+              "name": "event_OrderApproved"
+            },
+            "value": {
+              "kind": "bool",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/domain/order_functional_ddd.fsl",
+                "line": 31,
+                "column": 5,
+                "end_line": 31,
+                "end_column": 11
+              },
+              "value": false
+            }
+          },
+          {
+            "kind": "assign",
+            "type": {
+              "kind": "statement"
+            },
+            "span": {
+              "file": "examples/domain/order_functional_ddd.fsl",
+              "line": 31,
+              "column": 5,
+              "end_line": 31,
+              "end_column": 11
+            },
+            "target": {
+              "kind": "var",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/domain/order_functional_ddd.fsl",
+                "line": 31,
+                "column": 5,
+                "end_line": 31,
+                "end_column": 11
+              },
+              "name": "event_OrderCancelled"
+            },
+            "value": {
+              "kind": "bool",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/domain/order_functional_ddd.fsl",
+                "line": 31,
+                "column": 5,
+                "end_line": 31,
+                "end_column": 11
+              },
+              "value": true
+            }
+          },
+          {
+            "kind": "assign",
+            "type": {
+              "kind": "statement"
+            },
+            "span": {
+              "file": "examples/domain/order_functional_ddd.fsl",
+              "line": 31,
+              "column": 5,
+              "end_line": 31,
+              "end_column": 11
+            },
+            "target": {
+              "kind": "var",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/domain/order_functional_ddd.fsl",
+                "line": 31,
+                "column": 5,
+                "end_line": 31,
+                "end_column": 11
+              },
+              "name": "event_OrderShipped"
+            },
+            "value": {
+              "kind": "bool",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/domain/order_functional_ddd.fsl",
+                "line": 31,
+                "column": 5,
+                "end_line": 31,
+                "end_column": 11
+              },
+              "value": false
+            }
+          },
+          {
+            "kind": "assign",
+            "type": {
+              "kind": "statement"
+            },
+            "span": {
+              "file": "examples/domain/order_functional_ddd.fsl",
+              "line": 47,
+              "column": 7,
+              "end_line": 47,
+              "end_column": 25
+            },
+            "target": {
+              "kind": "var",
+              "type": {
+                "kind": "named",
+                "name": "OrderStatus"
+              },
+              "span": {
+                "file": "examples/domain/order_functional_ddd.fsl",
+                "line": 47,
+                "column": 7,
+                "end_line": 47,
+                "end_column": 25
+              },
+              "name": "order_status"
+            },
+            "value": {
+              "kind": "var",
+              "type": {
+                "kind": "named",
+                "name": "OrderStatus"
+              },
+              "span": {
+                "file": "examples/domain/order_functional_ddd.fsl",
+                "line": 47,
+                "column": 7,
+                "end_line": 47,
+                "end_column": 25
+              },
+              "name": "OrderStatus_Cancelled"
+            }
+          }
+        ],
+        "update_semantics": "simultaneous",
+        "ensures": [],
+        "partial_operations": [],
+        "requirement": null,
+        "origin": {
+          "dialect": "domain",
+          "declaration": "order_cancel_order",
+          "lowered": true,
+          "generated": false
+        },
+        "span": {
+          "file": "examples/domain/order_functional_ddd.fsl",
+          "line": 31,
+          "column": 5,
+          "end_line": 31,
+          "end_column": 11
+        }
+      },
+      {
+        "name": "order_ship_order",
+        "parameters": [],
+        "fair": false,
+        "guards": [
+          {
+            "kind": "requires",
+            "expression": {
+              "kind": "not",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/domain/order_functional_ddd.fsl",
+                "line": 38,
+                "column": 46,
+                "end_line": 38,
+                "end_column": 64
+              },
+              "operand": {
+                "kind": "binary",
+                "type": {
+                  "kind": "bool"
+                },
+                "span": {
+                  "file": "examples/domain/order_functional_ddd.fsl",
+                  "line": 38,
+                  "column": 46,
+                  "end_line": 38,
+                  "end_column": 64
+                },
+                "operator": "!=",
+                "left": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "named",
+                    "name": "OrderStatus"
+                  },
+                  "span": {
+                    "file": "examples/domain/order_functional_ddd.fsl",
+                    "line": 38,
+                    "column": 46,
+                    "end_line": 38,
+                    "end_column": 64
+                  },
+                  "name": "order_status"
+                },
+                "right": {
+                  "kind": "var",
+                  "type": {
+                    "kind": "named",
+                    "name": "OrderStatus"
+                  },
+                  "span": {
+                    "file": "examples/domain/order_functional_ddd.fsl",
+                    "line": 38,
+                    "column": 46,
+                    "end_line": 38,
+                    "end_column": 64
+                  },
+                  "name": "OrderStatus_Approved"
+                }
+              }
+            }
+          }
+        ],
+        "requires": [
+          {
+            "kind": "not",
+            "type": {
+              "kind": "bool"
+            },
+            "span": {
+              "file": "examples/domain/order_functional_ddd.fsl",
+              "line": 38,
+              "column": 46,
+              "end_line": 38,
+              "end_column": 64
+            },
+            "operand": {
+              "kind": "binary",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/domain/order_functional_ddd.fsl",
+                "line": 38,
+                "column": 46,
+                "end_line": 38,
+                "end_column": 64
+              },
+              "operator": "!=",
+              "left": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "OrderStatus"
+                },
+                "span": {
+                  "file": "examples/domain/order_functional_ddd.fsl",
+                  "line": 38,
+                  "column": 46,
+                  "end_line": 38,
+                  "end_column": 64
+                },
+                "name": "order_status"
+              },
+              "right": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "OrderStatus"
+                },
+                "span": {
+                  "file": "examples/domain/order_functional_ddd.fsl",
+                  "line": 38,
+                  "column": 46,
+                  "end_line": 38,
+                  "end_column": 64
+                },
+                "name": "OrderStatus_Approved"
+              }
+            }
+          }
+        ],
+        "lets": [],
+        "updates": [
+          {
+            "kind": "assign",
+            "type": {
+              "kind": "statement"
+            },
+            "span": {
+              "file": "examples/domain/order_functional_ddd.fsl",
+              "line": 37,
+              "column": 5,
+              "end_line": 37,
+              "end_column": 11
+            },
+            "target": {
+              "kind": "var",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/domain/order_functional_ddd.fsl",
+                "line": 37,
+                "column": 5,
+                "end_line": 37,
+                "end_column": 11
+              },
+              "name": "event_OrderApproved"
+            },
+            "value": {
+              "kind": "bool",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/domain/order_functional_ddd.fsl",
+                "line": 37,
+                "column": 5,
+                "end_line": 37,
+                "end_column": 11
+              },
+              "value": false
+            }
+          },
+          {
+            "kind": "assign",
+            "type": {
+              "kind": "statement"
+            },
+            "span": {
+              "file": "examples/domain/order_functional_ddd.fsl",
+              "line": 37,
+              "column": 5,
+              "end_line": 37,
+              "end_column": 11
+            },
+            "target": {
+              "kind": "var",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/domain/order_functional_ddd.fsl",
+                "line": 37,
+                "column": 5,
+                "end_line": 37,
+                "end_column": 11
+              },
+              "name": "event_OrderCancelled"
+            },
+            "value": {
+              "kind": "bool",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/domain/order_functional_ddd.fsl",
+                "line": 37,
+                "column": 5,
+                "end_line": 37,
+                "end_column": 11
+              },
+              "value": false
+            }
+          },
+          {
+            "kind": "assign",
+            "type": {
+              "kind": "statement"
+            },
+            "span": {
+              "file": "examples/domain/order_functional_ddd.fsl",
+              "line": 37,
+              "column": 5,
+              "end_line": 37,
+              "end_column": 11
+            },
+            "target": {
+              "kind": "var",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/domain/order_functional_ddd.fsl",
+                "line": 37,
+                "column": 5,
+                "end_line": 37,
+                "end_column": 11
+              },
+              "name": "event_OrderShipped"
+            },
+            "value": {
+              "kind": "bool",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/domain/order_functional_ddd.fsl",
+                "line": 37,
+                "column": 5,
+                "end_line": 37,
+                "end_column": 11
+              },
+              "value": true
+            }
+          },
+          {
+            "kind": "assign",
+            "type": {
+              "kind": "statement"
+            },
+            "span": {
+              "file": "examples/domain/order_functional_ddd.fsl",
+              "line": 51,
+              "column": 7,
+              "end_line": 51,
+              "end_column": 23
+            },
+            "target": {
+              "kind": "var",
+              "type": {
+                "kind": "named",
+                "name": "OrderStatus"
+              },
+              "span": {
+                "file": "examples/domain/order_functional_ddd.fsl",
+                "line": 51,
+                "column": 7,
+                "end_line": 51,
+                "end_column": 23
+              },
+              "name": "order_status"
+            },
+            "value": {
+              "kind": "var",
+              "type": {
+                "kind": "named",
+                "name": "OrderStatus"
+              },
+              "span": {
+                "file": "examples/domain/order_functional_ddd.fsl",
+                "line": 51,
+                "column": 7,
+                "end_line": 51,
+                "end_column": 23
+              },
+              "name": "OrderStatus_Shipped"
+            }
+          }
+        ],
+        "update_semantics": "simultaneous",
+        "ensures": [],
+        "partial_operations": [],
+        "requirement": null,
+        "origin": {
+          "dialect": "domain",
+          "declaration": "order_ship_order",
+          "lowered": true,
+          "generated": false
+        },
+        "span": {
+          "file": "examples/domain/order_functional_ddd.fsl",
+          "line": 37,
+          "column": 5,
+          "end_line": 37,
+          "end_column": 11
+        }
+      }
+    ],
+    "properties": {
+      "invariants": [
+        {
+          "name": "Order_noCancelAfterShipping",
+          "source_kind": "invariant",
+          "expression": {
+            "kind": "binary",
+            "type": {
+              "kind": "bool"
+            },
+            "span": {
+              "file": "examples/domain/order_functional_ddd.fsl",
+              "line": 54,
+              "column": 5,
+              "end_line": 56,
+              "end_column": 6
+            },
+            "operator": "=>",
+            "left": {
+              "kind": "binary",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/domain/order_functional_ddd.fsl",
+                "line": 54,
+                "column": 5,
+                "end_line": 56,
+                "end_column": 6
+              },
+              "operator": "==",
+              "left": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "OrderStatus"
+                },
+                "span": {
+                  "file": "examples/domain/order_functional_ddd.fsl",
+                  "line": 54,
+                  "column": 5,
+                  "end_line": 56,
+                  "end_column": 6
+                },
+                "name": "order_status"
+              },
+              "right": {
+                "kind": "var",
+                "type": {
+                  "kind": "named",
+                  "name": "OrderStatus"
+                },
+                "span": {
+                  "file": "examples/domain/order_functional_ddd.fsl",
+                  "line": 54,
+                  "column": 5,
+                  "end_line": 56,
+                  "end_column": 6
+                },
+                "name": "OrderStatus_Shipped"
+              }
+            },
+            "right": {
+              "kind": "not",
+              "type": {
+                "kind": "bool"
+              },
+              "span": {
+                "file": "examples/domain/order_functional_ddd.fsl",
+                "line": 54,
+                "column": 5,
+                "end_line": 56,
+                "end_column": 6
+              },
+              "operand": {
+                "kind": "binary",
+                "type": {
+                  "kind": "bool"
+                },
+                "span": {
+                  "file": "examples/domain/order_functional_ddd.fsl",
+                  "line": 54,
+                  "column": 5,
+                  "end_line": 56,
+                  "end_column": 6
+                },
+                "operator": "and",
+                "left": {
+                  "kind": "not",
+                  "type": {
+                    "kind": "bool"
+                  },
+                  "span": {
+                    "file": "examples/domain/order_functional_ddd.fsl",
+                    "line": 54,
+                    "column": 5,
+                    "end_line": 56,
+                    "end_column": 6
+                  },
+                  "operand": {
+                    "kind": "binary",
+                    "type": {
+                      "kind": "bool"
+                    },
+                    "span": {
+                      "file": "examples/domain/order_functional_ddd.fsl",
+                      "line": 54,
+                      "column": 5,
+                      "end_line": 56,
+                      "end_column": 6
+                    },
+                    "operator": "==",
+                    "left": {
+                      "kind": "var",
+                      "type": {
+                        "kind": "named",
+                        "name": "OrderStatus"
+                      },
+                      "span": {
+                        "file": "examples/domain/order_functional_ddd.fsl",
+                        "line": 54,
+                        "column": 5,
+                        "end_line": 56,
+                        "end_column": 6
+                      },
+                      "name": "order_status"
+                    },
+                    "right": {
+                      "kind": "var",
+                      "type": {
+                        "kind": "named",
+                        "name": "OrderStatus"
+                      },
+                      "span": {
+                        "file": "examples/domain/order_functional_ddd.fsl",
+                        "line": 54,
+                        "column": 5,
+                        "end_line": 56,
+                        "end_column": 6
+                      },
+                      "name": "OrderStatus_Shipped"
+                    }
+                  }
+                },
+                "right": {
+                  "kind": "not",
+                  "type": {
+                    "kind": "bool"
+                  },
+                  "span": {
+                    "file": "examples/domain/order_functional_ddd.fsl",
+                    "line": 54,
+                    "column": 5,
+                    "end_line": 56,
+                    "end_column": 6
+                  },
+                  "operand": {
+                    "kind": "binary",
+                    "type": {
+                      "kind": "bool"
+                    },
+                    "span": {
+                      "file": "examples/domain/order_functional_ddd.fsl",
+                      "line": 54,
+                      "column": 5,
+                      "end_line": 56,
+                      "end_column": 6
+                    },
+                    "operator": "==",
+                    "left": {
+                      "kind": "var",
+                      "type": {
+                        "kind": "named",
+                        "name": "OrderStatus"
+                      },
+                      "span": {
+                        "file": "examples/domain/order_functional_ddd.fsl",
+                        "line": 54,
+                        "column": 5,
+                        "end_line": 56,
+                        "end_column": 6
+                      },
+                      "name": "order_status"
+                    },
+                    "right": {
+                      "kind": "var",
+                      "type": {
+                        "kind": "named",
+                        "name": "OrderStatus"
+                      },
+                      "span": {
+                        "file": "examples/domain/order_functional_ddd.fsl",
+                        "line": 54,
+                        "column": 5,
+                        "end_line": 56,
+                        "end_column": 6
+                      },
+                      "name": "OrderStatus_Cancelled"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "requirement": {
+            "id": "DOMAIN-INVARIANT",
+            "text": "Order.noCancelAfterShipping"
+          },
+          "origin": {
+            "dialect": "domain",
+            "declaration": "DOMAIN-INVARIANT",
+            "lowered": true,
+            "generated": false
+          },
+          "span": {
+            "file": "examples/domain/order_functional_ddd.fsl",
+            "line": 54,
+            "column": 5,
+            "end_line": 56,
+            "end_column": 6
+          }
+        }
+      ],
+      "transitions": [],
+      "reachables": [],
+      "leads_to": [],
+      "terminal": {
+        "source_kind": "terminal",
+        "expression": {
+          "kind": "bool",
+          "type": {
+            "kind": "bool"
+          },
+          "span": {
+            "file": "examples/domain/order_functional_ddd.fsl",
+            "line": 1,
+            "column": 1,
+            "end_line": 1,
+            "end_column": 7
+          },
+          "value": false
+        },
+        "span": {
+          "file": "examples/domain/order_functional_ddd.fsl",
+          "line": 1,
+          "column": 1,
+          "end_line": 1,
+          "end_column": 7
+        }
+      }
+    }
+  },
+  "fsl": "1.0"
+}

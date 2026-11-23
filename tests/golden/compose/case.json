@@ -1,0 +1,6 @@
+{
+  "description": "a compose root: kernel is null and walk order differs from state",
+  "spec": "specs/bank_system.fsl",
+  "depth": 3,
+  "spec_path": "/SPEC_ROOT/specs/bank_system.fsl"
+}

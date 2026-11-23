@@ -1,0 +1,6 @@
+{
+  "description": "a governance document: no scenarios, an empty walk, and a Kernel whose spans break kernel.v1",
+  "spec": "examples/consulting/governance_controls.fsl",
+  "depth": 3,
+  "spec_path": "/SPEC_ROOT/examples/consulting/governance_controls.fsl"
+}

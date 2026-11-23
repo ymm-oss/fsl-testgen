@@ -1,0 +1,105 @@
+"""Auto-generated conformance tests for FSL spec.
+Source: we\x27ird\x2ana\x3eme\x3f.fsl
+Connect Adapter to your implementation, or use MonitorSelfAdapter for self-check.
+Until Adapter is wired every test FAILS with "adapter not wired" (issue #1200);
+generate with `fslc testgen --allow-unwired` to skip instead.
+"""
+import random
+from pathlib import Path
+
+import pytest
+
+from fslc.runtime import Monitor
+
+SPEC_PATH = '/SPEC_ROOT/we\'ird*na>me?.fsl'
+
+ADAPTER_NOT_WIRED = 'adapter not wired: implement Adapter.reset/step/observe to connect your implementation, or generate with `fslc testgen --allow-unwired` to skip instead'
+
+
+class Adapter:
+    """Connect your implementation to the spec actions/state.
+
+    Wiring convention:
+    - reset(): put implementation in the same initial state as spec init
+    - step(action, params): drive one spec action on the implementation
+    - observe(): return implementation state projected to spec logical state shape
+    """
+
+    def reset(self):
+        raise NotImplementedError("wire your implementation reset")
+
+    def step(self, action: str, params: dict):
+        raise NotImplementedError("wire your implementation step")
+
+    def observe(self) -> dict:
+        raise NotImplementedError("wire your implementation observe")
+
+
+def _adapter_ready(adapter):
+    try:
+        adapter.reset()
+        adapter.observe()
+        return True
+    except NotImplementedError:
+        return False
+
+
+@pytest.fixture
+def adapter():
+    return Adapter()
+
+
+def _assert_partial_expected(observed, expected):
+    for key, val in expected.items():
+        if isinstance(val, dict) and isinstance(observed.get(key), dict):
+            _assert_partial_expected(observed[key], val)
+        else:
+            assert observed[key] == val
+
+
+def _assert_rejected(result, expected_kind):
+    assert isinstance(result, dict), 'forbidden adapter.step must return a result dict'
+    assert result.get('ok') is False
+    if expected_kind is not None:
+        assert result.get('kind') == expected_kind
+
+
+def test_scenario_cover_set(adapter):
+    'Scenario: cover_set'
+    if not _adapter_ready(adapter):
+        pytest.fail(ADAPTER_NOT_WIRED, pytrace=False)
+    adapter.reset()
+    adapter.step('set', {'v': 0})
+    _assert_partial_expected(adapter.observe(), {'x': 0})
+
+def test_scenario_reach_One(adapter):
+    'Scenario: reach_One'
+    if not _adapter_ready(adapter):
+        pytest.fail(ADAPTER_NOT_WIRED, pytrace=False)
+    adapter.reset()
+    adapter.step('set', {'v': 1})
+    _assert_partial_expected(adapter.observe(), {'x': 1})
+
+def test_random_walk_conformance(adapter):
+    if not _adapter_ready(adapter):
+        pytest.fail(ADAPTER_NOT_WIRED, pytrace=False)
+    mon = Monitor(SPEC_PATH)
+    mon.reset()
+    adapter.reset()
+    assert adapter.observe() == mon.state
+    rng = random.Random(0)
+    for _ in range(100):
+        enabled = mon.enabled()
+        if not enabled:
+            break
+        choice = enabled[rng.randrange(len(enabled))]
+        action, params = choice['action'], dict(choice['params'])
+        adapter.step(action, params)
+        result = mon.step(action, params)
+        if not result.get('ok'):
+            pytest.fail(
+                f'spec oracle violation at {action} {params}: '
+                f"{result.get('kind')} {result.get('name', '')}"
+            )
+        assert adapter.observe() == mon.state
+
