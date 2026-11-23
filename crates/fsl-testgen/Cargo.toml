@@ -11,6 +11,7 @@ publish.workspace = true
 [dependencies]
 fsl-testgen-core = { path = "../fsl-testgen-core" }
 serde_json.workspace = true
+toml = { version = "0.9", default-features = false, features = ["parse", "serde"] }
 
 [dev-dependencies]
 jsonschema = { version = "0.48.0", default-features = false }

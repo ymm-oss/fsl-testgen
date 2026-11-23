@@ -5,6 +5,8 @@
 
 pub mod contract;
 mod input;
+pub mod output;
+pub mod plugin;
 pub mod render;
 mod target;
 mod test_plan;

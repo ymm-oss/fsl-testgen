@@ -23,3 +23,15 @@ The tests validate every golden input against `testgen-input.v1.schema.json`.
 through the cross-checks in `fsl-testgen-core`, which are stricter than the
 schema (they also compare names across `state`, `actions`, `scenarios`, `walk`
 and `kernel`).
+
+## Defined here
+
+| File | What |
+|---|---|
+| `plugin-request.v1.schema.json` | what an external target executable reads on standard input |
+| `plugin-response.v1.schema.json` | what it writes on standard output |
+
+They are plugin protocol 1, described in [docs/PLUGIN.md](../docs/PLUGIN.md).
+The tests validate every request `fsl-testgen` sends against the request
+schema, and check that the response schema and the reader in
+`fsl-testgen-core` accept and reject the same samples.

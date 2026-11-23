@@ -1,0 +1,5 @@
+# Maps `--target unittest` to the example plugin when fsl-testgen runs in this
+# directory or below it. Without this file, an executable named
+# `fsl-testgen-target-unittest` on PATH is used instead.
+[targets.unittest]
+command = ["python3", "fsl-testgen-target-unittest"]

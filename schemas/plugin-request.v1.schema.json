@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ymm-oss/fsl-testgen/schemas/plugin-request.v1.schema.json",
+  "title": "fsl-testgen plugin protocol 1: request",
+  "description": "The one JSON document fsl-testgen writes to the standard input of an external target executable, followed by a newline. `input` has passed every cross-check of fsl-testgen before the executable is started.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["protocol", "input", "options"],
+  "properties": {
+    "protocol": { "const": 1 },
+    "input": {
+      "description": "The testgen-input.v1 document, with its members in the order `fslc testgen-input` wrote them. That order is part of the contract: print state objects, parameter objects and scenarios in the order given.",
+      "$ref": "https://fsl.dev/schemas/fslc/kernel/testgen-input.v1.schema.json"
+    },
+    "options": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["unwired", "spec_path", "output"],
+      "properties": {
+        "unwired": {
+          "description": "What the generated suite must do while its adapter is not wired. `fail` (the default): every generated test fails. `skip` (`--allow-unwired`): every generated test is skipped; a plugin whose framework cannot skip at run time answers with an error diagnostic instead of generating a suite that passes.",
+          "enum": ["fail", "skip"]
+        },
+        "spec_path": {
+          "description": "`--spec-path` as given on the command line, or null. Relative paths are relative to the directory fsl-testgen was started in, which is not necessarily the plugin's.",
+          "type": ["string", "null"]
+        },
+        "output": {
+          "description": "`-o` or `--out-dir` as given on the command line, or null when the result is printed. For information only: the plugin does not write.",
+          "type": ["string", "null"]
+        }
+      }
+    }
+  }
+}

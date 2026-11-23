@@ -4,4 +4,6 @@
 //! `testgen-input.v1` document `fslc testgen-input` emits.
 
 pub mod cli;
+pub mod plugin_check;
+pub mod plugin_host;
 pub mod targets;

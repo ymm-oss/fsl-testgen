@@ -27,7 +27,8 @@ spec itself.
 | `dart` | package:test | skips |
 | `phpunit` | PHPUnit 10+ | skips |
 
-`fsl-testgen targets` lists them.
+`fsl-testgen targets` lists them. Any other target is an external executable:
+see [Plugins](#plugins).
 
 Every generated suite has an adapter for you to connect to your implementation
 (`reset`, `step`, `observe`). Until the adapter is wired, every generated test
@@ -49,8 +50,10 @@ the old suite checked that the new one cannot.
 ## Command line
 
 ```
-fsl-testgen generate --target TARGET [--input FILE] [-o FILE] [--allow-unwired] [--spec-path PATH]
+fsl-testgen generate --target TARGET [--input FILE] [-o FILE | --out-dir DIR]
+                     [--allow-unwired] [--spec-path PATH] [--plugin-timeout SECONDS]
 fsl-testgen targets
+fsl-testgen plugin-check [--timeout SECONDS] COMMAND [ARGUMENT...]
 fsl-testgen --version
 ```
 
@@ -58,9 +61,16 @@ fsl-testgen --version
   read from stdin.
 - `-o FILE`: write the suite to `FILE` instead of stdout. The file is replaced
   as a whole or not at all. The directory must exist.
+- `--out-dir DIR`: write every generated file under the existing directory
+  `DIR`, each under the name the target gives it (`test_conformance.py`,
+  `conformance.test.ts`, `ConformanceTests.swift`, `<Spec>ConformanceTest.kt`,
+  `conformance_test.dart`, `<Spec>ConformanceTest.php`). Needed for a target
+  that generates more than one file.
 - `--spec-path PATH`: where the spec is. The document records only the file
   name of the spec (`source.name`). No built-in target reads the option: no
-  built-in suite refers to the spec.
+  built-in suite refers to the spec. A plugin is told.
+- `--plugin-timeout SECONDS`: how long an external target may take (60 by
+  default).
 
 ### Exit codes and errors
 
@@ -71,6 +81,8 @@ fsl-testgen --version
 | 3 | `input` | the document is not JSON, has another major version, or failed a cross-check |
 | 4 | `target` | the target refused the options or the document |
 | 5 | `io` | the input could not be read or the output written |
+| 6 | `plugin` | an external target broke the protocol: it could not be started, exited non-zero, ran out of time, or answered with something `fsl-testgen` refuses |
+| 7 | `config` | `fsl-testgen.toml` is invalid, or names a built-in target |
 
 A failure prints nothing on stdout and one JSON object on one line of stderr:
 
@@ -79,7 +91,34 @@ A failure prints nothing on stdout and one JSON object on one line of stderr:
 ```
 
 With `-o`, success prints `{"result":"generated","target":…,"spec":…,"output":…}`
-on stdout. Nothing is written to the output file unless the exit code is 0.
+on stdout; with `--out-dir`, `"out_dir"` and the list of `"files"` instead of
+`"output"`. Nothing is written unless the exit code is 0.
+
+`plugin-check` is a report for people: one line per check on stdout, exit code
+0 when every check passed and 1 when one failed.
+
+## Plugins
+
+A target that is not built in is an executable: `fsl-testgen-target-NAME` on
+`PATH`, or a command named in `fsl-testgen.toml`:
+
+```toml
+[targets.go]
+command = ["python3", "tools/fsl_testgen_go.py"]
+```
+
+`fsl-testgen` checks the document, sends `{protocol, input, options}` to the
+executable's standard input, reads `{protocol, files, diagnostics}` from its
+standard output, checks that, and does the writing itself. A plugin is never
+started for a document that failed a cross-check, cannot write outside the
+output directory, and cannot replace a built-in target.
+
+[docs/PLUGIN.md](docs/PLUGIN.md) is the protocol, with its two JSON Schemas in
+[`schemas/`](schemas/README.md) and an example in
+[`examples/unittest-plugin/`](examples/unittest-plugin). `fsl-testgen
+plugin-check COMMAND` checks what can be checked mechanically about a plugin,
+and says what cannot: above all, that the suite it generates fails while its
+adapter is not wired.
 
 ## Compatibility with the contract
 

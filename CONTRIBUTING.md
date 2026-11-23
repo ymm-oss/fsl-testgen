@@ -6,10 +6,16 @@ Everything in this repository is public and written in English.
 
 - `crates/fsl-testgen-core` — reads `testgen-input.v1` (`TestgenInput`, with
   every cross-check), the literal and identifier helpers targets print with
-  (`render`), and the `Target` trait: a checked document and options in,
-  generated files out. No file system access.
-- `crates/fsl-testgen` — the command line and the built-in targets
-  (`src/targets/`), each an implementation of `Target`.
+  (`render`), the `Target` trait (a checked document and options in, generated
+  files out), the plugin protocol's request and response (`plugin`), and the
+  writer every generated file goes through (`output`). Reading and generating
+  do not touch the file system; only `output` does.
+- `crates/fsl-testgen` — the command line, the built-in targets
+  (`src/targets/`, each an implementation of `Target`), the host that finds and
+  runs external targets (`plugin_host`) and `plugin-check` (`plugin_check`).
+- `examples/unittest-plugin/` — an external target, used by the tests.
+- `docs/` — [PLUGIN.md](docs/PLUGIN.md) (the plugin protocol),
+  [PYTEST.md](docs/PYTEST.md) (how the pytest suite differs from fslc's).
 - `schemas/` — the vendored contract schemas ([schemas/README.md](schemas/README.md)).
 - `tests/golden/` — checked-in inputs and expected outputs.
 - `scripts/` — the golden generator and the comparison with `fslc`.
@@ -21,6 +27,13 @@ cargo fmt --all -- --check
 cargo clippy --all-targets --locked -- -D warnings
 cargo test --locked
 ```
+
+## A new target: built in, or a plugin?
+
+A target for a framework this repository does not cover does not have to be
+built in. An external executable ([docs/PLUGIN.md](docs/PLUGIN.md)) gets the
+same checked document and can live in any repository, in any language. Build a
+target in when it should ship with `fsl-testgen` and be held to its goldens.
 
 ## Adding a built-in target
 
@@ -38,7 +51,7 @@ cargo test --locked
    outcome that is not allowed.
 3. Register it in `builtin_targets()` in `src/targets/mod.rs`, add it to
    `TARGETS` in `crates/fsl-testgen/tests/support/mod.rs` and to the table in
-   `README.md`.
+   `README.md`. A built-in name can no longer be used by a plugin.
 4. Add its expected outputs to the goldens (below) and extend
    `unwired_adapter_fails_by_default_and_skips_only_on_opt_in` in
    `src/targets/tests.rs` with the failing construct and the skipping one.
@@ -80,3 +93,16 @@ things:
 
 `scripts/compare_with_fslc.py` runs the same comparison over every spec of an
 fsl checkout without writing anything.
+
+The golden inputs are also compiled into the binary: `plugin-check` runs a
+plugin over them. A new case is picked up by `plugin-check` when it is added to
+`INPUTS` in `crates/fsl-testgen/src/plugin_check.rs`.
+
+## Changing the plugin protocol
+
+The protocol is `docs/PLUGIN.md`, the two schemas `schemas/plugin-*.v1.schema.json`
+and `crates/fsl-testgen-core/src/plugin.rs`; `tests/plugin.rs` holds them
+together (the reader and the response schema must agree on a list of samples,
+and every request must validate against the request schema). Plugins live in
+other repositories, so a change an existing plugin cannot ignore needs a new
+`protocol` number, not an edit of protocol 1.

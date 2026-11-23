@@ -124,8 +124,14 @@ pub fn command() -> Command {
 
 /// Run `fsl-testgen ARGS` in `cwd` with `stdin`.
 pub fn run_in(cwd: &Path, args: &[&str], stdin: &str) -> Output {
+    run_with(cwd, args, stdin, &[])
+}
+
+/// Run `fsl-testgen ARGS` in `cwd` with `stdin` and extra environment.
+pub fn run_with(cwd: &Path, args: &[&str], stdin: &str, environment: &[(&str, &str)]) -> Output {
     let mut child = command()
         .args(args)
+        .envs(environment.iter().copied())
         .current_dir(cwd)
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())

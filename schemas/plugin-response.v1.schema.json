@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ymm-oss/fsl-testgen/schemas/plugin-response.v1.schema.json",
+  "title": "fsl-testgen plugin protocol 1: response",
+  "description": "The one JSON document an external target executable writes to its standard output, with exit status 0. fsl-testgen checks it and writes the files; the executable writes nothing itself. Beyond this schema fsl-testgen rejects a path that is given twice.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["protocol", "files", "diagnostics"],
+  "properties": {
+    "protocol": { "const": 1 },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "content"],
+        "properties": {
+          "path": {
+            "description": "Where the file goes, relative to the output directory, with `/` between components. Not absolute, no drive letter, no `.` or `..` component, no empty component, no backslash, no NUL.",
+            "type": "string",
+            "minLength": 1,
+            "not": {
+              "pattern": "^/|^[A-Za-z]:|\\\\|\\x00|(^|/)\\.\\.?(/|$)|//|/$"
+            }
+          },
+          "content": {
+            "description": "The whole text of the file.",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "diagnostics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["severity", "message"],
+        "properties": {
+          "severity": {
+            "description": "`error` refuses the generation: nothing is written and fsl-testgen exits with the messages. `warning` and `info` are passed on to the user after a successful generation.",
+            "enum": ["error", "warning", "info"]
+          },
+          "message": { "type": "string" }
+        }
+      }
+    }
+  }
+}

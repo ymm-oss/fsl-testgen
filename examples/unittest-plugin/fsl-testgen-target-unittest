@@ -1,0 +1,107 @@
+#!/usr/bin/env python3
+# SPDX-License-Identifier: Apache-2.0
+"""An fsl-testgen target plugin (protocol 1), as an example: a suite for
+Python's standard `unittest`.
+
+Reads one request on stdin and prints one response on stdout. It writes no
+file itself; fsl-testgen writes what the response lists. See docs/PLUGIN.md.
+"""
+
+import json
+import re
+import sys
+
+NOT_WIRED = ("adapter not wired: implement make_adapter() to connect your implementation, "
+             "or generate with --allow-unwired to skip instead")
+
+HEADER = '''# Auto-generated FSL conformance tests (unittest). Source: {source}
+# Wire make_adapter() to your implementation. {unwired_note}
+import unittest
+
+
+def make_adapter():
+    """Return an object with reset(), step(action, params) and observe()."""
+    raise NotImplementedError("wire your implementation")
+
+
+class {name}Conformance(unittest.TestCase):
+    def setUp(self):
+        try:
+            self.adapter = make_adapter()
+        except NotImplementedError:
+            {unwired_action}
+        self.adapter.reset()
+
+    def assert_partial(self, observed, expected):
+        for key, value in expected.items():
+            if isinstance(value, dict) and isinstance(observed.get(key), dict):
+                self.assert_partial(observed[key], value)
+            else:
+                self.assertEqual(observed[key], value, key)
+'''
+
+
+def identifier(name, seen):
+    safe = re.sub(r"[^A-Za-z0-9_]+", "_", name).strip("_") or "scenario"
+    seen[safe] = seen.get(safe, 0) + 1
+    return safe if seen[safe] == 1 else f"{safe}_{seen[safe]}"
+
+
+def generate(document, unwired):
+    # repr() of a parsed JSON value is a Python literal of it; the keys keep
+    # the order of the document.
+    fail = unwired == "fail"
+    lines = [HEADER.format(
+        source=repr(document["source"]["name"]),
+        name=re.sub(r"[^A-Za-z0-9_]", "_", document["spec"]),
+        unwired_note=("Until then every test FAILS." if fail
+                      else "Until then every test is skipped (--allow-unwired)."),
+        unwired_action=(f"self.fail({NOT_WIRED!r})" if fail
+                        else 'self.skipTest("adapter not wired")'),
+    )]
+    seen = {}
+    for scenario in document["scenarios"]:
+        lines.append(f"    def test_scenario_{identifier(scenario['name'], seen)}(self):")
+        lines.append(f"        # {scenario['name']!r}")
+        for step, expected in zip(scenario["steps"], scenario["expected_states"]):
+            lines.append(f"        self.adapter.step({step['action']!r}, {step['params']!r})")
+            lines.append(f"        self.assert_partial(self.adapter.observe(), {expected!r})")
+        if scenario.get("kind") == "forbidden" and "forbidden_step" in scenario:
+            step = scenario["forbidden_step"]
+            lines.append(f"        result = self.adapter.step({step['action']!r}, {step['params']!r})")
+            lines.append("        self.assertIsInstance(result, dict)")
+            lines.append("        self.assertIs(result.get('ok'), False)")
+            if scenario.get("rejected_by") is not None:
+                lines.append(f"        self.assertEqual(result.get('kind'), {scenario['rejected_by']!r})")
+        if not scenario["steps"]:
+            lines.append(f"        self.assert_partial(self.adapter.observe(), {scenario['initial_state']!r})")
+        lines.append("")
+    walk = document["walk"]
+    lines.append("    def test_walk(self):")
+    lines.append(f"        self.assertEqual(self.adapter.observe(), {walk['initial']!r})")
+    for index, step in enumerate(walk["steps"]):
+        lines.append(f"        self.adapter.step({step['action']!r}, {step['params']!r})")
+        lines.append(f"        self.assertEqual(self.adapter.observe(), {step['expected']!r}, 'walk step {index}')")
+    lines.append("")
+    lines.append('\nif __name__ == "__main__":\n    unittest.main()')
+    return "\n".join(lines) + "\n"
+
+
+def main():
+    request = json.load(sys.stdin)
+    if request.get("protocol") != 1:
+        sys.exit(f"unsupported protocol {request.get('protocol')!r}")
+    document = request["input"]
+    name = re.sub(r"[^A-Za-z0-9_]", "_", document["spec"]).lower()
+    json.dump({
+        "protocol": 1,
+        "files": [{
+            "path": f"test_{name}_conformance.py",
+            "content": generate(document, request["options"]["unwired"]),
+        }],
+        "diagnostics": [],
+    }, sys.stdout)
+
+
+if __name__ == "__main__":
+    main()
