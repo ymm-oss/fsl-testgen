@@ -1,19 +1,21 @@
 """Auto-generated conformance tests for FSL spec.
 Source: literals.fsl
-Connect Adapter to your implementation, or use MonitorSelfAdapter for self-check.
-Until Adapter is wired every test FAILS with "adapter not wired" (issue #1200);
-generate with `fslc testgen --allow-unwired` to skip instead.
-"""
-import random
-from pathlib import Path
+Source digest: sha256:77995a92f2efe9476f3bb6d2714733848e3de1d56c58f0136ca299342a2ea477
 
+Connect Adapter to your implementation.
+Until Adapter is wired every test FAILS with "adapter not wired": a suite that
+never calls the implementation is not evidence that it conforms. Generate with
+`fsl-testgen generate --allow-unwired` to skip instead.
+
+The expected states below were baked at generation time: the spec's scenarios,
+and a walk the FSL Monitor (the spec's concrete interpreter) took under a fixed
+seed. This file imports nothing but pytest and reads neither the spec nor
+`fslc` when it runs, so it checks the spec as it was when the file was
+generated: regenerate it when the spec changes.
+"""
 import pytest
 
-from fslc.runtime import Monitor
-
-SPEC_PATH = Path(__file__).resolve().parent / '../../specs/literals.fsl'
-
-ADAPTER_NOT_WIRED = 'adapter not wired: implement Adapter.reset/step/observe to connect your implementation, or generate with `fslc testgen --allow-unwired` to skip instead'
+ADAPTER_NOT_WIRED = 'adapter not wired: implement Adapter.reset/step/observe to connect your implementation, or generate with `fsl-testgen generate --allow-unwired` to skip instead'
 
 
 class Adapter:
@@ -21,8 +23,11 @@ class Adapter:
 
     Wiring convention:
     - reset(): put implementation in the same initial state as spec init
-    - step(action, params): drive one spec action on the implementation
+    - step(action, params): drive one spec action on the implementation;
+      return {'ok': False, 'kind': ...} when the implementation rejects it
     - observe(): return implementation state projected to spec logical state shape
+      (enum = name string, Option = None|value, Seq = list, Map = dict with string
+      keys, struct = dict)
     """
 
     def reset(self):
@@ -80,26 +85,118 @@ def test_scenario_reach_One(adapter):
     adapter.step('set', {'v': 1})
     _assert_partial_expected(adapter.observe(), {'x': 1})
 
+
+RANDOM_WALK_INITIAL = {'x': 0}
+RANDOM_WALK = [
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 1}, {'x': 1}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 0}, {'x': 0}),
+    ('set', {'v': 0}, {'x': 0}),
+]
+
+
 def test_random_walk_conformance(adapter):
+    'random-walk conformance (baked oracle trace)'
     if not _adapter_ready(adapter):
         pytest.fail(ADAPTER_NOT_WIRED, pytrace=False)
-    mon = Monitor(SPEC_PATH)
-    mon.reset()
     adapter.reset()
-    assert adapter.observe() == mon.state
-    rng = random.Random(0)
-    for _ in range(100):
-        enabled = mon.enabled()
-        if not enabled:
-            break
-        choice = enabled[rng.randrange(len(enabled))]
-        action, params = choice['action'], dict(choice['params'])
+    assert adapter.observe() == RANDOM_WALK_INITIAL, 'initial state'
+    for index, (action, params, expected) in enumerate(RANDOM_WALK):
         adapter.step(action, params)
-        result = mon.step(action, params)
-        if not result.get('ok'):
-            pytest.fail(
-                f'spec oracle violation at {action} {params}: '
-                f"{result.get('kind')} {result.get('name', '')}"
-            )
-        assert adapter.observe() == mon.state
-
+        assert adapter.observe() == expected, f'random walk step {index}: {action} {params}'

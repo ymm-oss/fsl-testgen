@@ -16,6 +16,11 @@ jobs:
       - uses: dtolnay/rust-toolchain@1.98.0
         with:
           components: rustfmt, clippy
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install pytest (the generated pytest suites are run by the tests)
+        run: python3 -m pip install pytest
       - name: Format
         run: cargo fmt --all -- --check
       - name: Clippy

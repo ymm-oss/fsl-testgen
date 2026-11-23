@@ -1,6 +1,5 @@
 {
   "description": "a kernel-dialect spec",
   "spec": "specs/cart_v1.fsl",
-  "depth": 3,
-  "spec_path": "/SPEC_ROOT/specs/cart_v1.fsl"
+  "depth": 3
 }

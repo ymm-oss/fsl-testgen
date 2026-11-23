@@ -19,10 +19,7 @@
 use std::io::{Read, Write};
 use std::path::{Path, PathBuf};
 
-use fsl_testgen_core::{
-    GeneratedFile, Options, OutputContext, PathContext, TestgenInput, UnwiredAdapter,
-    parse_document,
-};
+use fsl_testgen_core::{GeneratedFile, Options, TestgenInput, UnwiredAdapter, parse_document};
 use serde_json::json;
 
 use crate::targets::{builtin_target, builtin_targets};
@@ -116,22 +113,6 @@ fn parse_generate(arguments: &[String]) -> Result<GenerateArguments, Failure> {
     Ok(parsed)
 }
 
-/// The path context `fslc testgen` builds: canonical where the path exists,
-/// as given where it does not.
-fn path_context(spec_path: &Path, output: Option<&Path>) -> PathContext {
-    let canonical =
-        |path: &Path| std::fs::canonicalize(path).unwrap_or_else(|_| path.to_path_buf());
-    PathContext {
-        spec_path: canonical(spec_path),
-        output: match output {
-            None => OutputContext::WithoutOutput,
-            Some(output) => OutputContext::WithOutput {
-                parent: output.parent().map(canonical),
-            },
-        },
-    }
-}
-
 /// Write `content` to `path` through a sibling temporary file, so that the
 /// file is either the whole new content or untouched.
 fn write_atomically(path: &Path, content: &str) -> Result<(), String> {
@@ -185,18 +166,14 @@ fn generate(
     let input = TestgenInput::from_document(&document)
         .map_err(|error| failure(FailureKind::Input, error))?;
 
-    // Without --spec-path the only name known is the document's `source.name`.
-    let spec_path = arguments
-        .spec_path
-        .clone()
-        .unwrap_or_else(|| PathBuf::from(document["source"]["name"].as_str().unwrap_or_default()));
     let options = Options {
         unwired: if arguments.allow_unwired {
             UnwiredAdapter::Skip
         } else {
             UnwiredAdapter::Fail
         },
-        path: path_context(&spec_path, arguments.output.as_deref()),
+        spec_path: arguments.spec_path.clone(),
+        output: arguments.output.clone(),
     };
     let files = target
         .generate(&input, &options)

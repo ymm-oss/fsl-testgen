@@ -1,6 +1,5 @@
 {
   "description": "a requirements document with a forbidden scenario",
   "spec": "examples/gallery/valid/small_forbidden_guarded_cancel.fsl",
-  "depth": 3,
-  "spec_path": "/SPEC_ROOT/examples/gallery/valid/small_forbidden_guarded_cancel.fsl"
+  "depth": 3
 }

@@ -34,9 +34,17 @@ Every generated suite has an adapter for you to connect to your implementation
 **fails**: a suite that never calls the implementation is not evidence that it
 conforms. `--allow-unwired` generates a suite that skips instead.
 
-The output of all six targets is byte-for-byte what `fslc testgen --target T`
-prints for the same spec; the tests and `scripts/compare_with_fslc.py` check it.
-That is why the generated text still names `fslc testgen` in places.
+Every generated suite is self-contained: the expected states of the scenarios
+and of a fixed walk are baked into it, and it needs neither the spec nor `fslc`
+when it runs. Regenerate it when the spec changes.
+
+The output of `vitest`, `swift`, `kotlin`, `dart` and `phpunit` is
+byte-for-byte what `fslc testgen --target T` prints for the same spec; the
+tests and `scripts/compare_with_fslc.py` check it. That is why their generated
+text still names `fslc testgen` in places. `pytest` is the exception: the suite
+`fslc testgen` prints imports the unpublished `fslc.runtime`, the one generated
+here does not. [docs/PYTEST.md](docs/PYTEST.md) says what that changes and what
+the old suite checked that the new one cannot.
 
 ## Command line
 
@@ -51,11 +59,8 @@ fsl-testgen --version
 - `-o FILE`: write the suite to `FILE` instead of stdout. The file is replaced
   as a whole or not at all. The directory must exist.
 - `--spec-path PATH`: where the spec is. The document records only the file
-  name of the spec (`source.name`), so a generated file that refers to the spec
-  needs the path from you; without the option the file name alone is used.
-  Only `pytest` uses it: with `-o` it prints the path relative to the output
-  file's directory, otherwise the absolute path when `PATH` exists and `PATH`
-  as given when it does not.
+  name of the spec (`source.name`). No built-in target reads the option: no
+  built-in suite refers to the spec.
 
 ### Exit codes and errors
 

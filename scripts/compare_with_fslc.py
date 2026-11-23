@@ -19,8 +19,9 @@ import pathlib
 import subprocess
 import sys
 
-# Targets whose output is frozen to `fslc testgen`'s bytes.
-FROZEN_TARGETS = ["pytest", "vitest", "swift", "kotlin", "dart", "phpunit"]
+# Targets whose output is frozen to `fslc testgen`'s bytes. pytest is not one
+# of them: its suite is baked here and differs from fslc's on purpose.
+FROZEN_TARGETS = ["vitest", "swift", "kotlin", "dart", "phpunit"]
 
 
 def main():

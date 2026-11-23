@@ -1,21 +1,22 @@
 // SPDX-License-Identifier: Apache-2.0
 
-//! The checked-in goldens: `fsl-testgen generate` on `input.json` prints the
-//! bytes `fslc testgen` printed for the same spec, for every target with and
-//! without `--allow-unwired`. The goldens are only read here;
-//! `scripts/regen_goldens.py` writes them.
+//! The checked-in goldens. For the frozen targets (vitest, swift, kotlin,
+//! dart, phpunit) `fsl-testgen generate` on `input.json` prints the bytes
+//! `fslc testgen` printed for the same spec, with and without
+//! `--allow-unwired`. pytest is baked here and no longer follows fslc; its
+//! goldens are this generator's own output and only detect change. The
+//! goldens are only read here; `scripts/regen_goldens.py` writes them.
 
 mod support;
 
 use support::{Case, TARGETS, cases, failure, run, scratch, unwired_modes};
 
 /// Generate `target` for `case` the way the golden was generated: to stdout,
-/// or with `-o` into a scratch tree shaped like the one fslc wrote into.
+/// or with `-o`.
 fn generate(case: &Case, target: &str, flags: &[&str]) -> Result<Vec<u8>, String> {
     let mut args = vec!["generate", "--target", target];
     args.extend(flags);
     let Some(output) = &case.output else {
-        args.extend(["--spec-path", &case.spec_path]);
         let done = run(&args, &case.input);
         if done.status.code() == Some(0) {
             assert!(done.stderr.is_empty(), "{}", case.name);
@@ -25,20 +26,9 @@ fn generate(case: &Case, target: &str, flags: &[&str]) -> Result<Vec<u8>, String
         assert_eq!((code, kind.as_str()), (4, "target"), "{}", case.name);
         return Err(message);
     };
-    let root = scratch("golden-output");
-    let spec = root.join(&case.spec);
-    std::fs::create_dir_all(spec.parent().expect("spec parent")).expect("create spec parent");
-    // fsl-testgen never reads the spec; the file only has to exist, so that
-    // its path resolves the way it did when fslc read it.
-    std::fs::write(&spec, "").expect("write placeholder spec");
-    let written = root.join(output);
+    let written = scratch("golden-output").join(output);
     std::fs::create_dir_all(written.parent().expect("output parent")).expect("create parent");
-    args.extend([
-        "--spec-path",
-        spec.to_str().expect("UTF-8 path"),
-        "-o",
-        written.to_str().expect("UTF-8 path"),
-    ]);
+    args.extend(["-o", written.to_str().expect("UTF-8 path")]);
     let done = run(&args, &case.input);
     if done.status.code() == Some(0) {
         let report: serde_json::Value =
@@ -143,4 +133,45 @@ fn the_compose_golden_exercises_member_order() {
         .map(|key| line.find(&format!("\"{key}\":")).expect("key is printed"))
         .collect::<Vec<_>>();
     assert!(positions.is_sorted(), "{line}");
+}
+
+/// No generated file imports `fslc`, and the pytest suite imports nothing but
+/// pytest: the suites run without the spec and without any part of fslc.
+/// The goldens are what `generate` prints (the test above), so checking them
+/// checks the generator.
+#[test]
+fn no_generated_file_imports_fslc() {
+    let mut checked = 0;
+    for case in cases() {
+        for target in TARGETS {
+            for (suffix, _) in unwired_modes() {
+                let Ok(bytes) = case.expected(&format!("{target}{suffix}")) else {
+                    continue;
+                };
+                let text = String::from_utf8(bytes).expect("UTF-8 golden");
+                let label = format!("{}/{target}{suffix}", case.name);
+                assert!(!text.contains("fslc.runtime"), "{label}");
+                assert!(!text.contains("fslc import"), "{label}");
+                for line in text.lines() {
+                    let statement = line.trim_start();
+                    let imports = ["import ", "from ", "use ", "require", "include"]
+                        .iter()
+                        .any(|keyword| statement.starts_with(keyword));
+                    assert!(!(imports && statement.contains("fslc")), "{label}: {line}");
+                }
+                if target == "pytest" {
+                    let imports = text
+                        .lines()
+                        .filter(|line| line.starts_with("import ") || line.starts_with("from "))
+                        .collect::<Vec<_>>();
+                    assert_eq!(imports, ["import pytest"], "{label}");
+                    for gone in ["SPEC_PATH", "Monitor(", "Path(", "open("] {
+                        assert!(!text.contains(gone), "{label}: {gone}");
+                    }
+                }
+                checked += 1;
+            }
+        }
+    }
+    assert_eq!(checked, 10 * 11);
 }

@@ -1,6 +1,5 @@
 {
   "description": "a domain document (generic stage, no domain post-processing)",
   "spec": "examples/domain/order_functional_ddd.fsl",
-  "depth": 3,
-  "spec_path": "/SPEC_ROOT/examples/domain/order_functional_ddd.fsl"
+  "depth": 3
 }

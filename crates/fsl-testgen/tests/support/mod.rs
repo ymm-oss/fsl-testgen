@@ -48,11 +48,8 @@ pub struct Case {
     pub name: &'static str,
     pub directory: PathBuf,
     pub input: String,
-    pub spec_path: String,
     /// The `-o` path of a case generated with one, relative to a scratch root.
     pub output: Option<String>,
-    /// The spec path relative to the same root.
-    pub spec: String,
 }
 
 impl Case {
@@ -97,9 +94,7 @@ pub fn cases() -> Vec<Case> {
                 name,
                 input: std::fs::read_to_string(directory.join("input.json"))
                     .expect("read input.json"),
-                spec_path: case["spec_path"].as_str().expect("spec_path").to_owned(),
                 output: case["output"].as_str().map(str::to_owned),
-                spec: case["spec"].as_str().expect("spec").to_owned(),
                 directory,
             }
         })

@@ -53,14 +53,30 @@ cargo test --locked
 The tests only read these files. They are written by
 
 ```sh
-scripts/regen_goldens.py --fslc PATH/TO/fslc --fsl-root PATH/TO/fsl-checkout
+cargo build
+scripts/regen_goldens.py --fslc PATH/TO/fslc --fsl-root PATH/TO/fsl-checkout \
+    --fsl-testgen target/debug/fsl-testgen
 ```
 
 which runs `fslc testgen-input` and `fslc testgen` of
 [ymm-oss/fsl](https://github.com/ymm-oss/fsl) for a fixed list of specs
-(`CASES` in the script) and records their bytes. Review the diff after
-regenerating: the expected files of a frozen target change only when `fslc`
-changed.
+(`CASES` in the script) and records their bytes.
+
+There are two kinds of expected file, and they are evidence of different
+things:
+
+- **Frozen targets** (`vitest`, `swift`, `kotlin`, `dart`, `phpunit`): the
+  bytes `fslc testgen` printed. `fslc` is the oracle; the test shows that this
+  repository reproduces it. After regenerating, these files change only when
+  `fslc` changed.
+- **`pytest`**: the bytes this repository's own generator printed, because its
+  suite differs from `fslc`'s on purpose ([docs/PYTEST.md](docs/PYTEST.md)).
+  These files only detect a change you did not intend: review their diff by
+  reading it. That the generated suite works is shown by
+  `crates/fsl-testgen/tests/pytest_run.rs`, which runs it with pytest against
+  the implementations in `crates/fsl-testgen/tests/pytest_run/`. The tests need
+  `python3 -m pytest` (or `FSL_TESTGEN_PYTHON` pointing at an interpreter that
+  has pytest) and fail without it.
 
 `scripts/compare_with_fslc.py` runs the same comparison over every spec of an
 fsl checkout without writing anything.

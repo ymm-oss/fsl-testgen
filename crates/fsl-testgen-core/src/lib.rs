@@ -5,12 +5,10 @@
 
 pub mod contract;
 mod input;
-mod path;
 pub mod render;
 mod target;
 mod test_plan;
 
 pub use input::{Action, TestgenInput, parse_document};
-pub use path::{OutputContext, PathContext};
 pub use target::{GeneratedFile, Options, Target, UnwiredAdapter};
 pub use test_plan::validate_test_plan_v1;

@@ -7,7 +7,7 @@ for the full license text.
 This product includes software copied from FSL (https://github.com/ymm-oss/fsl),
 which is licensed under the Apache License, Version 2.0:
 
-  - crates/fsl-testgen-core/src/{contract,input,render,path,test_plan}.rs and
+  - crates/fsl-testgen-core/src/{contract,input,render,test_plan}.rs and
     crates/fsl-testgen/src/targets/ (the emitters, their templates and the
     reader of testgen-input.v1) are derived from rust/fsl-tools/src/testgen.rs,
     rust/fsl-tools/src/testgen/input_document.rs, rust/fsl-tools/src/testgen_*.txt,

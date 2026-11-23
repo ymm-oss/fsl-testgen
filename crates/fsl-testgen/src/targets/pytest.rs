@@ -4,17 +4,20 @@ use std::collections::BTreeMap;
 use std::fmt::Write as _;
 
 use fsl_testgen_core::render::{python_literal, python_string, unique_ident};
-use fsl_testgen_core::{
-    GeneratedFile, Options, OutputContext, Target, TestgenInput, UnwiredAdapter,
-};
+use fsl_testgen_core::{GeneratedFile, Options, Target, TestgenInput, UnwiredAdapter};
 use serde_json::{Map, Value};
 
 use super::one_file;
 
 /// The pytest variant: its adapter is the `Adapter` class, not a factory.
-pub(super) const NOT_WIRED_MESSAGE: &str = "adapter not wired: implement Adapter.reset/step/observe to connect your implementation, or generate with `fslc testgen --allow-unwired` to skip instead";
+pub(super) const NOT_WIRED_MESSAGE: &str = "adapter not wired: implement Adapter.reset/step/observe to connect your implementation, or generate with `fsl-testgen generate --allow-unwired` to skip instead";
 
-/// pytest scaffold that replays the scenarios and runs the spec's Monitor.
+/// Self-contained pytest suite: the scenarios and the walk are baked in, and
+/// the generated file imports nothing but pytest.
+///
+/// It is a different suite from the one `fslc testgen --target pytest`
+/// prints, which runs the spec through `fslc.runtime` at test time; see
+/// `docs/PYTEST.md` for what that changes.
 pub struct Pytest;
 
 impl Target for Pytest {
@@ -29,55 +32,23 @@ impl Target for Pytest {
     ) -> Result<Vec<GeneratedFile>, String> {
         Ok(one_file(
             "test_conformance.py".to_owned(),
-            emit(input, options),
+            emit(input, options.unwired),
         ))
     }
 }
 
-fn emit(input: &TestgenInput, options: &Options) -> String {
-    let unwired = options.unwired;
-    let path_expr = match options.path.output {
-        OutputContext::WithoutOutput => python_string(&options.path.relative_spec_path()),
-        OutputContext::WithOutput { .. } => format!(
-            "Path(__file__).resolve().parent / {}",
-            python_string(&options.path.relative_spec_path())
-        ),
-    };
-    let source_name = input.source_name();
-    let (unwired_doc, unwired_constant, unwired_action) = match unwired {
-        UnwiredAdapter::Fail => (
-            "Until Adapter is wired every test FAILS with \"adapter not wired\" (issue #1200);\n\
-             generate with `fslc testgen --allow-unwired` to skip instead.\n",
-            format!(
-                "\nADAPTER_NOT_WIRED = {}\n",
-                python_string(NOT_WIRED_MESSAGE)
-            ),
-            "pytest.fail(ADAPTER_NOT_WIRED, pytrace=False)",
-        ),
-        UnwiredAdapter::Skip => ("", String::new(), "pytest.skip('Adapter not implemented')"),
-    };
-    let mut text = format!(
-        r#""""Auto-generated conformance tests for FSL spec.
-Source: {source_name}
-Connect Adapter to your implementation, or use MonitorSelfAdapter for self-check.
-{unwired_doc}"""
-import random
-from pathlib import Path
-
-import pytest
-
-from fslc.runtime import Monitor
-
-SPEC_PATH = {path_expr}
-{unwired_constant}
+const ADAPTER: &str = r#"
 
 class Adapter:
     """Connect your implementation to the spec actions/state.
 
     Wiring convention:
     - reset(): put implementation in the same initial state as spec init
-    - step(action, params): drive one spec action on the implementation
+    - step(action, params): drive one spec action on the implementation;
+      return {'ok': False, 'kind': ...} when the implementation rejects it
     - observe(): return implementation state projected to spec logical state shape
+      (enum = name string, Option = None|value, Seq = list, Map = dict with string
+      keys, struct = dict)
     """
 
     def reset(self):
@@ -117,7 +88,58 @@ def _assert_rejected(result, expected_kind):
     assert result.get('ok') is False
     if expected_kind is not None:
         assert result.get('kind') == expected_kind
-"#
+"#;
+
+const WALK_TEST: &str = r#"
+
+def test_random_walk_conformance(adapter):
+    'random-walk conformance (baked oracle trace)'
+    if not _adapter_ready(adapter):
+        __UNWIRED_ACTION__
+    adapter.reset()
+    assert adapter.observe() == RANDOM_WALK_INITIAL, 'initial state'
+    for index, (action, params, expected) in enumerate(RANDOM_WALK):
+        adapter.step(action, params)
+        assert adapter.observe() == expected, f'random walk step {index}: {action} {params}'
+"#;
+
+fn emit(input: &TestgenInput, unwired: UnwiredAdapter) -> String {
+    let source_name = input.source_name();
+    let digest = input.document()["source"]["digest"]
+        .as_str()
+        .unwrap_or_default();
+    let (unwired_doc, unwired_constant, unwired_action) = match unwired {
+        UnwiredAdapter::Fail => (
+            "Until Adapter is wired every test FAILS with \"adapter not wired\": a suite that\n\
+             never calls the implementation is not evidence that it conforms. Generate with\n\
+             `fsl-testgen generate --allow-unwired` to skip instead.\n",
+            format!(
+                "\nADAPTER_NOT_WIRED = {}\n",
+                python_string(NOT_WIRED_MESSAGE)
+            ),
+            "pytest.fail(ADAPTER_NOT_WIRED, pytrace=False)",
+        ),
+        UnwiredAdapter::Skip => (
+            "Until Adapter is wired every test is skipped (generated with --allow-unwired).\n",
+            String::new(),
+            "pytest.skip('Adapter not implemented')",
+        ),
+    };
+    let mut text = format!(
+        r#""""Auto-generated conformance tests for FSL spec.
+Source: {source_name}
+Source digest: {digest}
+
+Connect Adapter to your implementation.
+{unwired_doc}
+The expected states below were baked at generation time: the spec's scenarios,
+and a walk the FSL Monitor (the spec's concrete interpreter) took under a fixed
+seed. This file imports nothing but pytest and reads neither the spec nor
+`fslc` when it runs, so it checks the spec as it was when the file was
+generated: regenerate it when the spec changes.
+"""
+import pytest
+{unwired_constant}{ADAPTER}"#
     );
     let state_order = input.state_order();
     let mut seen = BTreeMap::new();
@@ -170,33 +192,32 @@ def _assert_rejected(result, expected_kind):
             );
         }
     }
-    text.push_str(
-        &r#"
-def test_random_walk_conformance(adapter):
-    if not _adapter_ready(adapter):
-        __UNWIRED_ACTION__
-    mon = Monitor(SPEC_PATH)
-    mon.reset()
-    adapter.reset()
-    assert adapter.observe() == mon.state
-    rng = random.Random(0)
-    for _ in range(100):
-        enabled = mon.enabled()
-        if not enabled:
-            break
-        choice = enabled[rng.randrange(len(enabled))]
-        action, params = choice['action'], dict(choice['params'])
-        adapter.step(action, params)
-        result = mon.step(action, params)
-        if not result.get('ok'):
-            pytest.fail(
-                f'spec oracle violation at {action} {params}: '
-                f"{result.get('kind')} {result.get('name', '')}"
-            )
-        assert adapter.observe() == mon.state
-
-"#
-        .replace("__UNWIRED_ACTION__", unwired_action),
+    // The walk is printed in the walk's own member order, as the other
+    // targets print it.
+    let walk = input.walk();
+    let _ = write!(
+        text,
+        "\n\nRANDOM_WALK_INITIAL = {}\n",
+        python_literal(&walk["initial"], &[])
     );
+    let rows = walk["steps"]
+        .as_array()
+        .into_iter()
+        .flatten()
+        .map(|step| {
+            format!(
+                "    ({}, {}, {}),\n",
+                python_literal(&step["action"], &[]),
+                python_literal(&step["params"], &[]),
+                python_literal(&step["expected"], &[])
+            )
+        })
+        .collect::<String>();
+    if rows.is_empty() {
+        text.push_str("RANDOM_WALK = []\n");
+    } else {
+        let _ = write!(text, "RANDOM_WALK = [\n{rows}]\n");
+    }
+    text.push_str(&WALK_TEST.replace("__UNWIRED_ACTION__", unwired_action));
     text
 }

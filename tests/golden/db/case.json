@@ -1,6 +1,5 @@
 {
   "description": "a db document",
   "spec": "examples/db/safe_rollback_equivalence.fsl",
-  "depth": 3,
-  "spec_path": "/SPEC_ROOT/examples/db/safe_rollback_equivalence.fsl"
+  "depth": 3
 }

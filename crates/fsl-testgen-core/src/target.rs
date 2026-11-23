@@ -3,8 +3,9 @@
 //! The interface every target implements: a checked document and options in,
 //! generated files out.
 
+use std::path::PathBuf;
+
 use crate::input::TestgenInput;
-use crate::path::PathContext;
 
 /// What a generated test does while its adapter is not wired (ymm-oss/fsl
 /// issue #1200).
@@ -23,10 +24,17 @@ pub enum UnwiredAdapter {
 }
 
 /// What the caller decides about one generation.
-#[derive(Clone, Debug, Eq, PartialEq)]
+///
+/// The document does not say where the spec or the generated files are; the
+/// caller may. Both paths are passed on as the caller gave them, unresolved.
+/// No built-in target reads them: every built-in suite is self-contained.
+#[derive(Clone, Debug, Default, Eq, PartialEq)]
 pub struct Options {
     pub unwired: UnwiredAdapter,
-    pub path: PathContext,
+    /// Where the caller says the spec is (`--spec-path`).
+    pub spec_path: Option<PathBuf>,
+    /// Where the caller writes the generated file (`-o`).
+    pub output: Option<PathBuf>,
 }
 
 /// One generated file: a path relative to the output directory, and its text.
